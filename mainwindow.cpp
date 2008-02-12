@@ -105,6 +105,9 @@ bool MainWindow::closeFile() {
       delete theEditor;
       if (tabWidget->count()) {	// there are tabs left
         changeTabs(curTabIndex > 1 ? curTabIndex - 1 : 0);
+      } else {
+        // just to make sure...
+        curFile = "";
       }
       return true;
     }
