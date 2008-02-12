@@ -72,7 +72,7 @@ void MainWindow::createDocument() {
 }
 
 void MainWindow::changeTabs(int index) {
-  std::cout << "attempting to change tabs to index " << index << endl;
+  //std::cout << "attempting to change tabs to index " << index << endl;
   QWidget * nextTab = tabWidget->widget(index);
   tabWidget->setCurrentWidget(nextTab);
   curDocChanged();
@@ -115,7 +115,10 @@ void MainWindow::open() {
   QString fileName = QFileDialog::getOpenFileName(this);
   
   if (!fileName.isEmpty()) {
-    createDocument();
+    if ((curFile.toStdString() != "") || modified[tabWidget->currentIndex()]) {
+      createDocument();
+    }
+    
     loadFile(fileName);
   }
 }
@@ -130,8 +133,9 @@ bool MainWindow::save() {
 
 bool MainWindow::saveAs() {
     QString fileName = QFileDialog::getSaveFileName(this);
-    if (fileName.isEmpty())
-        return false;
+    if (fileName.isEmpty()) {
+      return false;
+    }
 
     return saveFile(fileName);
 }
@@ -144,7 +148,6 @@ void MainWindow::about() {
 }
 
 void MainWindow::documentWasModified() {
-  //std::cout << "modified flag for " << strippedName(curFile).toStdString() << ": " << curDoc->isModified() << endl;
   setWindowModified(modified[tabWidget->currentIndex()]);
 }
 
