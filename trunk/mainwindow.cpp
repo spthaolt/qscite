@@ -95,27 +95,29 @@ void MainWindow::newFile() {
 }
 
 bool MainWindow::closeFile() {
-  if (maybeSave()) {
-    QsciScintilla * theEditor = curDoc;
-    int curTabIndex = tabWidget->currentIndex();
-    tabWidget->removeTab(curTabIndex);
-    fileNames->erase(fileNames->begin() + curTabIndex);
-    modified.erase(modified.begin() + curTabIndex);
-    delete theEditor;
-    if (tabWidget->count()) {	// there are tabs left
-    	changeTabs(curTabIndex > 1 ? curTabIndex - 1 : 0);
+  if (tabWidget->count()) {
+    if (maybeSave()) {
+      QsciScintilla * theEditor = curDoc;
+      int curTabIndex = tabWidget->currentIndex();
+      tabWidget->removeTab(curTabIndex);
+      fileNames->erase(fileNames->begin() + curTabIndex);
+      modified.erase(modified.begin() + curTabIndex);
+      delete theEditor;
+      if (tabWidget->count()) {	// there are tabs left
+        changeTabs(curTabIndex > 1 ? curTabIndex - 1 : 0);
+      }
+      return true;
     }
-    return true;
-  } else {
-    return false;
   }
+  
+  return false;
 }
 
 void MainWindow::open() {
   QString fileName = QFileDialog::getOpenFileName(this);
   
   if (!fileName.isEmpty()) {
-    if ((curFile.toStdString() != "") || modified[tabWidget->currentIndex()]) {
+    if ((!tabWidget->count()) || (!curFile.isEmpty()) || modified[tabWidget->currentIndex()]) {
       createDocument();
     }
     
@@ -124,20 +126,29 @@ void MainWindow::open() {
 }
 
 bool MainWindow::save() {
+  if (tabWidget->count()) {
     if (curFile.isEmpty()) {
-        return saveAs();
+      return saveAs();
     } else {
-        return saveFile(curFile);
+      return saveFile(curFile);
     }
+  }
+  
+  // make the compiler happy :)
+  return false;
 }
 
 bool MainWindow::saveAs() {
+  if (tabWidget->count()) {
     QString fileName = QFileDialog::getSaveFileName(this);
     if (fileName.isEmpty()) {
       return false;
     }
-
+  
     return saveFile(fileName);
+  }
+  
+  return false;
 }
 
 void MainWindow::about() {
@@ -359,7 +370,7 @@ void MainWindow::setLexerType(const QString & fileName) {
 
 void MainWindow::redoSetMargin() {
   float numLines = (float)curDoc->lines();
-  QString exLength = "9999";
+  QString exLength = "99999";
   numLines /= 10000;
   
   while (numLines > 1) {
