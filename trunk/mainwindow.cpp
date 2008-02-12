@@ -102,6 +102,9 @@ bool MainWindow::closeFile() {
     fileNames->erase(fileNames->begin() + curTabIndex);
     modified.erase(modified.begin() + curTabIndex);
     delete theEditor;
+    if (tabWidget->count()) {	// there are tabs left
+    	changeTabs(curTabIndex > 1 ? curTabIndex - 1 : 0);
+    }
     return true;
   } else {
     return false;
@@ -317,7 +320,9 @@ void MainWindow::loadFile(const QString &fileName) {
 
 void MainWindow::setLexerType(const QString & fileName) {
     // get the file extension
-    string ext = string(tokenize(string(fileName.toAscii().data()), '.').back());
+    int lastDot = fileName.lastIndexOf('.');
+    string ext = (lastDot > 0) ? fileName.right(fileName.size() - lastDot - 1).toAscii().data() : "";
+    std::cout << fileName.toAscii().data() << ": " << ext << endl;
 
     if (ext == "sh" || ext == "bash") {
         lexer_bash = new QsciLexerBash;
