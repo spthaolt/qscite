@@ -24,29 +24,16 @@
 using namespace std;
 
 vector<string> tokenize(string strIn, char delim) {
-  vector<string> tokenized;
-  int count = 0;
-
-  for (int n = 0; n < strIn.length(); ++n) {
-    if (strIn[n] == delim) {
-      if (!count) {
-        tokenized.push_back("");
-      } else {
-        tokenized.push_back(strIn.substr(n - count, count));
-      }
-      count = -1;
-    }
-
-    if ((n + 1) == strIn.length()) {
-      if (!count || count == -1) {
-        tokenized.push_back("");
-      } else {
-        tokenized.push_back(strIn.substr(n - count, count + 1));
-      }
-    }
-    ++count;
-  }
-
-  return tokenized;
+	vector<string> tokenized;
+	int tokStart = 0, tokEnd = 0;
+	
+	tokStart = strIn.find_first_not_of(delim);
+	while (tokStart != -1) {
+		tokEnd = strIn.find(delim, tokStart);
+		tokenized.push_back(strIn.substr(tokStart, tokEnd - tokStart));
+		tokStart = strIn.find_first_not_of(delim, tokEnd);
+	}
+	
+	return tokenized;
 }
 
