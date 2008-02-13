@@ -315,11 +315,3 @@ void MainWindow::setCurrentFile(const QString &fileName) {
     tabWidget->setTabText(tabWidget->currentIndex(), shownName);
     setWindowTitle(tr("%1[*] - %2").arg(shownName).arg(tr("Qscite")));
 }
-
-QString MainWindow::strippedName(const QString &fullFileName) {
-  if (fullFileName.isEmpty()) {
-    return "Untitled Document";
-  } else {
-    return QFileInfo(fullFileName).fileName();
-  }
-}
