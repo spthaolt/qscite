@@ -61,6 +61,8 @@ void MainWindow::createDocument() {
   //curDoc->disconnect();
   //disconnect(curDoc, SIGNAL(textChanged()));
   curDoc = new QsciScintilla();
+  // Default wrap mode to WrapWord; FIXME: use proper enum code here...
+  curDoc->setWrapMode(static_cast<QsciScintilla::WrapMode>(1));
   curDoc->setMarginLineNumbers(1, true);
   // set default margin width to 4 characters (will adjust with different files)
   curDoc->setMarginWidth(1, "9999");
