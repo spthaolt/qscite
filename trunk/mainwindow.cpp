@@ -157,8 +157,8 @@ bool MainWindow::saveAs() {
 }
 
 void MainWindow::about() {
-   QMessageBox::about(this, tr("About Qscite"),
-            tr("<b>Qscite</b> is a clone of Scite, based on the Scintilla library"
+   QMessageBox::about(this, tr("About QSciTE"),
+            tr("<b>QSciTE</b> is a clone of Scite, based on the Scintilla library"
                " and Qt4. It is heavily based on the example code included with"
                " Qscintilla2, and is licensed under the GNU GPL version 2."));
 }
@@ -183,7 +183,7 @@ void MainWindow::curDocChanged() {
 
 
 void MainWindow::readSettings() {
-    QSettings settings("Trolltech", "Qscite");
+    QSettings settings("Trolltech", "QSciTE");
     QPoint pos = settings.value("pos", QPoint(200, 200)).toPoint();
     QSize size = settings.value("size", QSize(400, 400)).toSize();
     resize(size);
@@ -191,14 +191,14 @@ void MainWindow::readSettings() {
 }
 
 void MainWindow::writeSettings() {
-    QSettings settings("Trolltech", "Qscite");
+    QSettings settings("Trolltech", "QSciTE");
     settings.setValue("pos", pos());
     settings.setValue("size", size());
 }
 
 bool MainWindow::maybeSave() {
     if (modified[tabWidget->currentIndex()]) {
-        int ret = QMessageBox::warning(this, tr("Qscite"),
+        int ret = QMessageBox::warning(this, tr("QSciTE"),
                      tr((strippedName(curFile).toStdString() + " has been modified.\n"
                         "Do you want to save your changes?").c_str()),
                      QMessageBox::Yes | QMessageBox::Default,
@@ -215,7 +215,7 @@ bool MainWindow::maybeSave() {
 void MainWindow::loadFile(const QString &fileName) {
     QFile file(fileName);
     if (!file.open(QFile::ReadOnly)) {
-        QMessageBox::warning(this, tr("Qscite"),
+        QMessageBox::warning(this, tr("QSciTE"),
                              tr("Cannot read file %1:\n%2.")
                              .arg(fileName)
                              .arg(file.errorString()));
@@ -285,7 +285,7 @@ void MainWindow::redoSetMargin() {
 bool MainWindow::saveFile(const QString &fileName) {
     QFile file(fileName);
     if (!file.open(QFile::WriteOnly)) {
-        QMessageBox::warning(this, tr("Qscite"),
+        QMessageBox::warning(this, tr("QSciTE"),
                              tr("Cannot write file %1:\n%2.")
                              .arg(fileName)
                              .arg(file.errorString()));
@@ -315,5 +315,5 @@ void MainWindow::setCurrentFile(const QString &fileName) {
         shownName = strippedName(curFile);
     }
     tabWidget->setTabText(tabWidget->currentIndex(), shownName);
-    setWindowTitle(tr("%1[*] - %2").arg(shownName).arg(tr("Qscite")));
+    setWindowTitle(tr("%1[*] - %2").arg(shownName).arg(tr("QSciTE")));
 }
