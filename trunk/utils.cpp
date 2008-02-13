@@ -18,9 +18,12 @@
  ***************************************************************************/
 
 #include "utils.h"
+#include "mainwindow.h"
 #include <iostream>
 #include <vector>
 #include <string>
+#include <qstring.h>
+#include <qfileinfo.h>
 using namespace std;
 
 vector<string> tokenize(string strIn, char delim) {
@@ -37,3 +40,10 @@ vector<string> tokenize(string strIn, char delim) {
 	return tokenized;
 }
 
+QString MainWindow::strippedName(const QString &fullFileName) {
+  if (fullFileName.isEmpty()) {
+    return "Untitled Document";
+  } else {
+    return QFileInfo(fullFileName).fileName();
+  }
+}
