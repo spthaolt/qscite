@@ -40,7 +40,7 @@ vector<string> tokenize(string strIn, char delim) {
 	return tokenized;
 }
 
-QString MainWindow::strippedName(const QString &fullFileName) {
+QString strippedName(const QString &fullFileName) {
   if (fullFileName.isEmpty()) {
     return "Untitled Document";
   } else {
