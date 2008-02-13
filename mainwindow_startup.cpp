@@ -49,6 +49,12 @@ void MainWindow::createActions() {
     pasteAct->setStatusTip(tr("Paste the clipboard's contents into the current "
                               "selection"));
     connect(pasteAct, SIGNAL(triggered()), curDoc, SLOT(paste()));
+    
+    fontAct = new QAction(QIcon(":/images/font.png"), tr("&Font"), this);
+    //fontAct->setShortcut(tr(""))
+    fontAct->setStatusTip(tr("Set the display font."));
+    
+    connect(fontAct, SIGNAL(triggered()), this, SLOT(fontDialog()));
 
     aboutAct = new QAction(tr("&About"), this);
     aboutAct->setStatusTip(tr("Show Qscite's About box"));
@@ -80,6 +86,9 @@ void MainWindow::createMenus() {
     editMenu->addAction(cutAct);
     editMenu->addAction(copyAct);
     editMenu->addAction(pasteAct);
+    
+    viewMenu = menuBar()->addMenu(tr("&View"));
+    viewMenu->addAction(fontAct);
 
     menuBar()->addSeparator();
 

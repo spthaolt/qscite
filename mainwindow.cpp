@@ -156,6 +156,12 @@ bool MainWindow::saveAs() {
   return false;
 }
 
+void MainWindow::fontDialog() {
+  QsciLexer * lexer = curDoc->lexer();
+  lexer->setFont(QFontDialog::getFont( 0, lexer->font(0)));
+  lexer->refreshProperties();
+}
+
 void MainWindow::about() {
    QMessageBox::about(this, tr("About QSciTE"),
             tr("<b>QSciTE</b> is a clone of Scite, based on the Scintilla library"
