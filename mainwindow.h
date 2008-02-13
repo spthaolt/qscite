@@ -69,7 +69,7 @@ private:
     void loadFile(const QString &fileName);
     bool saveFile(const QString &fileName);
     void setCurrentFile(const QString &fileName);
-    QString strippedName(const QString &fullFileName);
+//    QString strippedName(const QString &fullFileName);
     void createDocument();
     void changeTabs(int index);
     void documentWasModified();

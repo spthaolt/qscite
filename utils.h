@@ -20,7 +20,9 @@
 #include <iostream>
 #include <vector>
 #include <string>
+#include <qstring.h>
 using namespace std;
 
 vector<string> tokenize(string, char);
 
+QString strippedName(const QString &fullFileName);
