@@ -55,6 +55,7 @@ private slots:
     void about();
     void curDocChanged();
     void setDocumentModified(bool wasModified = true);
+    void fontDialog();
     
 private:
     void createActions();
@@ -97,6 +98,7 @@ private:
 
     QMenu *fileMenu;
     QMenu *editMenu;
+    QMenu *viewMenu;
     QMenu *helpMenu;
     QToolBar *fileToolBar;
     QToolBar *editToolBar;
@@ -111,6 +113,7 @@ private:
     QAction *pasteAct;
     QAction *aboutAct;
     QAction *aboutQtAct;
+    QAction *fontAct;
 };
 
 #endif
