@@ -26,6 +26,8 @@ int main(int argc, char *argv[])
     Q_INIT_RESOURCE(qscite);
 
     QApplication app(argc, argv);
+    app.setApplicationName("QSciTE");
+    app.setOrganizationName("QSciteTeam");
     MainWindow mainWin;
     mainWin.show();
     return app.exec();

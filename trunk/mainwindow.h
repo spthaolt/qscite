@@ -24,15 +24,15 @@
 class QAction;
 class QMenu;
 class QsciScintilla;
-class QsciLexerBash;
-class QsciLexerCPP;
-class QsciLexerCSharp;
-class QsciLexerCSS;
-class QsciLexerHTML;
-class QsciLexerJava;
-class QsciLexerPerl;
-class QsciLexerPython;
-class QsciLexerRuby;
+// class QsciLexerBash;
+// class QsciLexerCPP;
+// class QsciLexerCSharp;
+// class QsciLexerCSS;
+// class QsciLexerHTML;
+// class QsciLexerJava;
+// class QsciLexerPerl;
+// class QsciLexerPython;
+// class QsciLexerRuby;
 class QTabWidget;
 //class QVector<QsciScintilla *>;
 
@@ -64,7 +64,7 @@ private:
     void createStatusBar();
     void readSettings();
     void redoSetMargin();
-    void setLexerType(const QString & fileName);
+//     void setLexerType(const QString & fileName);
     void writeSettings();
     bool maybeSave();
     void loadFile(const QString &fileName);
@@ -82,15 +82,15 @@ private:
     std::vector<QString> * fileNames;
 
     // currently, we have to have a different pointer for each lexer type...
-    QsciLexerBash * lexer_bash;
-    QsciLexerCPP * lexer_cpp;
-    QsciLexerCSharp * lexer_csharp;
-    QsciLexerCSS * lexer_css;
-    QsciLexerHTML * lexer_html;
-    QsciLexerJava * lexer_java;
-    QsciLexerPerl * lexer_perl;
-    QsciLexerPython * lexer_python;
-    QsciLexerRuby * lexer_ruby;
+//     QsciLexerBash * lexer_bash;
+//     QsciLexerCPP * lexer_cpp;
+//     QsciLexerCSharp * lexer_csharp;
+//     QsciLexerCSS * lexer_css;
+//     QsciLexerHTML * lexer_html;
+//     QsciLexerJava * lexer_java;
+//     QsciLexerPerl * lexer_perl;
+//     QsciLexerPython * lexer_python;
+//     QsciLexerRuby * lexer_ruby;
     
     
     QString curFile;
