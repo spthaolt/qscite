@@ -1,12 +1,14 @@
 CONFIG       += release
 
 HEADERS       = mainwindow.h \
-                utils.h
+                utils.h \
+                lexer_utils.h
 
 SOURCES       = main.cpp \
                 mainwindow.cpp \
                 mainwindow_startup.cpp \
-                utils.cpp
+                utils.cpp \
+                lexer_utils.cpp
 
 RESOURCES     = qscite.qrc
 

@@ -19,18 +19,10 @@
  
 #include <QtGui>
 #include <Qsci/qsciscintilla.h>
-#include <Qsci/qscilexerbash.h>
-#include <Qsci/qscilexercpp.h>
-#include <Qsci/qscilexercsharp.h>
-#include <Qsci/qscilexercss.h>
-#include <Qsci/qscilexerhtml.h>
-#include <Qsci/qscilexerjava.h>
-#include <Qsci/qscilexerperl.h>
-#include <Qsci/qscilexerpython.h>
-#include <Qsci/qscilexerruby.h>
 #include <string>
 #include <iostream>
 #include "utils.h"
+#include "lexer_utils.h"
 using std::string;
 
 #include "mainwindow.h"
@@ -88,6 +80,8 @@ void MainWindow::closeEvent(QCloseEvent *event) {
       return;
     }
   }
+  
+  writeSettings();
   
   event->accept();
 }
@@ -158,14 +152,18 @@ bool MainWindow::saveAs() {
 }
 
 void MainWindow::fontDialog() {
-  QsciLexer * lexer = curDoc->lexer();
-  lexer->setFont(QFontDialog::getFont( 0, lexer->font(0)));
-  lexer->refreshProperties();
+	QsciLexer * lexer = curDoc->lexer();
+	if (lexer) {
+		lexer->setFont(QFontDialog::getFont( 0, lexer->font(0)));
+		lexer->refreshProperties();
+	} else {
+		curDoc->setFont(QFontDialog::getFont( 0, curDoc->font()));
+	}
 }
 
 void MainWindow::about() {
    QMessageBox::about(this, tr("About QSciTE"),
-            tr("<b>QSciTE</b> is a clone of Scite, based on the Scintilla library"
+            tr("<b>QSciTE</b> is a clone of SciTE, based on the Scintilla library"
                " and Qt4. It is heavily based on the example code included with"
                " Qscintilla2, and is licensed under the GNU GPL version 2."));
 }
@@ -190,7 +188,7 @@ void MainWindow::curDocChanged() {
 
 
 void MainWindow::readSettings() {
-    QSettings settings("Trolltech", "QSciTE");
+    QSettings settings;
     QPoint pos = settings.value("pos", QPoint(200, 200)).toPoint();
     QSize size = settings.value("size", QSize(400, 400)).toSize();
     resize(size);
@@ -198,7 +196,7 @@ void MainWindow::readSettings() {
 }
 
 void MainWindow::writeSettings() {
-    QSettings settings("Trolltech", "QSciTE");
+    QSettings settings;
     settings.setValue("pos", pos());
     settings.setValue("size", size());
 }
@@ -234,47 +232,16 @@ void MainWindow::loadFile(const QString &fileName) {
     curDoc->setText(in.readAll());
     QApplication::restoreOverrideCursor();
     redoSetMargin();
-    setLexerType(fileName);
+    QsciLexer * newLexer = getLexerForDocument(fileName, curDoc->text());
+    if (newLexer) {
+    	newLexer->setParent(curDoc);
+    }
+    curDoc->setLexer(newLexer);
     setCurrentFile(fileName);
     setDocumentModified(false);
     statusBar()->showMessage(tr("File loaded"), 2000);
 }
 
-void MainWindow::setLexerType(const QString & fileName) {
-    // get the file extension
-    int lastDot = fileName.lastIndexOf('.');
-    string ext = (lastDot > 0) ? fileName.right(fileName.size() - lastDot - 1).toAscii().data() : "";
-    std::cout << fileName.toAscii().data() << ": " << ext << endl;
-
-    if (ext == "sh" || ext == "bash") {
-        lexer_bash = new QsciLexerBash;
-        curDoc->setLexer(lexer_bash);
-    } else if (ext == "c" || ext == "cc" || ext == "cxx" || ext == "cpp" || ext == "h") {
-        lexer_cpp = new QsciLexerCPP;
-        curDoc->setLexer(lexer_cpp);
-    } else if (ext == "cs") {
-        lexer_csharp = new QsciLexerCSharp;
-        curDoc->setLexer(lexer_csharp);
-    } else if (ext == "css") {
-        lexer_css = new QsciLexerCSS;
-        curDoc->setLexer(lexer_css);
-    } else if (ext == "html" || ext == "htm" || ext == "php") {
-        lexer_html = new QsciLexerHTML;
-        curDoc->setLexer(lexer_html);
-    } else if (ext == "java") {
-        lexer_java = new QsciLexerJava;
-        curDoc->setLexer(lexer_java);
-    } else if (ext == "pl") {
-        lexer_perl = new QsciLexerPerl;
-        curDoc->setLexer(lexer_perl);
-    } else if (ext == "py") {
-        lexer_python = new QsciLexerPython;
-        curDoc->setLexer(lexer_python);
-    } else if (ext == "rb") {
-        lexer_ruby = new QsciLexerRuby;
-        curDoc->setLexer(lexer_ruby);
-    }
-}
 
 void MainWindow::redoSetMargin() {
   float numLines = (float)curDoc->lines();

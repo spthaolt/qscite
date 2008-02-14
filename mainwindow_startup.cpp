@@ -29,7 +29,7 @@ void MainWindow::createActions() {
 
     exitAct = new QAction(tr("E&xit"), this);
     exitAct->setShortcut(tr("Ctrl+Q"));
-    exitAct->setStatusTip(tr("Exit Qscite"));
+    exitAct->setStatusTip(tr("Exit QSciTE"));
     connect(exitAct, SIGNAL(triggered()), this, SLOT(close()));
 
     cutAct = new QAction(QIcon(":/images/cut.png"), tr("Cu&t"), this);
@@ -57,7 +57,7 @@ void MainWindow::createActions() {
     connect(fontAct, SIGNAL(triggered()), this, SLOT(fontDialog()));
 
     aboutAct = new QAction(tr("&About"), this);
-    aboutAct->setStatusTip(tr("Show Qscite's About box"));
+    aboutAct->setStatusTip(tr("Show QSciTE's About box"));
     connect(aboutAct, SIGNAL(triggered()), this, SLOT(about()));
 
     aboutQtAct = new QAction(tr("About &Qt"), this);
