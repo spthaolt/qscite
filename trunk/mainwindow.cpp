@@ -53,20 +53,30 @@ void MainWindow::createDocument() {
   //curDoc->disconnect();
   //disconnect(curDoc, SIGNAL(textChanged()));
   curDoc = new QsciScintilla();
-  // Default wrap mode to WrapWord; FIXME: use proper enum code here...
-  curDoc->setWrapMode(static_cast<QsciScintilla::WrapMode>(1));
+  
+  QSettings settings;
+  // Default wrap mode to WrapWord
+  curDoc->setWrapMode(
+  	static_cast<QsciScintilla::WrapMode>(
+  		settings.value("wrapMode", QsciScintilla::WrapWord).toInt()
+  	)
+  );
   // Turn on line numbers by default
   curDoc->setMarginLineNumbers(1, true);
   // set default margin width to 4 characters (will adjust with different files)
   curDoc->setMarginWidth(1, "9999");
   // Don't use tab characters for indents
-  curDoc->setIndentationsUseTabs(false);
+  curDoc->setIndentationsUseTabs(settings.value("indentUseTabs", false).toBool());
   // Default to using two spaces for each indent
-  curDoc->setIndentationWidth(2);
+  curDoc->setIndentationWidth(settings.value("indentWidth", 2).toInt());
   // Make backspaces unindent
-  curDoc->setBackspaceUnindents(true);
-  // Turn on strict brace matching by default; FIXME: use proper enum code here...
-  curDoc->setBraceMatching(static_cast<QsciScintilla::BraceMatch>(1));
+  curDoc->setBackspaceUnindents(settings.value("backspaceUnindents", true).toBool());
+  // Turn on strict brace matching by default
+  curDoc->setBraceMatching(
+  	static_cast<QsciScintilla::BraceMatch>(
+  		settings.value("braceMatchMode", QsciScintilla::StrictBraceMatch).toInt()
+  	)
+  );
   openFiles->push_back(curDoc);
   fileNames->push_back("");
   tabWidget->addTab(curDoc, "Untitled");
