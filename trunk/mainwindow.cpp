@@ -55,9 +55,18 @@ void MainWindow::createDocument() {
   curDoc = new QsciScintilla();
   // Default wrap mode to WrapWord; FIXME: use proper enum code here...
   curDoc->setWrapMode(static_cast<QsciScintilla::WrapMode>(1));
+  // Turn on line numbers by default
   curDoc->setMarginLineNumbers(1, true);
   // set default margin width to 4 characters (will adjust with different files)
   curDoc->setMarginWidth(1, "9999");
+  // Don't use tab characters for indents
+  curDoc->setIndentationsUseTabs(false);
+  // Default to using two spaces for each indent
+  curDoc->setIndentationWidth(2);
+  // Make backspaces unindent
+  curDoc->setBackspaceUnindents(true);
+  // Turn on strict brace matching by default; FIXME: use proper enum code here...
+  curDoc->setBraceMatching(static_cast<QsciScintilla::BraceMatch>(1));
   openFiles->push_back(curDoc);
   fileNames->push_back("");
   tabWidget->addTab(curDoc, "Untitled");
@@ -172,6 +181,19 @@ void MainWindow::about() {
 
 void MainWindow::documentWasModified() {
   setWindowModified(modified[tabWidget->currentIndex()]);
+  
+  QString shownName;
+  if (curFile.isEmpty()) {
+      shownName = "Untitled";
+  } else {
+      shownName = strippedName(curFile);
+  }
+  
+  if (modified[tabWidget->currentIndex()]) {
+    tabWidget->setTabText(tabWidget->currentIndex(), shownName + "*");
+  } else {
+    tabWidget->setTabText(tabWidget->currentIndex(), shownName);
+  }
 }
 
 void MainWindow::setDocumentModified(bool wasModified) {
