@@ -110,6 +110,7 @@ bool MainWindow::closeFile() {
       } else {
         // just to make sure...
         curFile = "";
+        setWindowTitle(tr("QSciTE"));
       }
       return true;
     }
