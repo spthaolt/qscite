@@ -152,12 +152,14 @@ bool MainWindow::saveAs() {
 }
 
 void MainWindow::fontDialog() {
-	QsciLexer * lexer = curDoc->lexer();
-	if (lexer) {
-		lexer->setFont(QFontDialog::getFont( 0, lexer->font(0)));
-		lexer->refreshProperties();
-	} else {
-		curDoc->setFont(QFontDialog::getFont( 0, curDoc->font()));
+	if (tabWidget->count()) {
+  	QsciLexer * lexer = curDoc->lexer();
+  	if (lexer) {
+  		lexer->setFont(QFontDialog::getFont( 0, lexer->font(0)));
+  		lexer->refreshProperties();
+  	} else {
+  		curDoc->setFont(QFontDialog::getFont( 0, curDoc->font()));
+  	}
 	}
 }
 
@@ -196,50 +198,51 @@ void MainWindow::readSettings() {
 }
 
 void MainWindow::writeSettings() {
-    QSettings settings;
-    settings.setValue("pos", pos());
-    settings.setValue("size", size());
+  QSettings settings;
+  settings.setValue("pos", pos());
+  settings.setValue("size", size());
 }
 
 bool MainWindow::maybeSave() {
-    if (modified[tabWidget->currentIndex()]) {
-        int ret = QMessageBox::warning(this, tr("QSciTE"),
-                     tr((strippedName(curFile).toStdString() + " has been modified.\n"
-                        "Do you want to save your changes?").c_str()),
-                     QMessageBox::Yes | QMessageBox::Default,
-                     QMessageBox::No,
-                     QMessageBox::Cancel | QMessageBox::Escape);
-        if (ret == QMessageBox::Yes)
-            return save();
-        else if (ret == QMessageBox::Cancel)
-            return false;
+  if (modified[tabWidget->currentIndex()]) {
+    int ret = QMessageBox::warning(this, tr("QSciTE"),
+                 tr((strippedName(curFile).toStdString() + " has been modified.\n"
+                    "Do you want to save your changes?").c_str()),
+                 QMessageBox::Yes | QMessageBox::Default,
+                 QMessageBox::No,
+                 QMessageBox::Cancel | QMessageBox::Escape);
+    if (ret == QMessageBox::Yes) {
+      return save();
+    } else if (ret == QMessageBox::Cancel) {
+      return false;
     }
-    return true;
+  }
+  return true;
 }
 
 void MainWindow::loadFile(const QString &fileName) {
-    QFile file(fileName);
-    if (!file.open(QFile::ReadOnly)) {
-        QMessageBox::warning(this, tr("QSciTE"),
-                             tr("Cannot read file %1:\n%2.")
-                             .arg(fileName)
-                             .arg(file.errorString()));
-        return;
-    }
+  QFile file(fileName);
+  if (!file.open(QFile::ReadOnly)) {
+    QMessageBox::warning(this, tr("QSciTE"),
+                         tr("Cannot read file %1:\n%2.")
+                         .arg(fileName)
+                         .arg(file.errorString()));
+    return;
+  }
 
-    QTextStream in(&file);
-    QApplication::setOverrideCursor(Qt::WaitCursor);
-    curDoc->setText(in.readAll());
-    QApplication::restoreOverrideCursor();
-    redoSetMargin();
-    QsciLexer * newLexer = getLexerForDocument(fileName, curDoc->text());
-    if (newLexer) {
-    	newLexer->setParent(curDoc);
-    }
-    curDoc->setLexer(newLexer);
-    setCurrentFile(fileName);
-    setDocumentModified(false);
-    statusBar()->showMessage(tr("File loaded"), 2000);
+  QTextStream in(&file);
+  QApplication::setOverrideCursor(Qt::WaitCursor);
+  curDoc->setText(in.readAll());
+  QApplication::restoreOverrideCursor();
+  redoSetMargin();
+  QsciLexer * newLexer = getLexerForDocument(fileName, curDoc->text());
+  if (newLexer) {
+  	newLexer->setParent(curDoc);
+  }
+  curDoc->setLexer(newLexer);
+  setCurrentFile(fileName);
+  setDocumentModified(false);
+  statusBar()->showMessage(tr("File loaded"), 2000);
 }
 
 
