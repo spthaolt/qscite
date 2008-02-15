@@ -20,7 +20,9 @@
 #include <QtGui>
 #include <Qsci/qsciscintilla.h>
 #include <string>
+#ifdef QSCITE_DEBUG
 #include <iostream>
+#endif
 #include "utils.h"
 #include "lexer_utils.h"
 using std::string;
@@ -78,12 +80,11 @@ void MainWindow::createDocument() {
   	)
   );
   // use Monospaced font at size 10 by default
-  curDoc->setFont(
-    QFont(
-      settings.value("font", "Monospace").toString(),
-      settings.value("fontSize", 10).toInt()
-    )
-  );
+  QFont baseFont(QSCITE_MONO_FAMILY, 10);
+  if (settings.contains("plainTextFont")) {
+  	baseFont.fromString(settings.value("plainTextFont").toString());
+  }
+  curDoc->setFont(baseFont);
   
   openFiles->push_back(curDoc);
   fileNames->push_back("");

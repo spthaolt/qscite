@@ -19,11 +19,11 @@
 
 #include "utils.h"
 #include "mainwindow.h"
-#include <iostream>
 #include <vector>
 #include <string>
-#include <qstring.h>
-#include <qfileinfo.h>
+#include <QString>
+#include <QFileInfo>
+
 using namespace std;
 
 vector<string> tokenize(string strIn, char delim) {
@@ -47,3 +47,5 @@ QString strippedName(const QString &fullFileName) {
     return QFileInfo(fullFileName).fileName();
   }
 }
+
+
