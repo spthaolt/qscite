@@ -289,6 +289,7 @@ void MainWindow::loadFile(const QString &fileName) {
   curDoc->setText(in.readAll());
   QApplication::restoreOverrideCursor();
   redoSetMargin();
+  QFont currentFont = curDoc->font();
   QsciLexer * newLexer = getLexerForDocument(fileName, curDoc->text());
   if (newLexer) {
   	newLexer->setParent(curDoc);
@@ -297,6 +298,7 @@ void MainWindow::loadFile(const QString &fileName) {
 #endif
   }
   curDoc->setLexer(newLexer);
+  setLexerFont(newLexer, currentFont.family(), currentFont.pointSize());
   setCurrentFile(fileName);
   setDocumentModified(false);
   statusBar()->showMessage(tr("File loaded"), 2000);
