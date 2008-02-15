@@ -77,6 +77,14 @@ void MainWindow::createDocument() {
   		settings.value("braceMatchMode", QsciScintilla::StrictBraceMatch).toInt()
   	)
   );
+  // use Monospaced font at size 10 by default
+  curDoc->setFont(
+    QFont(
+      settings.value("font", "Monospace").toString(),
+      settings.value("fontSize", 10).toInt()
+    )
+  );
+  
   openFiles->push_back(curDoc);
   fileNames->push_back("");
   tabWidget->addTab(curDoc, "Untitled");
@@ -174,7 +182,7 @@ void MainWindow::fontDialog() {
 	if (tabWidget->count()) {
   	QsciLexer * lexer = curDoc->lexer();
   	if (lexer) {
-  		lexer->setFont(QFontDialog::getFont( 0, lexer->font(0)));
+  		lexer->setFont(QFontDialog::getFont( 0, lexer->font(lexer->defaultStyle())));
   		lexer->refreshProperties();
   	} else {
   		curDoc->setFont(QFontDialog::getFont( 0, curDoc->font()));
