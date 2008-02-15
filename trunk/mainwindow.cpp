@@ -190,11 +190,20 @@ void MainWindow::fontDialog() {
   	QsciLexer * lexer = curDoc->lexer();
   	bool ok;
   	if (lexer) {
+  	  // FIXME: THIS IS VERY HACK-ISH! PLEASE FIND ANOTHER WAY!!!
+  	  int styleWeights[20];
+  	  for (int i = 0; i < 20; ++i) {
+  	    styleWeights[i] = lexer->defaultFont(i).weight();
+  	  }
   	  QFont font = QFontDialog::getFont(&ok, lexer->font(lexer->defaultStyle()));
   	  if (ok) {
   	    lexer->setFont(font);
+  	    // FIXME: SCHAUB WOULD DIS-OWN ME AS HIS STUDENT IF HE SAW THIS!!!
+  	    for (int i = 0; i < 20; ++i) {
+  	      font.setWeight(styleWeights[i]);
+  	      lexer->setFont(font, i);
+  	    }
   	  }
-  		//lexer->refreshProperties();
   	} else {
       QFont font = QFontDialog::getFont(&ok, curDoc->font());
       if (ok) {
