@@ -1,7 +1,8 @@
 #include "lexer_utils.h"
 
-#include <qstring.h>
-#include <qsettings.h>
+#include <QString>
+#include <QSettings>
+#include <QFont>
 
 #include <Qsci/qscilexerbash.h>
 #include <Qsci/qscilexercpp.h>
@@ -225,4 +226,17 @@ QsciLexer* getLexerForDocument(const QString& fileName, const QString& text) {
 		settings.endGroup();
 	}
 	return 0;
+}
+
+#define MAX_STYLE_IDX 50
+
+void setLexerFont(QsciLexer * lexer, const QString & family, int size) {
+	for (int i = 0; i < MAX_STYLE_IDX; ++i) {
+		if (!(lexer->description(i)).isEmpty()) { // This style is in use
+			QFont curFont = lexer->font(i);
+			curFont.setFamily(family);
+			curFont.setPointSize(size);
+			lexer->setFont(curFont, i);
+		}
+	}
 }

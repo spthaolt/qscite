@@ -19,6 +19,7 @@
  
 #include <QtGui>
 #include <Qsci/qsciscintilla.h>
+#include <Qsci/qscilexer.h>
 #include <string>
 #ifdef QSCITE_DEBUG
 #include <iostream>
@@ -186,23 +187,13 @@ bool MainWindow::saveAs() {
 }
 
 void MainWindow::fontDialog() {
-	if (tabWidget->count()) {
+  if (tabWidget->count()) {
   	QsciLexer * lexer = curDoc->lexer();
   	bool ok;
   	if (lexer) {
-  	  // FIXME: THIS IS VERY HACK-ISH! PLEASE FIND ANOTHER WAY!!!
-  	  int styleWeights[20];
-  	  for (int i = 0; i < 20; ++i) {
-  	    styleWeights[i] = lexer->defaultFont(i).weight();
-  	  }
-  	  QFont font = QFontDialog::getFont(&ok, lexer->font(lexer->defaultStyle()));
+  	  QFont baseFont = QFontDialog::getFont(&ok, lexer->font(lexer->defaultStyle()));
   	  if (ok) {
-  	    lexer->setFont(font);
-  	    // FIXME: SCHAUB WOULD DIS-OWN ME AS HIS STUDENT IF HE SAW THIS!!!
-  	    for (int i = 0; i < 20; ++i) {
-  	      font.setWeight(styleWeights[i]);
-  	      lexer->setFont(font, i);
-  	    }
+  	    setLexerFont(lexer, baseFont.family(), baseFont.pointSize());
   	  }
   	} else {
       QFont font = QFontDialog::getFont(&ok, curDoc->font());
@@ -210,7 +201,7 @@ void MainWindow::fontDialog() {
         curDoc->setFont(font);
       }
   	}
-	}
+  }
 }
 
 void MainWindow::about() {
