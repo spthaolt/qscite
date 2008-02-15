@@ -20,13 +20,13 @@
 #include <QtGui>
 #include <Qsci/qsciscintilla.h>
 #include <Qsci/qscilexer.h>
-#include <string>
+// #include <string>
 #ifdef QSCITE_DEBUG
 #include <iostream>
 #endif
 #include "utils.h"
 #include "lexer_utils.h"
-using std::string;
+// using std::string;
 
 #include "mainwindow.h"
 
@@ -292,6 +292,9 @@ void MainWindow::loadFile(const QString &fileName) {
   QsciLexer * newLexer = getLexerForDocument(fileName, curDoc->text());
   if (newLexer) {
   	newLexer->setParent(curDoc);
+#ifdef QSCITE_DEBUG
+    std::cout << "Using lexer " << newLexer->lexer() << std::endl;
+#endif
   }
   curDoc->setLexer(newLexer);
   setCurrentFile(fileName);
@@ -301,7 +304,7 @@ void MainWindow::loadFile(const QString &fileName) {
 
 
 void MainWindow::redoSetMargin() {
-  float numLines = (float)curDoc->lines();
+  double numLines = (double)curDoc->lines();
   QString exLength = "99999";
   numLines /= 10000;
   

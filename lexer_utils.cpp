@@ -86,6 +86,29 @@ namespace {
 		settings.setValue("version", 1);
 	} // writeDefaultExtensions
 
+	void writeDefaultMagic(QSettings & settings) {
+		assert(settings.group() == "magic");
+
+		for (int i = 0, j = 0; !supportedLexers[i].isEmpty(); ++i, ++j) {
+#ifdef QSCITE_DEBUG
+			std::cout << qPrintable(supportedLexers[i]) << std::endl;
+#endif
+			settings.beginWriteArray(supportedLexers[i]);
+			for (int k = 0; !defaultMagic[j].isEmpty(); ++j, ++k) {
+				settings.setArrayIndex(k);
+#ifdef QSCITE_DEBUG
+				std::cout << k << ": " << qPrintable(defaultMagic[j]) << ' ';
+#endif
+				settings.setValue("str", defaultMagic[j]);
+			}
+			settings.endArray();
+#ifdef QSCITE_DEBUG
+			std::cout << std::endl;
+#endif
+		}
+		
+		settings.setValue("version", 1);
+	} // writeDefaultMagic
 } // namespace
 
 QsciLexer* getLexerForDocument(const QString& fileName, const QString& text) {
@@ -222,9 +245,113 @@ QsciLexer* getLexerForDocument(const QString& fileName, const QString& text) {
 		}
 		settings.endArray();
 		
-
 		settings.endGroup();
 	}
+	
+	/*
+	 * No extension or unmatched extension. Use magic.
+	 */
+#ifdef QSCITE_DEBUG
+	std::cout << "Using magic" << std::endl;
+#endif
+	settings.beginGroup("magic");
+	if (!settings.value("version", 0).toInt()) {
+#ifdef QSCITE_DEBUG
+		std::cout << "Using default magic" << std::endl;
+#endif
+		writeDefaultMagic(settings);
+	}
+
+	arrSize = settings.beginReadArray("bash");
+#ifdef QSCITE_DEBUG
+	std::cout << "Found " << arrSize << " magics for bash" << std::endl;
+#endif
+	for (int i = 0; i < arrSize; ++i) {
+		settings.setArrayIndex(i);
+		if (firstLine.contains(settings.value("str").toString())) {
+			return new QsciLexerBash();
+		}
+	}
+	settings.endArray();
+	
+	arrSize = settings.beginReadArray("css");
+#ifdef QSCITE_DEBUG
+	std::cout << "Found " << arrSize << " magics for CSS" << std::endl;
+#endif
+	for (int i = 0; i < arrSize; ++i) {
+		settings.setArrayIndex(i);
+		if (firstLine.contains(settings.value("str").toString())) {
+			return new QsciLexerCSS();
+		}
+	}
+	settings.endArray();
+	
+	arrSize = settings.beginReadArray("html");
+#ifdef QSCITE_DEBUG
+	std::cout << "Found " << arrSize << " magics for HTML" << std::endl;
+#endif
+	for (int i = 0; i < arrSize; ++i) {
+		settings.setArrayIndex(i);
+		if (firstLine.contains(settings.value("str").toString())) {
+			return new QsciLexerHTML();
+		}
+	}
+	settings.endArray();
+	
+	arrSize = settings.beginReadArray("java");
+#ifdef QSCITE_DEBUG
+	std::cout << "Found " << arrSize << " magics for Java" << std::endl;
+#endif
+	for (int i = 0; i < arrSize; ++i) {
+		settings.setArrayIndex(i);
+		if (firstLine.contains(settings.value("str").toString())) {
+			return new QsciLexerJava();
+		}
+	}
+	settings.endArray();
+	
+	arrSize = settings.beginReadArray("perl");
+#ifdef QSCITE_DEBUG
+	std::cout << "Found " << arrSize << " magics for Perl" << std::endl;
+#endif
+	for (int i = 0; i < arrSize; ++i) {
+		settings.setArrayIndex(i);
+		if (firstLine.contains(settings.value("str").toString())) {
+			return new QsciLexerPerl();
+		}
+	}
+	settings.endArray();
+	
+	arrSize = settings.beginReadArray("python");
+#ifdef QSCITE_DEBUG
+	std::cout << "Found " << arrSize << " magics for Python" << std::endl;
+#endif
+	for (int i = 0; i < arrSize; ++i) {
+		settings.setArrayIndex(i);
+		if (firstLine.contains(settings.value("str").toString())) {
+			return new QsciLexerPython();
+		}
+	}
+	settings.endArray();
+	
+	arrSize = settings.beginReadArray("ruby");
+#ifdef QSCITE_DEBUG
+	std::cout << "Found " << arrSize << " magics for Ruby" << std::endl;
+#endif
+	for (int i = 0; i < arrSize; ++i) {
+		settings.setArrayIndex(i);
+		if (firstLine.contains(settings.value("str").toString())) {
+			return new QsciLexerRuby();
+		}
+	}
+	settings.endArray();
+	
+	settings.endGroup();
+		
+	/*
+	 * Couldn't identify extension or magic.
+	 * Return no lexer, indicating plain text.
+	 */
 	return 0;
 }
 
