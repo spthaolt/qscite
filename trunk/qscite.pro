@@ -20,6 +20,7 @@ unix {
 }
 
 macx {
+	TARGET = QSciTE
 	LIBS += -framework qscintilla2
 	DEFINES += QSCITE_MONO_FAMILY='\\"Monaco\\"'
 }
