@@ -26,7 +26,6 @@ macx {
 
 win32 {
 	LIBS         += -lqscintilla2
-	#FIXME: Does the UNIX way of getting quotes into a define work on Win32?
 	DEFINES += QSCITE_MONO_FAMILY='\\"Courier New\\"'
 }
 

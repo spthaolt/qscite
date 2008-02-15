@@ -86,6 +86,12 @@ void MainWindow::createDocument() {
   }
   curDoc->setFont(baseFont);
   
+#ifdef QSCITE_DEBUG
+  QFontInfo test(baseFont);
+  std::cout << "Current font family: " << test.family().toStdString() << endl;
+  std::cout << "Exact font match: " << (test.exactMatch() ? "true" : "false") << endl;
+#endif
+  
   openFiles->push_back(curDoc);
   fileNames->push_back("");
   tabWidget->addTab(curDoc, "Untitled");
@@ -182,11 +188,18 @@ bool MainWindow::saveAs() {
 void MainWindow::fontDialog() {
 	if (tabWidget->count()) {
   	QsciLexer * lexer = curDoc->lexer();
+  	bool ok;
   	if (lexer) {
-  		lexer->setFont(QFontDialog::getFont( 0, lexer->font(lexer->defaultStyle())));
-  		lexer->refreshProperties();
+  	  QFont font = QFontDialog::getFont(&ok, lexer->font(lexer->defaultStyle()));
+  	  if (ok) {
+  	    lexer->setFont(font);
+  	  }
+  		//lexer->refreshProperties();
   	} else {
-  		curDoc->setFont(QFontDialog::getFont( 0, curDoc->font()));
+      QFont font = QFontDialog::getFont(&ok, curDoc->font());
+      if (ok) {
+        curDoc->setFont(font);
+      }
   	}
 	}
 }
