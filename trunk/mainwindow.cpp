@@ -38,18 +38,14 @@ MainWindow::MainWindow() {
   tabWidget = new QTabWidget(this);
   setCentralWidget(tabWidget);
   createDocument();
-  tabWidget->addTab(curDoc, "Untitled");
-  QPushButton * closeTabButton = new QPushButton(tabWidget);
-  closeTabButton->setIcon(QIcon(":/images/close.png"));
-  closeTabButton->setToolTip("Close");
-  closeTabButton->setStatusTip("Close the current file");
-  tabWidget->setCornerWidget(closeTabButton);
-  connect(closeTabButton, SIGNAL(clicked()), this, SLOT(closeFile()));
-
   createActions();
   createMenus();
   createToolBars();
   createStatusBar();
+
+  QToolButton * closeTabButton = new QToolButton(tabWidget);
+  closeTabButton->setDefaultAction(closeAct);
+  tabWidget->setCornerWidget(closeTabButton);
 
   readSettings();
   connect(curDoc, SIGNAL(textChanged()), this, SLOT(setDocumentModified()));
