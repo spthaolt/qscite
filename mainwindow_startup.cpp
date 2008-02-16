@@ -50,6 +50,10 @@ void MainWindow::createActions() {
                               "selection"));
     connect(pasteAct, SIGNAL(triggered()), curDoc, SLOT(paste()));
     
+    prefsAct = new QAction(tr("P&references"), this);
+    // TODO: set shortcut, tip, etc.
+    connect(prefsAct, SIGNAL(triggered()), this, SLOT(globalPrefs()));
+    
     fontAct = new QAction(QIcon(":/images/font.png"), tr("&Font"), this);
     //fontAct->setShortcut(tr(""))
     fontAct->setStatusTip(tr("Set the display font."));
@@ -86,6 +90,8 @@ void MainWindow::createMenus() {
     editMenu->addAction(cutAct);
     editMenu->addAction(copyAct);
     editMenu->addAction(pasteAct);
+    editMenu->addSeparator();
+    editMenu->addAction(prefsAct);
     
     viewMenu = menuBar()->addMenu(tr("&View"));
     viewMenu->addAction(fontAct);

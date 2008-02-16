@@ -20,22 +20,21 @@
 #include <QtGui>
 #include <Qsci/qsciscintilla.h>
 #include <Qsci/qscilexer.h>
-// #include <string>
+
 #ifdef QSCITE_DEBUG
 #include <iostream>
 #endif
-#include "utils.h"
-#include "lexer_utils.h"
-// using std::string;
 
 #include "mainwindow.h"
+#include "utils.h"
+#include "lexer_utils.h"
+#include "dlg_main_prefs.h"
 
 MainWindow::MainWindow() {
   openFiles = new std::vector<QsciScintilla *>;
   fileNames = new std::vector<QString>;
   fileNames->push_back(QString(""));
-  //QVector<QsciScintilla> tempvector;
-  //openFiles = &tempvector;
+
   tabWidget = new QTabWidget(this);
   setCentralWidget(tabWidget);
   createDocument();
@@ -53,8 +52,6 @@ MainWindow::MainWindow() {
 }
 
 void MainWindow::createDocument() {
-  //curDoc->disconnect();
-  //disconnect(curDoc, SIGNAL(textChanged()));
   curDoc = new QsciScintilla();
   
   QSettings settings;
@@ -72,6 +69,7 @@ void MainWindow::createDocument() {
   curDoc->setIndentationsUseTabs(settings.value("indentUseTabs", false).toBool());
   // Default to using two spaces for each indent
   curDoc->setIndentationWidth(settings.value("indentWidth", 2).toInt());
+  curDoc->setTabWidth(settings.value("indentWidth", 2).toInt());
   // Make backspaces unindent
   curDoc->setBackspaceUnindents(settings.value("backspaceUnindents", true).toBool());
   // Turn on strict brace matching by default
@@ -81,10 +79,8 @@ void MainWindow::createDocument() {
   	)
   );
   // use Monospaced font at size 10 by default
-  QFont baseFont(QSCITE_MONO_FAMILY, 10);
-  if (settings.contains("plainTextFont")) {
-  	baseFont.fromString(settings.value("plainTextFont").toString());
-  }
+  QFont baseFont(settings.value("font/family", QSCITE_MONO_FAMILY).toString(), settings.value("font/size", 10).toInt());
+
   curDoc->setFont(baseFont);
   
 #ifdef QSCITE_DEBUG
@@ -101,7 +97,9 @@ void MainWindow::createDocument() {
 }
 
 void MainWindow::changeTabs(int index) {
-  //std::cout << "attempting to change tabs to index " << index << endl;
+#ifdef QSCITE_DEBUG
+  std::cout << "attempting to change tabs to index " << index << endl;
+#endif
   QWidget * nextTab = tabWidget->widget(index);
   tabWidget->setCurrentWidget(nextTab);
   curDocChanged();
@@ -255,6 +253,11 @@ void MainWindow::writeSettings() {
   QSettings settings;
   settings.setValue("pos", pos());
   settings.setValue("size", size());
+}
+
+void MainWindow::globalPrefs() {
+	MainPrefsDialog * dlgPrefs = new MainPrefsDialog(this, Qt::Sheet);
+	dlgPrefs->show();
 }
 
 bool MainWindow::maybeSave() {
