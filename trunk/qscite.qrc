@@ -1,13 +1,14 @@
 <!DOCTYPE RCC><RCC version="1.0">
 <qresource>
-    <file>images/copy.png</file>
-    <file>images/cut.png</file>
-    <file>images/new.png</file>
-    <file>images/open.png</file>
-    <file>images/paste.png</file>
-    <file>images/save.png</file>
-    <file>images/saveas.png</file>
-    <file>images/close.png</file>
-    <file>images/font.png</file>
+    <file>images/editcopy.svg</file>
+    <file>images/editcut.svg</file>
+    <file>images/filenew.svg</file>
+    <file>images/fileopen.svg</file>
+    <file>images/editpaste.svg</file>
+    <file>images/filesave.svg</file>
+    <file>images/filesaveas.svg</file>
+    <file>images/fileclose.svg</file>
+    <file>images/configure.svg</file>
+    <file>images/font.svg</file>
 </qresource>
 </RCC>
