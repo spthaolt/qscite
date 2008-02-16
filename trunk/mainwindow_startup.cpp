@@ -23,7 +23,7 @@ void MainWindow::createActions() {
     saveAct->setStatusTip(tr("Save the document to disk"));
     connect(saveAct, SIGNAL(triggered()), this, SLOT(save()));
 
-    saveAsAct = new QAction(tr("Save &As..."), this);
+    saveAsAct = new QAction(QIcon(":/images/saveas.png"), tr("Save &As..."), this);
     saveAsAct->setStatusTip(tr("Save the document under a new name"));
     connect(saveAsAct, SIGNAL(triggered()), this, SLOT(saveAs()));
 
