@@ -42,10 +42,6 @@ MainWindow::MainWindow() {
   createMenus();
   createToolBars();
   createStatusBar();
-  
-  QToolButton * closeTabButton = new QToolButton(tabWidget);
-  closeTabButton->setDefaultAction(closeAct);
-  tabWidget->setCornerWidget(closeTabButton);
 
   QToolButton * closeTabButton = new QToolButton(tabWidget);
   closeTabButton->setDefaultAction(closeAct);
