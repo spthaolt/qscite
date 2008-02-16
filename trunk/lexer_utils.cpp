@@ -352,7 +352,10 @@ QsciLexer* getLexerForDocument(const QString& fileName, const QString& text) {
 	 * Couldn't identify extension or magic.
 	 * Return no lexer, indicating plain text.
 	 */
-	return 0;
+#ifdef QSCITE_DEBUG
+  std::cout << "No appropriate lexer found; using plain text." << std::endl;
+#endif
+	return NULL;
 }
 
 #define MAX_STYLE_IDX 50

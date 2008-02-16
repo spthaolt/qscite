@@ -39,6 +39,12 @@ MainWindow::MainWindow() {
   setCentralWidget(tabWidget);
   createDocument();
   tabWidget->addTab(curDoc, "Untitled");
+  QPushButton * closeTabButton = new QPushButton(tabWidget);
+  closeTabButton->setIcon(QIcon(":/images/close.png"));
+  closeTabButton->setToolTip("Close");
+  closeTabButton->setStatusTip("Close the current file");
+  tabWidget->setCornerWidget(closeTabButton);
+  connect(closeTabButton, SIGNAL(clicked()), this, SLOT(closeFile()));
 
   createActions();
   createMenus();
@@ -294,14 +300,16 @@ void MainWindow::loadFile(const QString &fileName) {
   redoSetMargin();
   QFont currentFont = curDoc->font();
   QsciLexer * newLexer = getLexerForDocument(fileName, curDoc->text());
-  if (newLexer) {
-  	newLexer->setParent(curDoc);
+  
+  if (newLexer != NULL) {
 #ifdef QSCITE_DEBUG
     std::cout << "Using lexer " << newLexer->lexer() << std::endl;
 #endif
+  	newLexer->setParent(curDoc);
+    curDoc->setLexer(newLexer);
+    setLexerFont(newLexer, currentFont.family(), currentFont.pointSize());
   }
-  curDoc->setLexer(newLexer);
-  setLexerFont(newLexer, currentFont.family(), currentFont.pointSize());
+
   setCurrentFile(fileName);
   setDocumentModified(false);
   statusBar()->showMessage(tr("File loaded"), 2000);

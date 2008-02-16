@@ -108,14 +108,14 @@ void MainWindow::createToolBars() {
     fileToolBar->addAction(newAct);
     fileToolBar->addAction(openAct);
     fileToolBar->addAction(saveAct);
-    fileToolBar->addAction(closeAct);
-    fileToolBar->setIconSize(QSize(24, 24));
+    //fileToolBar->addAction(closeAct);
+    fileToolBar->setIconSize(QSize(16, 16));
 
     editToolBar = addToolBar(tr("Edit"));
     editToolBar->addAction(cutAct);
     editToolBar->addAction(copyAct);
     editToolBar->addAction(pasteAct);
-    editToolBar->setIconSize(QSize(24, 24));
+    editToolBar->setIconSize(QSize(16, 16));
 }
 
 void MainWindow::createStatusBar() {
