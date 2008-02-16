@@ -27,7 +27,7 @@ macx {
 
 win32 {
 	LIBS         += -lqscintilla2
-	DEFINES += QSCITE_MONO_FAMILY='\\"Courier New\\"'
+	DEFINES += QSCITE_MONO_FAMILY='"\\"Courier New\\""'
 }
 
 debug {
