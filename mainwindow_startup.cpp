@@ -3,27 +3,27 @@
 #include "mainwindow.h"
 
 void MainWindow::createActions() {
-    newAct = new QAction(QIcon(":/images/new.png"), tr("&New"), this);
+    newAct = new QAction(QIcon(":/images/filenew.svg"), tr("&New"), this);
     newAct->setShortcut(tr("Ctrl+N"));
     newAct->setStatusTip(tr("Create a new file"));
     connect(newAct, SIGNAL(triggered()), this, SLOT(newFile()));
     
-    closeAct = new QAction(QIcon(":/images/close.png"), tr("&Close"), this);
+    closeAct = new QAction(QIcon(":/images/fileclose.svg"), tr("&Close"), this);
     closeAct->setShortcut(tr("Ctrl+F4"));
     closeAct->setStatusTip(tr("Close the current file"));
     connect(closeAct, SIGNAL(triggered()), this, SLOT(closeFile()));
 
-    openAct = new QAction(QIcon(":/images/open.png"), tr("&Open..."), this);
+    openAct = new QAction(QIcon(":/images/fileopen.svg"), tr("&Open..."), this);
     openAct->setShortcut(tr("Ctrl+O"));
     openAct->setStatusTip(tr("Open an existing file"));
     connect(openAct, SIGNAL(triggered()), this, SLOT(open()));
 
-    saveAct = new QAction(QIcon(":/images/save.png"), tr("&Save"), this);
+    saveAct = new QAction(QIcon(":/images/filesave.svg"), tr("&Save"), this);
     saveAct->setShortcut(tr("Ctrl+S"));
     saveAct->setStatusTip(tr("Save the document to disk"));
     connect(saveAct, SIGNAL(triggered()), this, SLOT(save()));
 
-    saveAsAct = new QAction(QIcon(":/images/saveas.png"), tr("Save &As..."), this);
+    saveAsAct = new QAction(QIcon(":/images/filesaveas.svg"), tr("Save &As..."), this);
     saveAsAct->setStatusTip(tr("Save the document under a new name"));
     connect(saveAsAct, SIGNAL(triggered()), this, SLOT(saveAs()));
 
@@ -32,29 +32,29 @@ void MainWindow::createActions() {
     exitAct->setStatusTip(tr("Exit QSciTE"));
     connect(exitAct, SIGNAL(triggered()), this, SLOT(close()));
 
-    cutAct = new QAction(QIcon(":/images/cut.png"), tr("Cu&t"), this);
+    cutAct = new QAction(QIcon(":/images/editcut.svg"), tr("Cu&t"), this);
     cutAct->setShortcut(tr("Ctrl+X"));
     cutAct->setStatusTip(tr("Cut the current selection's contents to the "
                             "clipboard"));
     connect(cutAct, SIGNAL(triggered()), curDoc, SLOT(cut()));
 
-    copyAct = new QAction(QIcon(":/images/copy.png"), tr("&Copy"), this);
+    copyAct = new QAction(QIcon(":/images/editcopy.svg"), tr("&Copy"), this);
     copyAct->setShortcut(tr("Ctrl+C"));
     copyAct->setStatusTip(tr("Copy the current selection's contents to the "
                              "clipboard"));
     connect(copyAct, SIGNAL(triggered()), curDoc, SLOT(copy()));
 
-    pasteAct = new QAction(QIcon(":/images/paste.png"), tr("&Paste"), this);
+    pasteAct = new QAction(QIcon(":/images/editpaste.svg"), tr("&Paste"), this);
     pasteAct->setShortcut(tr("Ctrl+V"));
     pasteAct->setStatusTip(tr("Paste the clipboard's contents into the current "
                               "selection"));
     connect(pasteAct, SIGNAL(triggered()), curDoc, SLOT(paste()));
     
-    prefsAct = new QAction(tr("P&references"), this);
+    prefsAct = new QAction(QIcon(":/images/configure.svg"), tr("P&references"), this);
     // TODO: set shortcut, tip, etc.
     connect(prefsAct, SIGNAL(triggered()), this, SLOT(globalPrefs()));
     
-    fontAct = new QAction(QIcon(":/images/font.png"), tr("&Font"), this);
+    fontAct = new QAction(QIcon(":/images/font.svg"), tr("&Font"), this);
     //fontAct->setShortcut(tr(""))
     fontAct->setStatusTip(tr("Set the display font."));
     
@@ -109,13 +109,13 @@ void MainWindow::createToolBars() {
     fileToolBar->addAction(openAct);
     fileToolBar->addAction(saveAct);
     //fileToolBar->addAction(closeAct);
-    fileToolBar->setIconSize(QSize(16, 16));
+    fileToolBar->setIconSize(QSize(22, 22));
 
     editToolBar = addToolBar(tr("Edit"));
     editToolBar->addAction(cutAct);
     editToolBar->addAction(copyAct);
     editToolBar->addAction(pasteAct);
-    editToolBar->setIconSize(QSize(16, 16));
+    editToolBar->setIconSize(QSize(22, 22));
 }
 
 void MainWindow::createStatusBar() {
