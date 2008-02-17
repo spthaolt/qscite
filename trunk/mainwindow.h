@@ -17,8 +17,8 @@
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
 
-#ifndef MAINWINDOW_H
-#define MAINWINDOW_H
+#ifndef _QSCITE_MAINWINDOW_H
+#define _QSCITE_MAINWINDOW_H
 
 #include <QMainWindow>
 class QAction;
@@ -43,7 +43,7 @@ private slots:
     bool save();
     bool saveAs();
     void about();
-    void curDocChanged();
+    void curDocChanged(int idx);
     void setDocumentModified(bool wasModified = true);
     void fontDialog();
     void globalPrefs();
@@ -59,7 +59,8 @@ private:
     bool maybeSave();
     void loadFile(const QString &fileName);
     bool saveFile(const QString &fileName);
-    void setCurrentFile(const QString &fileName);
+	void setWindowTitleForFile(const QString & fileName);
+	void setCurrentTabTitle();
     void createDocument();
     void changeTabs(int index);
     void documentWasModified();

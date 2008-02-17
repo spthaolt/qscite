@@ -1,9 +1,10 @@
-#ifndef _QSCITE_DLG_MAIN_PREFS_H
-#define _QSCITE_DLG_MAIN_PREFS_H
+#ifndef _QSCITE_PREFS_H
+#define _QSCITE_PREFS_H
 
 #include "ui_dlgPrefsUI.h"
 
 #include <QDialog>
+class QSettings;
 
 class MainPrefsDialog: public QDialog, protected Ui_QSciTEPrefs {
 	
@@ -13,5 +14,7 @@ class MainPrefsDialog: public QDialog, protected Ui_QSciTEPrefs {
 	MainPrefsDialog(QWidget * parent=0, Qt::WindowFlags f=0);
 
 };
+
+void writeDefaultSettings(QSettings & settings);
 
 #endif

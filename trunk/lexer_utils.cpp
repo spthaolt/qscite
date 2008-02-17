@@ -60,56 +60,53 @@ namespace {
 		/* python */ "python", "",
 		/* ruby   */ "ruby", ""
 	};	
+} // namespace	
 	
-	
-	void writeDefaultExtensions(QSettings & settings) {
-		assert(settings.group() == "extensions");
+void writeDefaultExtensions(QSettings & settings) {
+	assert(settings.group() == "extensions");
 
-		for (int i = 0, j = 0; !supportedLexers[i].isEmpty(); ++i, ++j) {
+	for (int i = 0, j = 0; !supportedLexers[i].isEmpty(); ++i, ++j) {
 #ifdef QSCITE_DEBUG
-			std::cout << qPrintable(supportedLexers[i]) << std::endl;
+		std::cout << qPrintable(supportedLexers[i]) << std::endl;
 #endif
-			settings.beginWriteArray(supportedLexers[i]);
-			for (int k = 0; !defaultExtensions[j].isEmpty(); ++j, ++k) {
-				settings.setArrayIndex(k);
+		settings.beginWriteArray(supportedLexers[i]);
+		for (int k = 0; !defaultExtensions[j].isEmpty(); ++j, ++k) {
+			settings.setArrayIndex(k);
 #ifdef QSCITE_DEBUG
-				std::cout << k << ": " << qPrintable(defaultExtensions[j]) << ' ';
+			std::cout << k << ": " << qPrintable(defaultExtensions[j]) << ' ';
 #endif
-				settings.setValue("ext", defaultExtensions[j]);
-			}
-			settings.endArray();
-#ifdef QSCITE_DEBUG
-			std::cout << std::endl;
-#endif
+			settings.setValue("ext", defaultExtensions[j]);
 		}
-		
-		settings.setValue("version", 1);
-	} // writeDefaultExtensions
+		settings.endArray();
+#ifdef QSCITE_DEBUG
+		std::cout << std::endl;
+#endif
+	}
+	settings.setValue("version", 1);
+} // writeDefaultExtensions
 
-	void writeDefaultMagic(QSettings & settings) {
-		assert(settings.group() == "magic");
+void writeDefaultMagic(QSettings & settings) {
+	assert(settings.group() == "magic");
 
-		for (int i = 0, j = 0; !supportedLexers[i].isEmpty(); ++i, ++j) {
+	for (int i = 0, j = 0; !supportedLexers[i].isEmpty(); ++i, ++j) {
 #ifdef QSCITE_DEBUG
-			std::cout << qPrintable(supportedLexers[i]) << std::endl;
+		std::cout << qPrintable(supportedLexers[i]) << std::endl;
 #endif
-			settings.beginWriteArray(supportedLexers[i]);
-			for (int k = 0; !defaultMagic[j].isEmpty(); ++j, ++k) {
-				settings.setArrayIndex(k);
+		settings.beginWriteArray(supportedLexers[i]);
+		for (int k = 0; !defaultMagic[j].isEmpty(); ++j, ++k) {
+			settings.setArrayIndex(k);
 #ifdef QSCITE_DEBUG
-				std::cout << k << ": " << qPrintable(defaultMagic[j]) << ' ';
+			std::cout << k << ": " << qPrintable(defaultMagic[j]) << ' ';
 #endif
-				settings.setValue("str", defaultMagic[j]);
-			}
-			settings.endArray();
-#ifdef QSCITE_DEBUG
-			std::cout << std::endl;
-#endif
+			settings.setValue("str", defaultMagic[j]);
 		}
-		
-		settings.setValue("version", 1);
-	} // writeDefaultMagic
-} // namespace
+		settings.endArray();
+#ifdef QSCITE_DEBUG
+		std::cout << std::endl;
+#endif
+	}
+	settings.setValue("version", 1);
+} // writeDefaultMagic
 
 QsciLexer* getLexerForDocument(const QString& fileName, const QString& text) {
 	// get the file extension

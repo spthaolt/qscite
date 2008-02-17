@@ -28,7 +28,7 @@
 #include "mainwindow.h"
 #include "utils.h"
 #include "lexer_utils.h"
-#include "dlg_main_prefs.h"
+#include "prefs.h"
 
 MainWindow::MainWindow() {
   openFiles = new std::vector<QsciScintilla *>;
@@ -48,15 +48,29 @@ MainWindow::MainWindow() {
   tabWidget->setCornerWidget(closeTabButton);
 
   readSettings();
-  connect(curDoc, SIGNAL(textChanged()), this, SLOT(setDocumentModified()));
-  connect(tabWidget, SIGNAL(currentChanged(int)), this, SLOT(curDocChanged()));
-  setCurrentFile("");
+  connect(curDoc, SIGNAL(modificationChanged(bool)), this, SLOT(setDocumentModified(bool)));
+  connect(tabWidget, SIGNAL(currentChanged(int)), this, SLOT(curDocChanged(int)));
+  setWindowTitleForFile("");
 }
 
 void MainWindow::createDocument() {
   curDoc = new QsciScintilla();
   
   QSettings settings;
+  if (settings.value("version", 0).toInt() < 1) {
+#ifdef QSCITE_DEBUG
+    std::cout << "Using default preferences" << std::endl;
+#endif
+    writeDefaultSettings(settings);
+  }
+
+  // Default EOL mode to LF
+  curDoc->setEolMode(
+  	static_cast<QsciScintilla::EolMode>(
+  		settings.value("EOLMode", QsciScintilla::EolUnix).toInt()
+  	)
+  );
+  
   // Default wrap mode to WrapWord
   curDoc->setWrapMode(
   	static_cast<QsciScintilla::WrapMode>(
@@ -102,9 +116,8 @@ void MainWindow::changeTabs(int index) {
 #ifdef QSCITE_DEBUG
   std::cout << "attempting to change tabs to index " << index << endl;
 #endif
-  QWidget * nextTab = tabWidget->widget(index);
-  tabWidget->setCurrentWidget(nextTab);
-  curDocChanged();
+  tabWidget->setCurrentIndex(index);
+  //curDocChanged(index);
 }
 
 void MainWindow::closeEvent(QCloseEvent *event) {
@@ -140,6 +153,7 @@ bool MainWindow::closeFile() {
         // just to make sure...
         curFile = "";
         setWindowTitle(tr("QSciTE"));
+        setWindowModified(false);
       }
       return true;
     }
@@ -211,35 +225,26 @@ void MainWindow::about() {
                " Qscintilla2, and is licensed under the GNU GPL version 2."));
 }
 
-void MainWindow::documentWasModified() {
-  setWindowModified(modified[tabWidget->currentIndex()]);
-  
-  QString shownName;
-  if (curFile.isEmpty()) {
-      shownName = "Untitled";
-  } else {
-      shownName = strippedName(curFile);
-  }
-  
-  if (modified[tabWidget->currentIndex()]) {
-    tabWidget->setTabText(tabWidget->currentIndex(), shownName + "*");
-  } else {
-    tabWidget->setTabText(tabWidget->currentIndex(), shownName);
-  }
-}
-
 void MainWindow::setDocumentModified(bool wasModified) {
-  modified[tabWidget->currentIndex()] = wasModified;
-  documentWasModified();
+#ifdef QSCITE_DEBUG
+  std::cout << "setDocumentModified(" << wasModified << ')' << std::endl;
+ #endif
+  int who = tabWidget->currentIndex();
+  if (modified[who] != wasModified) {
+    modified[who] = wasModified;
+	setCurrentTabTitle();
+    setWindowModified(wasModified);
+  }
+
 }
 
-void MainWindow::curDocChanged() {
-  curDoc->disconnect(SIGNAL(textChanged()));
+void MainWindow::curDocChanged(int idx) {
+  curDoc->disconnect(SIGNAL(modificationChanged(bool)));
   curDoc = (QsciScintilla *) tabWidget->currentWidget();
-  connect(curDoc, SIGNAL(textChanged()), this, SLOT(setDocumentModified()));
-  curFile = (*fileNames)[tabWidget->currentIndex()];
-  setCurrentFile(curFile);
-  documentWasModified();
+  connect(curDoc, SIGNAL(modificationChanged(bool)), this, SLOT(setDocumentModified(bool)));
+  curFile = (*fileNames)[idx];
+  setWindowTitleForFile(curFile);
+  setWindowModified(modified[idx]);
 }
 
 
@@ -293,7 +298,15 @@ void MainWindow::loadFile(const QString &fileName) {
   QApplication::setOverrideCursor(Qt::WaitCursor);
   curDoc->setText(in.readAll());
   QApplication::restoreOverrideCursor();
+  
+  curFile = fileName;
+  (*fileNames)[tabWidget->currentIndex()] = fileName;
+
+  setWindowTitleForFile(fileName);
+  curDoc->setModified(false);
+  
   redoSetMargin();
+  
   QFont currentFont = curDoc->font();
   QsciLexer * newLexer = getLexerForDocument(fileName, curDoc->text());
   
@@ -306,8 +319,8 @@ void MainWindow::loadFile(const QString &fileName) {
     setLexerFont(newLexer, currentFont.family(), currentFont.pointSize());
   }
 
-  setCurrentFile(fileName);
-  setDocumentModified(false);
+//   setDocumentModified(false);
+//   setCurrentTabTitle();
   statusBar()->showMessage(tr("File loaded"), 2000);
 }
 
@@ -339,24 +352,26 @@ bool MainWindow::saveFile(const QString &fileName) {
     QApplication::setOverrideCursor(Qt::WaitCursor);
     out << curDoc->text();
     QApplication::restoreOverrideCursor();
-    setCurrentFile(fileName);
     statusBar()->showMessage(tr("File saved"), 2000);
     setDocumentModified(false);
     return true;
 }
 
-void MainWindow::setCurrentFile(const QString &fileName) {
-    curFile = fileName;
-    (*fileNames)[tabWidget->currentIndex()] = fileName;
-    curDoc->setModified(false);
-    setWindowModified(false);
-
+void MainWindow::setWindowTitleForFile(const QString & fileName) {
     QString shownName;
-    if (curFile.isEmpty()) {
+    if (fileName.isEmpty()) {
         shownName = "Untitled";
     } else {
-        shownName = strippedName(curFile);
+        shownName = strippedName(fileName);
     }
-    tabWidget->setTabText(tabWidget->currentIndex(), shownName);
     setWindowTitle(tr("%1[*] - %2").arg(shownName).arg(tr("QSciTE")));
+}
+
+void MainWindow::setCurrentTabTitle() {
+	int idx = tabWidget->currentIndex();
+	QString displayName = curFile.isEmpty() ? "Untitled" : strippedName(curFile);
+	if (modified[idx]) {
+		displayName += "*";
+	}
+	tabWidget->setTabText(idx, displayName);
 }
