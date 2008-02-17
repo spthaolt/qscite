@@ -29,6 +29,7 @@
 #include "utils.h"
 #include "lexer_utils.h"
 #include "prefs.h"
+#include "qterminal.h"
 
 MainWindow::MainWindow() {
   openFiles = new std::vector<QsciScintilla *>;
@@ -110,6 +111,11 @@ void MainWindow::createDocument() {
   tabWidget->addTab(curDoc, "Untitled");
   modified.push_back(false);
   changeTabs(tabWidget->count() - 1);
+}
+
+void MainWindow::createTerminal() {
+  QTerminal * term = new QTerminal(this);
+  tabWidget->addTab(term, "BASH Terminal");
 }
 
 void MainWindow::changeTabs(int index) {
@@ -239,12 +245,17 @@ void MainWindow::setDocumentModified(bool wasModified) {
 }
 
 void MainWindow::curDocChanged(int idx) {
-  curDoc->disconnect(SIGNAL(modificationChanged(bool)));
-  curDoc = (QsciScintilla *) tabWidget->currentWidget();
-  connect(curDoc, SIGNAL(modificationChanged(bool)), this, SLOT(setDocumentModified(bool)));
-  curFile = (*fileNames)[idx];
-  setWindowTitleForFile(curFile);
-  setWindowModified(modified[idx]);
+  QString currentWidgetClass = tabWidget->currentWidget()->metaObject()->className(); 
+  if (currentWidgetClass == "QTerminal") {
+    //do something
+  } else {
+    curDoc->disconnect(SIGNAL(modificationChanged(bool)));
+    curDoc = (QsciScintilla *) tabWidget->currentWidget();
+    connect(curDoc, SIGNAL(modificationChanged(bool)), this, SLOT(setDocumentModified(bool)));
+    curFile = (*fileNames)[idx];
+    setWindowTitleForFile(curFile);
+    setWindowModified(modified[idx]);
+  }
 }
 
 

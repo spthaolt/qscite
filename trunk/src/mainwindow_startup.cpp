@@ -59,6 +59,9 @@ void MainWindow::createActions() {
     fontAct->setStatusTip(tr("Set the display font."));
     
     connect(fontAct, SIGNAL(triggered()), this, SLOT(fontDialog()));
+    
+    terminalAct = new QAction(QIcon(":/images/openterm.svg"), tr("New Terminal"), this);
+    connect(terminalAct, SIGNAL(triggered()), this, SLOT(createTerminal()));
 
     aboutAct = new QAction(tr("&About"), this);
     aboutAct->setStatusTip(tr("Show QSciTE's About box"));
@@ -79,6 +82,7 @@ void MainWindow::createActions() {
 void MainWindow::createMenus() {
     fileMenu = menuBar()->addMenu(tr("&File"));
     fileMenu->addAction(newAct);
+    fileMenu->addAction(terminalAct);
     fileMenu->addAction(openAct);
     fileMenu->addAction(closeAct);
     fileMenu->addAction(saveAct);
@@ -106,6 +110,7 @@ void MainWindow::createMenus() {
 void MainWindow::createToolBars() {
     fileToolBar = addToolBar(tr("File"));
     fileToolBar->addAction(newAct);
+    fileToolBar->addAction(terminalAct);
     fileToolBar->addAction(openAct);
     fileToolBar->addAction(saveAct);
     //fileToolBar->addAction(closeAct);
