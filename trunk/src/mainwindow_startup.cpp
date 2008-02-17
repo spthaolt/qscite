@@ -60,7 +60,7 @@ void MainWindow::createActions() {
     
     connect(fontAct, SIGNAL(triggered()), this, SLOT(fontDialog()));
     
-    terminalAct = new QAction(QIcon(":/images/openterm.svg"), tr("New Terminal"), this);
+    terminalAct = new QAction(QIcon(":/images/openterm.svg"), tr("Terminal"), this);
     connect(terminalAct, SIGNAL(triggered()), this, SLOT(toggleTerminal()));
 
     aboutAct = new QAction(tr("&About"), this);
@@ -110,9 +110,9 @@ void MainWindow::createMenus() {
 void MainWindow::createToolBars() {
     fileToolBar = addToolBar(tr("File"));
     fileToolBar->addAction(newAct);
-    fileToolBar->addAction(terminalAct);
     fileToolBar->addAction(openAct);
     fileToolBar->addAction(saveAct);
+    fileToolBar->addAction(terminalAct);
     //fileToolBar->addAction(closeAct);
     fileToolBar->setIconSize(QSize(22, 22));
 

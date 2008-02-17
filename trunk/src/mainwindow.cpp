@@ -113,7 +113,6 @@ void MainWindow::createDocument() {
   newTab->layout()->addWidget(curDoc);
   tabWidget->addTab(newTab, "Untitled");
   modified.push_back(false);
-  std::cout << "calling changeTabs()" << std::endl;
   changeTabs(tabWidget->count() - 1);
 }
 
@@ -126,6 +125,7 @@ void MainWindow::toggleTerminal() {
     delete termItem;
   } else {
     QTerminal * term = new QTerminal(this);
+    term->setCurrentFont(curDoc->font());
     curTabLayout->addWidget(term);
   }
 }
@@ -135,8 +135,6 @@ void MainWindow::changeTabs(int index) {
   std::cout << "attempting to change tabs to index " << index << endl;
 #endif
   tabWidget->setCurrentIndex(index);
-  //curDocChanged(index);
-  std::cout << "successfully changed tabs" << std::endl;
 }
 
 void MainWindow::closeEvent(QCloseEvent *event) {
@@ -258,14 +256,12 @@ void MainWindow::setDocumentModified(bool wasModified) {
 }
 
 void MainWindow::curDocChanged(int idx) { 
-  std::cout << "curDocChanged() called" << std::endl;
   curDoc->disconnect(SIGNAL(modificationChanged(bool)));
   curDoc = (QsciScintilla *) tabWidget->currentWidget()->layout()->itemAt(0)->widget();
   connect(curDoc, SIGNAL(modificationChanged(bool)), this, SLOT(setDocumentModified(bool)));
   curFile = (*fileNames)[idx];
   setWindowTitleForFile(curFile);
   setWindowModified(modified[idx]);
-  std::cout << "curDocChanged() done" << std::endl;
 }
 
 
@@ -339,9 +335,7 @@ void MainWindow::loadFile(const QString &fileName) {
     curDoc->setLexer(newLexer);
     setLexerFont(newLexer, currentFont.family(), currentFont.pointSize());
   }
-
-//   setDocumentModified(false);
-//   setCurrentTabTitle();
+  
   statusBar()->showMessage(tr("File loaded"), 2000);
 }
 
