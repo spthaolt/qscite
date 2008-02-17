@@ -113,6 +113,7 @@ void MainWindow::createDocument() {
   newTab->layout()->addWidget(curDoc);
   tabWidget->addTab(newTab, "Untitled");
   modified.push_back(false);
+  std::cout << "calling changeTabs()" << std::endl;
   changeTabs(tabWidget->count() - 1);
 }
 
@@ -135,6 +136,7 @@ void MainWindow::changeTabs(int index) {
 #endif
   tabWidget->setCurrentIndex(index);
   //curDocChanged(index);
+  std::cout << "successfully changed tabs" << std::endl;
 }
 
 void MainWindow::closeEvent(QCloseEvent *event) {
@@ -255,18 +257,15 @@ void MainWindow::setDocumentModified(bool wasModified) {
 
 }
 
-void MainWindow::curDocChanged(int idx) {
-  QString currentWidgetClass = tabWidget->currentWidget()->metaObject()->className(); 
-  if (currentWidgetClass == "QTerminal") {
-    //do something
-  } else {
-    curDoc->disconnect(SIGNAL(modificationChanged(bool)));
-    curDoc = (QsciScintilla *) tabWidget->currentWidget()->layout()->itemAt(0);
-    connect(curDoc, SIGNAL(modificationChanged(bool)), this, SLOT(setDocumentModified(bool)));
-    curFile = (*fileNames)[idx];
-    setWindowTitleForFile(curFile);
-    setWindowModified(modified[idx]);
-  }
+void MainWindow::curDocChanged(int idx) { 
+  std::cout << "curDocChanged() called" << std::endl;
+  curDoc->disconnect(SIGNAL(modificationChanged(bool)));
+  curDoc = (QsciScintilla *) tabWidget->currentWidget()->layout()->itemAt(0)->widget();
+  connect(curDoc, SIGNAL(modificationChanged(bool)), this, SLOT(setDocumentModified(bool)));
+  curFile = (*fileNames)[idx];
+  setWindowTitleForFile(curFile);
+  setWindowModified(modified[idx]);
+  std::cout << "curDocChanged() done" << std::endl;
 }
 
 
