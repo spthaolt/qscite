@@ -25,6 +25,7 @@ class QAction;
 class QMenu;
 class QsciScintilla;
 class QTabWidget;
+class QTerminal;
 
 class MainWindow : public QMainWindow
 {
@@ -48,7 +49,7 @@ private slots:
     void fontDialog();
     void globalPrefs();
     void toggleTerminal();
-    
+
 private:
     void createActions();
     void createMenus();
@@ -60,8 +61,8 @@ private:
     bool maybeSave();
     void loadFile(const QString &fileName);
     bool saveFile(const QString &fileName);
-	void setWindowTitleForFile(const QString & fileName);
-	void setCurrentTabTitle();
+    void setWindowTitleForFile(const QString & fileName);
+    void setCurrentTabTitle();
     void createDocument();
     void changeTabs(int index);
     void documentWasModified();
@@ -70,6 +71,7 @@ private:
     QsciScintilla * curDoc;
     std::vector<QsciScintilla *> * openFiles;
     QTabWidget * tabWidget;
+    QTerminal * termWidget;
     std::vector<QString> * fileNames;
     
     QString curFile;

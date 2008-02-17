@@ -2,7 +2,8 @@
 #include <QtGui>
 #include "qterminal.h"
 
-QTerminal::QTerminal(QWidget *parent) : QTextEdit(parent) {
+QTerminal::QTerminal(QWidget *parent, Qt::WindowFlags f) : QTextEdit(parent) {
+  setWindowFlags(f);
   shell = new QProcess();
   shell->setProcessChannelMode(QProcess::MergedChannels);
   QObject::connect(shell, SIGNAL(readyReadStandardOutput()), this, SLOT(readStandardOut()));
@@ -15,6 +16,7 @@ QTerminal::QTerminal(QWidget *parent) : QTextEdit(parent) {
 
 QTerminal::~QTerminal() {
   shell->kill();
+  shell->waitForFinished();
   delete shell;
 }
 
