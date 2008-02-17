@@ -1,6 +1,15 @@
+#ifndef _QSCITE_LEXER_UTILS_H
+#define _QSCITE_LEXER_UTILS_H
+
 #include <QString>
 class QsciLexer;
+class QSettings;
 
 QsciLexer* getLexerForDocument(const QString & fileName, const QString & text);
 
 void setLexerFont(QsciLexer * lexer, const QString & family, int size);
+
+void writeDefaultExtensions(QSettings & settings);
+void writeDefaultMagic(QSettings & settings);
+
+#endif

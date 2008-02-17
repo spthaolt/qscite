@@ -3,14 +3,14 @@ CONFIG       += release
 HEADERS       = mainwindow.h \
                 utils.h \
                 lexer_utils.h \
-                dlg_main_prefs.h
+                prefs.h
 
 SOURCES       = main.cpp \
                 mainwindow.cpp \
                 mainwindow_startup.cpp \
                 utils.cpp \
                 lexer_utils.cpp \
-                dlg_main_prefs.cpp
+                prefs.cpp
 
 FORMS         = dlgPrefsUI.ui
 
