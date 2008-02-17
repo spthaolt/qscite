@@ -10,6 +10,7 @@ QTerminal::QTerminal(QWidget *parent) : QTextEdit(parent) {
   shell->start("bash", QStringList() << "-i", QIODevice::ReadWrite);
   // This var protects against mouse interference with the cursor
   curCursorLoc = this->textCursor();
+  inputCharCount = 0;
 }
 
 void QTerminal::readStandardOut() {
@@ -39,6 +40,8 @@ void QTerminal::keyPressEvent(QKeyEvent * event) {
       if (inputCharCount) {
         --inputCharCount;
         QTextEdit::keyPressEvent(event);
+      } else {
+        QApplication::beep();
       }
     } else if (key == Qt::Key_Right) {
       QTextCursor cursor = this->textCursor();
@@ -46,6 +49,8 @@ void QTerminal::keyPressEvent(QKeyEvent * event) {
       if (cursor.movePosition(QTextCursor::Right)) {
         ++inputCharCount;
         this->setTextCursor(cursor);
+      } else {
+        QApplication::beep();
       }
     } else if (key == Qt::Key_Tab) {
       // TODO: see if we can hack in tab completion.  See below for current status....
@@ -68,6 +73,8 @@ void QTerminal::keyPressEvent(QKeyEvent * event) {
     if (inputCharCount) {
       --inputCharCount;
       QTextEdit::keyPressEvent(event);
+    } else {
+      QApplication::beep();
     }
   }
 
