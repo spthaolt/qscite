@@ -47,7 +47,7 @@ private slots:
     void setDocumentModified(bool wasModified = true);
     void fontDialog();
     void globalPrefs();
-    void createTerminal();
+    void toggleTerminal();
     
 private:
     void createActions();

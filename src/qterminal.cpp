@@ -13,6 +13,11 @@ QTerminal::QTerminal(QWidget *parent) : QTextEdit(parent) {
   inputCharCount = 0;
 }
 
+QTerminal::~QTerminal() {
+  shell->kill();
+  delete shell;
+}
+
 void QTerminal::readStandardOut() {
   this->insertPlainText(shell->readAllStandardOutput());
   this->moveCursor(QTextCursor::End, QTextCursor::KeepAnchor);

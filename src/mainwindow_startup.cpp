@@ -61,7 +61,7 @@ void MainWindow::createActions() {
     connect(fontAct, SIGNAL(triggered()), this, SLOT(fontDialog()));
     
     terminalAct = new QAction(QIcon(":/images/openterm.svg"), tr("New Terminal"), this);
-    connect(terminalAct, SIGNAL(triggered()), this, SLOT(createTerminal()));
+    connect(terminalAct, SIGNAL(triggered()), this, SLOT(toggleTerminal()));
 
     aboutAct = new QAction(tr("&About"), this);
     aboutAct->setStatusTip(tr("Show QSciTE's About box"));

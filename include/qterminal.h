@@ -7,6 +7,7 @@ class QTerminal : public QTextEdit {
     Q_OBJECT
 public:
     QTerminal(QWidget * parent = 0);
+    ~QTerminal();
     void keyPressEvent(QKeyEvent * event);
 
 private slots:

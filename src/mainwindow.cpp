@@ -55,6 +55,8 @@ MainWindow::MainWindow() {
 }
 
 void MainWindow::createDocument() {
+  QWidget * newTab = new QWidget;
+  newTab->setLayout(new QVBoxLayout);
   curDoc = new QsciScintilla();
   
   QSettings settings;
@@ -108,14 +110,23 @@ void MainWindow::createDocument() {
   
   openFiles->push_back(curDoc);
   fileNames->push_back("");
-  tabWidget->addTab(curDoc, "Untitled");
+  newTab->layout()->addWidget(curDoc);
+  tabWidget->addTab(newTab, "Untitled");
   modified.push_back(false);
   changeTabs(tabWidget->count() - 1);
 }
 
-void MainWindow::createTerminal() {
-  QTerminal * term = new QTerminal(this);
-  tabWidget->addTab(term, "BASH Terminal");
+void MainWindow::toggleTerminal() {
+  QLayout * curTabLayout = tabWidget->currentWidget()->layout();
+  if (curTabLayout->count() > 1) {
+    QLayoutItem * termItem = curTabLayout->itemAt(1);
+    curTabLayout->removeItem(termItem);
+    delete termItem->widget();
+    delete termItem;
+  } else {
+    QTerminal * term = new QTerminal(this);
+    curTabLayout->addWidget(term);
+  }
 }
 
 void MainWindow::changeTabs(int index) {
@@ -250,7 +261,7 @@ void MainWindow::curDocChanged(int idx) {
     //do something
   } else {
     curDoc->disconnect(SIGNAL(modificationChanged(bool)));
-    curDoc = (QsciScintilla *) tabWidget->currentWidget();
+    curDoc = (QsciScintilla *) tabWidget->currentWidget()->layout()->itemAt(0);
     connect(curDoc, SIGNAL(modificationChanged(bool)), this, SLOT(setDocumentModified(bool)));
     curFile = (*fileNames)[idx];
     setWindowTitleForFile(curFile);
