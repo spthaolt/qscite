@@ -10,5 +10,6 @@
     <file>images/fileclose.svg</file>
     <file>images/configure.svg</file>
     <file>images/font.svg</file>
+    <file>images/openterm.svg</file>
 </qresource>
 </RCC>

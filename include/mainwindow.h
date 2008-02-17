@@ -47,6 +47,7 @@ private slots:
     void setDocumentModified(bool wasModified = true);
     void fontDialog();
     void globalPrefs();
+    void createTerminal();
     
 private:
     void createActions();
@@ -97,6 +98,7 @@ private:
     QAction *aboutQtAct;
     
     QAction *fontAct;
+    QAction * terminalAct;
 };
 
 #endif

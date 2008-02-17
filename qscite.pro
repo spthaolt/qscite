@@ -1,16 +1,24 @@
+TEMPLATE     = app
+
+DEPENDPATH   += include src ui
+
+INCLUDEPATH  += . include
+
 CONFIG       += release
 
 HEADERS       = mainwindow.h \
                 utils.h \
                 lexer_utils.h \
-                prefs.h
+                prefs.h \
+                qterminal.h 
 
 SOURCES       = main.cpp \
                 mainwindow.cpp \
                 mainwindow_startup.cpp \
                 utils.cpp \
                 lexer_utils.cpp \
-                prefs.cpp
+                prefs.cpp \
+                qterminal.cpp
 
 FORMS         = dlgPrefsUI.ui
 
