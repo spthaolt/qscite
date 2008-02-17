@@ -11,10 +11,11 @@ public:
 
 private slots:
     void readStandardOut();
-    
+    void readStandardErr();
 private:
     QProcess * shell;
-    
+    int inputCharCount;
+    QTextCursor curCursorLoc;
 };
 
 #endif /*QTERMINAL_H_*/
