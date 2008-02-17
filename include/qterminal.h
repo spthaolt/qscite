@@ -6,7 +6,7 @@ class QProcess;
 class QTerminal : public QTextEdit {
     Q_OBJECT
 public:
-    QTerminal(QWidget * parent = 0);
+    QTerminal(QWidget * parent = 0, Qt::WindowFlags f = 0);
     ~QTerminal();
     void keyPressEvent(QKeyEvent * event);
 

@@ -31,13 +31,18 @@
 #include "prefs.h"
 #include "qterminal.h"
 
-MainWindow::MainWindow() {
+MainWindow::MainWindow() : termWidget(NULL) {
   openFiles = new std::vector<QsciScintilla *>;
   fileNames = new std::vector<QString>;
   fileNames->push_back(QString(""));
 
-  tabWidget = new QTabWidget(this);
-  setCentralWidget(tabWidget);
+  QSplitter * mainWidget = new QSplitter(this);
+  mainWidget->setOrientation(Qt::Vertical);
+  
+  tabWidget = new QTabWidget(mainWidget);
+  mainWidget->addWidget(tabWidget);
+
+  setCentralWidget(mainWidget);
   createDocument();
   createActions();
   createMenus();
@@ -55,8 +60,8 @@ MainWindow::MainWindow() {
 }
 
 void MainWindow::createDocument() {
-  QWidget * newTab = new QWidget;
-  newTab->setLayout(new QVBoxLayout);
+//   QWidget * newTab = new QWidget;
+//   newTab->setLayout(new QVBoxLayout);
   curDoc = new QsciScintilla();
   
   QSettings settings;
@@ -110,23 +115,26 @@ void MainWindow::createDocument() {
   
   openFiles->push_back(curDoc);
   fileNames->push_back("");
-  newTab->layout()->addWidget(curDoc);
-  tabWidget->addTab(newTab, "Untitled");
+//  newTab->layout()->addWidget(curDoc);
+  tabWidget->addTab(curDoc, "Untitled");
   modified.push_back(false);
   changeTabs(tabWidget->count() - 1);
 }
 
 void MainWindow::toggleTerminal() {
-  QLayout * curTabLayout = tabWidget->currentWidget()->layout();
-  if (curTabLayout->count() > 1) {
-    QLayoutItem * termItem = curTabLayout->itemAt(1);
-    curTabLayout->removeItem(termItem);
-    delete termItem->widget();
-    delete termItem;
+  if (termWidget != NULL) {
+#ifdef QSCITE_DEBUG
+    std::cout << "Closing terminal" << std::endl;
+#endif
+    termWidget->deleteLater();
+    termWidget = NULL;
   } else {
-    QTerminal * term = new QTerminal(this);
-    term->setCurrentFont(curDoc->font());
-    curTabLayout->addWidget(term);
+#ifdef QSCITE_DEBUG
+  	std::cout << "Opening terminal" << std::endl;
+#endif
+    termWidget = new QTerminal(this);
+    termWidget->setCurrentFont(curDoc->font());
+    ((QSplitter *)centralWidget())->addWidget(termWidget);
   }
 }
 
@@ -257,7 +265,7 @@ void MainWindow::setDocumentModified(bool wasModified) {
 
 void MainWindow::curDocChanged(int idx) { 
   curDoc->disconnect(SIGNAL(modificationChanged(bool)));
-  curDoc = (QsciScintilla *) tabWidget->currentWidget()->layout()->itemAt(0)->widget();
+  curDoc = (QsciScintilla *)tabWidget->currentWidget();
   connect(curDoc, SIGNAL(modificationChanged(bool)), this, SLOT(setDocumentModified(bool)));
   curFile = (*fileNames)[idx];
   setWindowTitleForFile(curFile);
