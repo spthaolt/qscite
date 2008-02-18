@@ -4,13 +4,13 @@ DEPENDPATH   += include src ui
 
 INCLUDEPATH  += . include
 
-CONFIG       += release
+CONFIG       += release thread
 
 HEADERS       = mainwindow.h \
                 utils.h \
                 lexer_utils.h \
                 prefs.h \
-                qterminal.h 
+                qterminal_pty.h 
 
 SOURCES       = main.cpp \
                 mainwindow.cpp \
@@ -18,7 +18,7 @@ SOURCES       = main.cpp \
                 utils.cpp \
                 lexer_utils.cpp \
                 prefs.cpp \
-                qterminal.cpp
+                qterminal_pty.cpp
 
 FORMS         = dlgPrefsUI.ui
 
