@@ -7,8 +7,12 @@
 #include <sys/select.h>
 #include <sys/time.h>
 #include <unistd.h>
+#ifdef __APPLE__
 #include <util.h>
-
+#else
+#include <pty.h>
+#include <linux/fd.h>
+#endif
 #include <QtGui>
 #include "qterminal_pty.h"
 
