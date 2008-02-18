@@ -26,9 +26,10 @@ RESOURCES     = qscite.qrc
 
 unix {
 	!macx {
-		LIBS         += -lqscintilla2
+		LIBS         += -lqscintilla2 \
+					    -lutil
 		DEFINES += QSCITE_MONO_FAMILY='\\"Monospace\\"'
-		SOURCES += fd_copy.c
+		SOURCES += fd_copy.cpp
 		HEADERS += fd.h
 	}
 }
