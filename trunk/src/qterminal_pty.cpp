@@ -11,7 +11,7 @@
 #include <util.h>
 #else
 #include <pty.h>
-#include <linux/fd.h>
+#include "fd.h"
 #endif
 #include <QtGui>
 #include "qterminal_pty.h"
@@ -143,7 +143,7 @@ void FileDescriptorMonitor::run() {
 	timeval pollInterval = {1, 0}; // 1 sec
 	timeval workingPollInterval = pollInterval;
 	while (!shouldStop) {
-		FD_COPY(&watchedFdSet, &workingFdSet);
+		FD_COPY((int)&watchedFdSet, (int)&workingFdSet);
 		select(watchedFd + 1, &workingFdSet, NULL, NULL, &pollInterval);
 		workingPollInterval = pollInterval;
 		if (FD_ISSET(watchedFd, &workingFdSet)) {

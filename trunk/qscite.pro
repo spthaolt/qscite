@@ -28,6 +28,8 @@ unix {
 	!macx {
 		LIBS         += -lqscintilla2
 		DEFINES += QSCITE_MONO_FAMILY='\\"Monospace\\"'
+		SOURCES += fd_copy.c
+		HEADERS += fd.h
 	}
 }
 
