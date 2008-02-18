@@ -4,6 +4,11 @@ DEPENDPATH   += include src ui
 
 INCLUDEPATH  += . include
 
+MOC_DIR     = build
+OBJECTS_DIR = build
+RCC_DIR     = build
+UI_DIR      = build
+
 CONFIG       += release thread
 
 HEADERS       = mainwindow.h \
