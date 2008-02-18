@@ -43,6 +43,7 @@ QTerminal::QTerminal(QWidget *parent, Qt::WindowFlags f) : QTextEdit(parent) {
    */
   watcher = new FileDescriptorMonitor(fdMaster, this);
   connect(watcher, SIGNAL(readyForRead(int)), this, SLOT(readOutput()), Qt::BlockingQueuedConnection);
+  connect(this, SIGNAL(shellExited()), watcher, SLOT(stop()));
   watcher->start();
   
   // This var protects against mouse interference with the cursor
@@ -143,10 +144,10 @@ void FileDescriptorMonitor::run() {
 	timeval pollInterval = {1, 0}; // 1 sec
 	timeval workingPollInterval = pollInterval;
 	while (!shouldStop) {
-		FD_COPY((int)&watchedFdSet, (int)&workingFdSet);
-		select(watchedFd + 1, &workingFdSet, NULL, NULL, &pollInterval);
+		workingFdSet = watchedFdSet;
+		int rval = select(watchedFd + 1, &workingFdSet, NULL, NULL, &workingPollInterval);
 		workingPollInterval = pollInterval;
-		if (FD_ISSET(watchedFd, &workingFdSet)) {
+		if (rval != -1 && FD_ISSET(watchedFd, &workingFdSet)) {
 #ifdef QSCITE_DEBUG
 		 	std::cout << "readyForRead()" << std::endl;
 #endif
