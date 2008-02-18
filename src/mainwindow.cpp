@@ -29,7 +29,7 @@
 #include "utils.h"
 #include "lexer_utils.h"
 #include "prefs.h"
-#include "qterminal.h"
+#include "qterminal_pty.h"
 
 MainWindow::MainWindow() : termWidget(NULL) {
   openFiles = new std::vector<QsciScintilla *>;
