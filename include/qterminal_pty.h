@@ -13,14 +13,15 @@ public:
 	~QTerminal();
 	void keyPressEvent(QKeyEvent * event);
 
+signals:
+	void shellExited();
+
 private slots:
 	void readOutput();
 private:
 	int shellPid;
 	int fdMaster;
 	FileDescriptorMonitor * watcher;
-	int inputCharCount;
-	QTextCursor curCursorLoc;
 };
 
 class FileDescriptorMonitor: public QThread {

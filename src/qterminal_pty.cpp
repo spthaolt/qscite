@@ -2,6 +2,8 @@
 #include <iostream>
 #endif
 
+#include <cstdlib>
+#include <sys/errno.h>
 #include <fcntl.h>
 #include <signal.h>
 #include <sys/select.h>
@@ -11,7 +13,6 @@
 #include <util.h>
 #else
 #include <pty.h>
-#include "fd.h"
 #endif
 #include <QtGui>
 #include "qterminal_pty.h"
@@ -26,6 +27,7 @@ QTerminal::QTerminal(QWidget *parent, Qt::WindowFlags f) : QTextEdit(parent) {
    */
   shellPid = forkpty(&fdMaster, NULL, NULL, NULL);
   if (0 == shellPid) {
+    setenv("TERM", "dumb", 1);
     execlp("bash", "bash", "-i", (char *)0);
   }
   
@@ -45,10 +47,6 @@ QTerminal::QTerminal(QWidget *parent, Qt::WindowFlags f) : QTextEdit(parent) {
   connect(watcher, SIGNAL(readyForRead(int)), this, SLOT(readOutput()), Qt::BlockingQueuedConnection);
   connect(this, SIGNAL(shellExited()), watcher, SLOT(stop()));
   watcher->start();
-  
-  // This var protects against mouse interference with the cursor
-  curCursorLoc = this->textCursor();
-  inputCharCount = 0;
 }
 
 QTerminal::~QTerminal() {
@@ -63,72 +61,29 @@ void QTerminal::readOutput() {
   char c;
   int count = read(fdMaster, &c, 1);
   while(count == 1) {
-  	if (c != '\r') {
-		this->insertPlainText(QChar(c));
-		this->moveCursor(QTextCursor::End, QTextCursor::KeepAnchor);
+  	if (c == '\r') {
+      /* ignore */
+  	} else if (c == '\x08') { /* ^H (backspace) */
+  	  textCursor().deletePreviousChar();
+  	} else if (c == '\a') {
+  	  QApplication::beep();
+  	} else {
+	  this->insertPlainText(QChar(c));
+	  this->moveCursor(QTextCursor::End, QTextCursor::KeepAnchor);
 	}
     count = read(fdMaster, &c, 1);
   }
+  if (count == -1 && errno == EAGAIN) {
+    /* no data ready; no action necessary */
+  } else {
+    emit shellExited();
+  }
 }
 
-void QTerminal::keyPressEvent(QKeyEvent * event) {
-  int key = event->key();
-  
-  this->setTextCursor(curCursorLoc);
-  
-  // Keep QTextEdit in sync with shell as much as possible...
-  if (key != Qt::Key_Backspace) {
-    if (key == Qt::Key_Return || key == Qt::Key_Enter) {
-      inputCharCount = 0;
-      //QTextEdit::keyPressEvent(event);
-    } else if (key == Qt::Key_Up || key == Qt::Key_Down) {
-      // TODO: see if there's a way to hack the bash history in here...
-    } else if (key == Qt::Key_Left) {
-      if (inputCharCount) {
-        --inputCharCount;
-        //QTextEdit::keyPressEvent(event);
-      } else {
-        QApplication::beep();
-      }
-    } else if (key == Qt::Key_Right) {
-      QTextCursor cursor = this->textCursor();
-      
-      if (cursor.movePosition(QTextCursor::Right)) {
-        ++inputCharCount;
-        this->setTextCursor(cursor);
-      } else {
-        QApplication::beep();
-      }
-    } else if (key == Qt::Key_Tab) {
-      // TODO: see if we can hack in tab completion.  See below for current status....
-      //
-      // do nothing on tabs.  Tab completion is actually being activated in the process
-      // but it's apparently not being spat out using stdout.  For now, we don't output
-      // anything in the QTextEdit when tab is pressed, but we do pass the character to
-      // the bash process.
-    } else {
-      QString text = event->text();
-      for (int i = 0; i < text.length(); ++i) {
-        if (text.at(i).isPrint()) {
-          //only increase input counter for printable characters
-          ++inputCharCount;
-        }
-      }
-      //QTextEdit::keyPressEvent(event);
-    }
-  } else {
-    if (inputCharCount) {
-      --inputCharCount;
-      //QTextEdit::keyPressEvent(event);
-    } else {
-      QApplication::beep();
-    }
-  }
-
-  // now pass a char* copy of the input to the shell process
+void QTerminal::keyPressEvent(QKeyEvent * event) {  
+  // pass a char* copy of the input to the shell process
   //shell->write(event->text().toAscii().data(), event->text().length());
   write(fdMaster, event->text().toAscii().data(), event->text().length());
-  curCursorLoc = this->textCursor();
 }
 
 FileDescriptorMonitor::FileDescriptorMonitor(int fd, QObject * parent) :

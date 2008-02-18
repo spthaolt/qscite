@@ -126,6 +126,7 @@ void MainWindow::toggleTerminal() {
 #ifdef QSCITE_DEBUG
     std::cout << "Closing terminal" << std::endl;
 #endif
+    termWidget->disconnect();
     termWidget->deleteLater();
     termWidget = NULL;
   } else {
@@ -134,7 +135,10 @@ void MainWindow::toggleTerminal() {
 #endif
     termWidget = new QTerminal(this);
     termWidget->setCurrentFont(curDoc->font());
+    termWidget->setTabStopWidth(QFontMetrics(curDoc->font()).width("        "));
     ((QSplitter *)centralWidget())->addWidget(termWidget);
+    connect(termWidget, SIGNAL(shellExited()), this, SLOT(toggleTerminal()));
+    termWidget->setFocus();
   }
 }
 
