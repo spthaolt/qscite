@@ -26,9 +26,13 @@ QTerminal::QTerminal(QWidget *parent, Qt::WindowFlags f) : QTextEdit(parent) {
    * Launch a shell connected to the current process by a PTY
    */
   shellPid = forkpty(&fdMaster, NULL, NULL, NULL);
-  if (0 == shellPid) {
+  if (0 == shellPid) { /* fork off a shell */
+    /* if they don't have a shell, use bash */
+    setenv("SHELL", "/bin/bash", 0);
+    /* no special control features are supported */
     setenv("TERM", "dumb", 1);
-    execlp("bash", "bash", "-i", (char *)0);
+    /* hand off to the shell of choice */
+    execl(getenv("SHELL"), getenv("SHELL"), (char *)0);
   }
   
   /*
