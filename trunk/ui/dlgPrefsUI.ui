@@ -33,9 +33,6 @@
       <property name="tabShape" >
        <enum>QTabWidget::Rounded</enum>
       </property>
-      <property name="currentIndex" >
-       <number>2</number>
-      </property>
       <widget class="QWidget" name="tabGeneral" >
        <attribute name="title" >
         <string>General</string>
@@ -327,7 +324,7 @@
             </widget>
            </item>
            <item>
-            <widget class="QFontComboBox" name="fontComboBox" >
+            <widget class="QFontComboBox" name="cbxTextFont" >
              <property name="sizePolicy" >
               <sizepolicy vsizetype="Fixed" hsizetype="MinimumExpanding" >
                <horstretch>0</horstretch>
@@ -417,6 +414,9 @@
              </rect>
             </property>
             <layout class="QGridLayout" >
+             <property name="rightMargin" >
+              <number>10</number>
+             </property>
              <item row="0" column="0" >
               <widget class="QLabel" name="lblFore" >
                <property name="text" >
@@ -538,6 +538,254 @@
         </layout>
        </widget>
       </widget>
+      <widget class="QWidget" name="tabTerminal" >
+       <attribute name="title" >
+        <string>Terminal</string>
+       </attribute>
+       <widget class="QWidget" name="" >
+        <property name="geometry" >
+         <rect>
+          <x>0</x>
+          <y>0</y>
+          <width>371</width>
+          <height>231</height>
+         </rect>
+        </property>
+        <layout class="QVBoxLayout" >
+         <property name="spacing" >
+          <number>4</number>
+         </property>
+         <item>
+          <layout class="QHBoxLayout" >
+           <item>
+            <widget class="QLabel" name="lblTermFont" >
+             <property name="text" >
+              <string>Font:</string>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <widget class="QFontComboBox" name="cbxTermFont" >
+             <property name="sizePolicy" >
+              <sizepolicy vsizetype="Fixed" hsizetype="MinimumExpanding" >
+               <horstretch>0</horstretch>
+               <verstretch>0</verstretch>
+              </sizepolicy>
+             </property>
+            </widget>
+           </item>
+          </layout>
+         </item>
+         <item>
+          <layout class="QHBoxLayout" >
+           <item>
+            <widget class="QLabel" name="lblTermSize" >
+             <property name="text" >
+              <string>Size:</string>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <widget class="QSpinBox" name="sbTermSize" >
+             <property name="suffix" >
+              <string> pt</string>
+             </property>
+             <property name="minimum" >
+              <number>6</number>
+             </property>
+             <property name="maximum" >
+              <number>128</number>
+             </property>
+             <property name="value" >
+              <number>10</number>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <widget class="QSlider" name="slTermSize" >
+             <property name="minimum" >
+              <number>6</number>
+             </property>
+             <property name="maximum" >
+              <number>128</number>
+             </property>
+             <property name="value" >
+              <number>10</number>
+             </property>
+             <property name="orientation" >
+              <enum>Qt::Horizontal</enum>
+             </property>
+             <property name="invertedAppearance" >
+              <bool>false</bool>
+             </property>
+             <property name="invertedControls" >
+              <bool>false</bool>
+             </property>
+             <property name="tickPosition" >
+              <enum>QSlider::NoTicks</enum>
+             </property>
+            </widget>
+           </item>
+          </layout>
+         </item>
+         <item>
+          <widget class="QGroupBox" name="gbTermColor" >
+           <property name="sizePolicy" >
+            <sizepolicy vsizetype="MinimumExpanding" hsizetype="Preferred" >
+             <horstretch>0</horstretch>
+             <verstretch>0</verstretch>
+            </sizepolicy>
+           </property>
+           <property name="minimumSize" >
+            <size>
+             <width>0</width>
+             <height>96</height>
+            </size>
+           </property>
+           <property name="title" >
+            <string>Plain text color:</string>
+           </property>
+           <widget class="QWidget" name="" >
+            <property name="geometry" >
+             <rect>
+              <x>10</x>
+              <y>25</y>
+              <width>351</width>
+              <height>66</height>
+             </rect>
+            </property>
+            <layout class="QGridLayout" >
+             <property name="rightMargin" >
+              <number>10</number>
+             </property>
+             <item row="0" column="0" >
+              <widget class="QLabel" name="lblTermFore" >
+               <property name="text" >
+                <string>Foreground:</string>
+               </property>
+              </widget>
+             </item>
+             <item row="0" column="1" >
+              <widget class="QSpinBox" name="sbTermFgR" >
+               <property name="buttonSymbols" >
+                <enum>QAbstractSpinBox::UpDownArrows</enum>
+               </property>
+               <property name="prefix" >
+                <string>R: </string>
+               </property>
+               <property name="maximum" >
+                <number>255</number>
+               </property>
+              </widget>
+             </item>
+             <item row="0" column="2" >
+              <widget class="QSpinBox" name="sbTermFgG" >
+               <property name="buttonSymbols" >
+                <enum>QAbstractSpinBox::UpDownArrows</enum>
+               </property>
+               <property name="prefix" >
+                <string>G: </string>
+               </property>
+               <property name="maximum" >
+                <number>255</number>
+               </property>
+              </widget>
+             </item>
+             <item row="0" column="3" >
+              <widget class="QSpinBox" name="sbTermFgB" >
+               <property name="buttonSymbols" >
+                <enum>QAbstractSpinBox::UpDownArrows</enum>
+               </property>
+               <property name="prefix" >
+                <string>B: </string>
+               </property>
+               <property name="maximum" >
+                <number>255</number>
+               </property>
+              </widget>
+             </item>
+             <item row="1" column="0" >
+              <widget class="QLabel" name="lblTermBack" >
+               <property name="text" >
+                <string>Background:</string>
+               </property>
+              </widget>
+             </item>
+             <item row="1" column="1" >
+              <widget class="QSpinBox" name="sbTermBgR" >
+               <property name="buttonSymbols" >
+                <enum>QAbstractSpinBox::UpDownArrows</enum>
+               </property>
+               <property name="prefix" >
+                <string>R: </string>
+               </property>
+               <property name="maximum" >
+                <number>255</number>
+               </property>
+               <property name="value" >
+                <number>255</number>
+               </property>
+              </widget>
+             </item>
+             <item row="1" column="2" >
+              <widget class="QSpinBox" name="sbTermBgG" >
+               <property name="buttonSymbols" >
+                <enum>QAbstractSpinBox::UpDownArrows</enum>
+               </property>
+               <property name="prefix" >
+                <string>G: </string>
+               </property>
+               <property name="maximum" >
+                <number>255</number>
+               </property>
+               <property name="value" >
+                <number>255</number>
+               </property>
+              </widget>
+             </item>
+             <item row="1" column="3" >
+              <widget class="QSpinBox" name="sbTermBgB" >
+               <property name="buttonSymbols" >
+                <enum>QAbstractSpinBox::UpDownArrows</enum>
+               </property>
+               <property name="prefix" >
+                <string>B: </string>
+               </property>
+               <property name="maximum" >
+                <number>255</number>
+               </property>
+               <property name="value" >
+                <number>255</number>
+               </property>
+              </widget>
+             </item>
+            </layout>
+           </widget>
+          </widget>
+         </item>
+         <item>
+          <widget class="QLineEdit" name="txtTermPreview" >
+           <property name="sizePolicy" >
+            <sizepolicy vsizetype="MinimumExpanding" hsizetype="Expanding" >
+             <horstretch>0</horstretch>
+             <verstretch>0</verstretch>
+            </sizepolicy>
+           </property>
+           <property name="text" >
+            <string>Sample text</string>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QCheckBox" name="cbTermDrawer" >
+           <property name="text" >
+            <string>Run in drawer (requires restart)</string>
+           </property>
+          </widget>
+         </item>
+        </layout>
+       </widget>
+      </widget>
      </widget>
     </item>
     <item>
@@ -586,8 +834,8 @@
    <slot>accept()</slot>
    <hints>
     <hint type="sourcelabel" >
-     <x>390</x>
-     <y>311</y>
+     <x>389</x>
+     <y>309</y>
     </hint>
     <hint type="destinationlabel" >
      <x>157</x>
@@ -602,8 +850,8 @@
    <slot>reject()</slot>
    <hints>
     <hint type="sourcelabel" >
-     <x>390</x>
-     <y>311</y>
+     <x>389</x>
+     <y>309</y>
     </hint>
     <hint type="destinationlabel" >
      <x>286</x>
@@ -618,12 +866,12 @@
    <slot>setValue(int)</slot>
    <hints>
     <hint type="sourcelabel" >
-     <x>123</x>
-     <y>111</y>
+     <x>270</x>
+     <y>266</y>
     </hint>
     <hint type="destinationlabel" >
-     <x>174</x>
-     <y>105</y>
+     <x>270</x>
+     <y>266</y>
     </hint>
    </hints>
   </connection>
@@ -634,12 +882,44 @@
    <slot>setValue(int)</slot>
    <hints>
     <hint type="sourcelabel" >
-     <x>260</x>
-     <y>101</y>
+     <x>270</x>
+     <y>266</y>
     </hint>
     <hint type="destinationlabel" >
-     <x>131</x>
-     <y>104</y>
+     <x>270</x>
+     <y>266</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>sbTermSize</sender>
+   <signal>valueChanged(int)</signal>
+   <receiver>slTermSize</receiver>
+   <slot>setValue(int)</slot>
+   <hints>
+    <hint type="sourcelabel" >
+     <x>319</x>
+     <y>280</y>
+    </hint>
+    <hint type="destinationlabel" >
+     <x>319</x>
+     <y>280</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>slTermSize</sender>
+   <signal>valueChanged(int)</signal>
+   <receiver>sbTermSize</receiver>
+   <slot>setValue(int)</slot>
+   <hints>
+    <hint type="sourcelabel" >
+     <x>319</x>
+     <y>280</y>
+    </hint>
+    <hint type="destinationlabel" >
+     <x>319</x>
+     <y>280</y>
     </hint>
    </hints>
   </connection>
