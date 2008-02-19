@@ -8,7 +8,7 @@ QTerminal::QTerminal(QWidget *parent, Qt::WindowFlags f) : QTextEdit(parent) {
   shell->setProcessChannelMode(QProcess::MergedChannels);
   QObject::connect(shell, SIGNAL(readyReadStandardOutput()), this, SLOT(readStandardOut()));
   QObject::connect(shell, SIGNAL(readyReadStandardError()), this, SLOT(readStandardErr()));
-  shell->start("bash", QStringList() << "-i", QIODevice::ReadWrite);
+  shell->start("cmd.exe", QStringList() << "", QIODevice::ReadWrite);
   // This var protects against mouse interference with the cursor
   curCursorLoc = this->textCursor();
   inputCharCount = 0;
