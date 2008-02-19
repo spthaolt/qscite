@@ -20,15 +20,15 @@
 
 #include <cassert>
 
-namespace {
-	/* String keys for each lexer we support. Note empty string marking end of 
-	 * array. Please keep these in alphabetical order.
-	 */
-	const QString supportedLexers[] = {
-		"bash", "cpp", "csharp", "css", "html", "java", "perl", "python",
-		"ruby", "" 
-	};
-	
+/* String keys for each lexer we support. Note empty string marking end of 
+ * array. Please keep these in alphabetical order.
+ */
+const QString supportedLexers[] = {
+	"bash", "cpp", "csharp", "css", "html", "java", "perl", "python",
+	"ruby", "" 
+};
+
+namespace {	
 	/* Default extensions for each lexer (in order listed in supportedLexers[]).
 	 * End of extensions for each lexer marked with "".
 	 */

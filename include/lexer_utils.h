@@ -12,4 +12,6 @@ void setLexerFont(QsciLexer * lexer, const QString & family, int size);
 void writeDefaultExtensions(QSettings & settings);
 void writeDefaultMagic(QSettings & settings);
 
+extern const QString supportedLexers[];
+
 #endif

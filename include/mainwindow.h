@@ -48,6 +48,8 @@ private slots:
     void setDocumentModified(bool wasModified = true);
     void fontDialog();
     void globalPrefs();
+    void reapPrefs();
+    void prefsWereChanged();
     void toggleTerminal();
 
 private:
@@ -76,6 +78,7 @@ private:
     
     QString curFile;
     std::vector<bool> modified;
+    bool termInDrawer;
 
     QMenu *fileMenu;
     QMenu *editMenu;

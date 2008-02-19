@@ -31,18 +31,29 @@
 #include "prefs.h"
 #include "qterminal_pty.h"
 
-MainWindow::MainWindow() : termWidget(NULL) {
+MainWindow::MainWindow() :
+  termWidget(NULL),
+  termInDrawer(QSettings().value("terminalInDrawer", false).toBool())
+{
   openFiles = new std::vector<QsciScintilla *>;
   fileNames = new std::vector<QString>;
   fileNames->push_back(QString(""));
 
-  QSplitter * mainWidget = new QSplitter(this);
-  mainWidget->setOrientation(Qt::Vertical);
+  readSettings();
   
-  tabWidget = new QTabWidget(mainWidget);
-  mainWidget->addWidget(tabWidget);
-
-  setCentralWidget(mainWidget);
+  if (!termInDrawer) {
+    QSplitter * mainWidget = new QSplitter(this);
+    mainWidget->setOrientation(Qt::Vertical);
+	  
+    tabWidget = new QTabWidget(mainWidget);
+    mainWidget->addWidget(tabWidget);
+    
+    setCentralWidget(mainWidget);
+  } else {
+    tabWidget = new QTabWidget(this);
+    setCentralWidget(tabWidget);
+  }
+  
   createDocument();
   createActions();
   createMenus();
@@ -53,75 +64,27 @@ MainWindow::MainWindow() : termWidget(NULL) {
   closeTabButton->setDefaultAction(closeAct);
   tabWidget->setCornerWidget(closeTabButton);
 
-  readSettings();
   connect(curDoc, SIGNAL(modificationChanged(bool)), this, SLOT(setDocumentModified(bool)));
   connect(tabWidget, SIGNAL(currentChanged(int)), this, SLOT(curDocChanged(int)));
   setWindowTitleForFile("");
 }
 
 void MainWindow::createDocument() {
-//   QWidget * newTab = new QWidget;
-//   newTab->setLayout(new QVBoxLayout);
+
   curDoc = new QsciScintilla();
   
-  QSettings settings;
-  if (settings.value("version", 0).toInt() < 1) {
-#ifdef QSCITE_DEBUG
-    std::cout << "Using default preferences" << std::endl;
-#endif
-    writeDefaultSettings(settings);
-  }
+  applySettingsToDoc(curDoc);
 
-  // Default EOL mode to LF
-  curDoc->setEolMode(
-  	static_cast<QsciScintilla::EolMode>(
-  		settings.value("EOLMode", QsciScintilla::EolUnix).toInt()
-  	)
-  );
-  
-  // Default wrap mode to WrapWord
-  curDoc->setWrapMode(
-  	static_cast<QsciScintilla::WrapMode>(
-  		settings.value("wrapMode", QsciScintilla::WrapWord).toInt()
-  	)
-  );
-  // Turn on line numbers by default
-  curDoc->setMarginLineNumbers(1, true);
-  // set default margin width to 4 characters (will adjust with different files)
-  curDoc->setMarginWidth(1, "9999");
-  // Don't use tab characters for indents
-  curDoc->setIndentationsUseTabs(settings.value("indentUseTabs", false).toBool());
-  // Default to using two spaces for each indent
-  curDoc->setIndentationWidth(settings.value("indentWidth", 2).toInt());
-  curDoc->setTabWidth(settings.value("indentWidth", 2).toInt());
-  // Make backspaces unindent
-  curDoc->setBackspaceUnindents(settings.value("backspaceUnindents", true).toBool());
-  // Turn on strict brace matching by default
-  curDoc->setBraceMatching(
-  	static_cast<QsciScintilla::BraceMatch>(
-  		settings.value("braceMatchMode", QsciScintilla::StrictBraceMatch).toInt()
-  	)
-  );
-  // use Monospaced font at size 10 by default
-  QFont baseFont(settings.value("font/family", QSCITE_MONO_FAMILY).toString(), settings.value("font/size", 10).toInt());
-
-  curDoc->setFont(baseFont);
-  
-#ifdef QSCITE_DEBUG
-  QFontInfo test(baseFont);
-  std::cout << "Current font family: " << test.family().toStdString() << endl;
-  std::cout << "Exact font match: " << (test.exactMatch() ? "true" : "false") << endl;
-#endif
-  
   openFiles->push_back(curDoc);
   fileNames->push_back("");
-//  newTab->layout()->addWidget(curDoc);
+
   tabWidget->addTab(curDoc, "Untitled");
   modified.push_back(false);
   changeTabs(tabWidget->count() - 1);
 }
 
 void MainWindow::toggleTerminal() {
+  QSettings settings;
   if (termWidget != NULL) {
 #ifdef QSCITE_DEBUG
     std::cout << "Closing terminal" << std::endl;
@@ -134,9 +97,13 @@ void MainWindow::toggleTerminal() {
   	std::cout << "Opening terminal" << std::endl;
 #endif
     termWidget = new QTerminal(this);
-    termWidget->setCurrentFont(curDoc->font());
-    termWidget->setTabStopWidth(QFontMetrics(curDoc->font()).width("        "));
-    ((QSplitter *)centralWidget())->addWidget(termWidget);
+    applyPrefsToTerminal(termWidget);
+    if (termInDrawer) {
+      termWidget->setWindowFlags(Qt::Drawer);
+      termWidget->show();
+    } else {
+      ((QSplitter *)centralWidget())->addWidget(termWidget);
+    }
     connect(termWidget, SIGNAL(shellExited()), this, SLOT(toggleTerminal()));
     termWidget->setFocus();
   }
@@ -278,22 +245,55 @@ void MainWindow::curDocChanged(int idx) {
 
 
 void MainWindow::readSettings() {
-    QSettings settings;
-    QPoint pos = settings.value("pos", QPoint(200, 200)).toPoint();
-    QSize size = settings.value("size", QSize(400, 400)).toSize();
-    resize(size);
-    move(pos);
+	QSettings settings;
+
+	if (settings.value("version", 0).toInt() < 1) {
+#ifdef QSCITE_DEBUG
+		std::cout << "Using default preferences" << std::endl;
+#endif
+		writeDefaultSettings(settings);
+	}
+
+	QPoint pos = settings.value("pos", QPoint(200, 200)).toPoint();
+	QSize size = settings.value("size", QSize(400, 400)).toSize();
+	resize(size);
+	move(pos);
+	
+	if (settings.value("maximized", false).toBool()) {
+		setWindowState(windowState() | Qt::WindowMaximized);
+	}
 }
 
 void MainWindow::writeSettings() {
   QSettings settings;
-  settings.setValue("pos", pos());
-  settings.setValue("size", size());
+  if (settings.value("saveWindowGeometry", false).toBool()) {
+    if (isMaximized()) {
+      settings.setValue("maximized", true);
+    } else {
+      settings.setValue("pos", pos());
+      settings.setValue("size", size());
+    }
+  }
 }
 
 void MainWindow::globalPrefs() {
 	MainPrefsDialog * dlgPrefs = new MainPrefsDialog(this, Qt::Sheet);
+
+	connect(dlgPrefs, SIGNAL(accepted()), this, SLOT(prefsWereChanged()), Qt::QueuedConnection);
+	connect(dlgPrefs, SIGNAL(prefsWereReset()), this, SLOT(prefsWereChanged()));
+	connect(dlgPrefs, SIGNAL(finished(int)), this, SLOT(reapPrefs()));
+	
 	dlgPrefs->show();
+}
+
+void MainWindow::prefsWereChanged() {
+	if (termWidget != NULL) {
+		applyPrefsToTerminal(termWidget);
+	}
+}
+
+void MainWindow::reapPrefs() {
+	sender()->deleteLater();
 }
 
 bool MainWindow::maybeSave() {
@@ -346,6 +346,7 @@ void MainWindow::loadFile(const QString &fileName) {
   	newLexer->setParent(curDoc);
     curDoc->setLexer(newLexer);
     setLexerFont(newLexer, currentFont.family(), currentFont.pointSize());
+    curDoc->setCaretForegroundColor(QColor(0,0,0));
   }
   
   statusBar()->showMessage(tr("File loaded"), 2000);
