@@ -87,7 +87,24 @@ void QTerminal::readOutput() {
 void QTerminal::keyPressEvent(QKeyEvent * event) {  
   // pass a char* copy of the input to the shell process
   //shell->write(event->text().toAscii().data(), event->text().length());
-  write(fdMaster, event->text().toAscii().data(), event->text().length());
+  if (event->key() == Qt::Key_Up) {
+    write(fdMaster, "\x1b\x5b\x41", 3);
+    event->accept();
+  } else if (event->key() == Qt::Key_Down) {
+    write(fdMaster, "\x1b\x5b\x42", 3);
+    event->accept();
+    // FIXME: make sure left and right arrows work
+  } /*else if (event->key() == Qt::Key_Right) {
+    write(fdMaster, "\x1b\x5b\x43", 3);
+    //this->moveCursor(QTextCursor::Right, QTextCursor::KeepAnchor);
+    event->accept();
+  } else if (event->key() == Qt::Key_Left) {
+    write(fdMaster, "\x1b\x5b\x44", 3);
+    //this->moveCursor(QTextCursor::Left, QTextCursor::KeepAnchor);
+    event->accept();
+  } */ else {
+    write(fdMaster, event->text().toAscii().data(), event->text().length());
+  }
 }
 
 FileDescriptorMonitor::FileDescriptorMonitor(int fd, QObject * parent) :
