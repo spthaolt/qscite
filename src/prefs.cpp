@@ -7,7 +7,12 @@
 
 #include "prefs.h"
 #include "lexer_utils.h"
-#include "qterminal_pty.h"
+
+#ifdef _WIN32
+  #include "qterminal.h"
+#else
+  #include "qterminal_pty.h"
+#endif
 
 MainPrefsDialog::MainPrefsDialog(QWidget * parent, Qt::WindowFlags f) :
 	QDialog(parent, f), settings()

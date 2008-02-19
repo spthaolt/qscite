@@ -14,16 +14,14 @@ CONFIG       += release thread
 HEADERS       = mainwindow.h \
                 utils.h \
                 lexer_utils.h \
-                prefs.h \
-                qterminal_pty.h 
+                prefs.h
 
 SOURCES       = main.cpp \
                 mainwindow.cpp \
                 mainwindow_startup.cpp \
                 utils.cpp \
                 lexer_utils.cpp \
-                prefs.cpp \
-                qterminal_pty.cpp
+                prefs.cpp 
 
 FORMS         = dlgPrefsUI.ui
 
@@ -35,6 +33,8 @@ unix {
 					    -lutil
 		DEFINES += QSCITE_MONO_FAMILY='\\"Monospace\\"'
 	}
+  HEADERS += qterminal_pty.h
+  SOURCES += qterminal_pty.cpp
 }
 
 macx {
@@ -46,6 +46,8 @@ macx {
 win32 {
 	LIBS         += -lqscintilla2
 	DEFINES += QSCITE_MONO_FAMILY='"\\"Courier New\\""'
+  HEADERS += qterminal.h
+  SOURCES += qterminal.cpp
 }
 
 debug {

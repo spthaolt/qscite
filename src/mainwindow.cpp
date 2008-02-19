@@ -29,7 +29,12 @@
 #include "utils.h"
 #include "lexer_utils.h"
 #include "prefs.h"
-#include "qterminal_pty.h"
+
+#ifdef _WIN32
+  #include "qterminal.h"
+#else
+  #include "qterminal_pty.h"
+#endif
 
 MainWindow::MainWindow() :
   termWidget(NULL),
