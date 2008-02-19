@@ -70,21 +70,18 @@ MainWindow::MainWindow() :
 }
 
 void MainWindow::createDocument() {
-
   curDoc = new QsciScintilla();
-  
   applySettingsToDoc(curDoc);
-
   openFiles->push_back(curDoc);
   fileNames->push_back("");
-
-  tabWidget->addTab(curDoc, "Untitled");
   modified.push_back(false);
+  tabWidget->addTab(curDoc, "Untitled");
   changeTabs(tabWidget->count() - 1);
 }
 
 void MainWindow::toggleTerminal() {
   QSettings settings;
+  
   if (termWidget != NULL) {
 #ifdef QSCITE_DEBUG
     std::cout << "Closing terminal" << std::endl;
@@ -98,12 +95,14 @@ void MainWindow::toggleTerminal() {
 #endif
     termWidget = new QTerminal(this);
     applyPrefsToTerminal(termWidget);
+    
     if (termInDrawer) {
       termWidget->setWindowFlags(Qt::Drawer);
       termWidget->show();
     } else {
       ((QSplitter *)centralWidget())->addWidget(termWidget);
     }
+    
     connect(termWidget, SIGNAL(shellExited()), this, SLOT(toggleTerminal()));
     termWidget->setFocus();
   }
@@ -126,7 +125,6 @@ void MainWindow::closeEvent(QCloseEvent *event) {
   }
   
   writeSettings();
-  
   event->accept();
 }
 
@@ -143,6 +141,7 @@ bool MainWindow::closeFile() {
       fileNames->erase(fileNames->begin() + curTabIndex);
       modified.erase(modified.begin() + curTabIndex);
       delete theEditor;
+      
       if (tabWidget->count()) {	// there are tabs left
         changeTabs(curTabIndex > 1 ? curTabIndex - 1 : 0);
       } else {
@@ -151,6 +150,7 @@ bool MainWindow::closeFile() {
         setWindowTitle(tr("QSciTE"));
         setWindowModified(false);
       }
+      
       return true;
     }
   }
@@ -186,6 +186,7 @@ bool MainWindow::save() {
 bool MainWindow::saveAs() {
   if (tabWidget->count()) {
     QString fileName = QFileDialog::getSaveFileName(this);
+    
     if (fileName.isEmpty()) {
       return false;
     }
@@ -200,13 +201,16 @@ void MainWindow::fontDialog() {
   if (tabWidget->count()) {
   	QsciLexer * lexer = curDoc->lexer();
   	bool ok;
+  	
   	if (lexer) {
   	  QFont baseFont = QFontDialog::getFont(&ok, lexer->font(lexer->defaultStyle()));
+  	  
   	  if (ok) {
   	    setLexerFont(lexer, baseFont.family(), baseFont.pointSize());
   	  }
   	} else {
       QFont font = QFontDialog::getFont(&ok, curDoc->font());
+      
       if (ok) {
         curDoc->setFont(font);
       }
@@ -216,9 +220,9 @@ void MainWindow::fontDialog() {
 
 void MainWindow::about() {
    QMessageBox::about(this, tr("About QSciTE"),
-            tr("<b>QSciTE</b> is a clone of SciTE, based on the Scintilla library"
-               " and Qt4. It is heavily based on the example code included with"
-               " Qscintilla2, and is licensed under the GNU GPL version 2."));
+       tr("<b>QSciTE</b> is a clone of SciTE, based on the Scintilla library"
+          " and Qt4. It is heavily based on the example code included with"
+          " Qscintilla2, and is licensed under the GNU GPL version 2."));
 }
 
 void MainWindow::setDocumentModified(bool wasModified) {
@@ -231,7 +235,6 @@ void MainWindow::setDocumentModified(bool wasModified) {
 	setCurrentTabTitle();
     setWindowModified(wasModified);
   }
-
 }
 
 void MainWindow::curDocChanged(int idx) { 
@@ -266,6 +269,7 @@ void MainWindow::readSettings() {
 
 void MainWindow::writeSettings() {
   QSettings settings;
+  
   if (settings.value("saveWindowGeometry", false).toBool()) {
     if (isMaximized()) {
       settings.setValue("maximized", true);
@@ -310,11 +314,13 @@ bool MainWindow::maybeSave() {
       return false;
     }
   }
+  
   return true;
 }
 
 void MainWindow::loadFile(const QString &fileName) {
   QFile file(fileName);
+  
   if (!file.open(QFile::ReadOnly)) {
     QMessageBox::warning(this, tr("QSciTE"),
                          tr("Cannot read file %1:\n%2.")
@@ -367,39 +373,44 @@ void MainWindow::redoSetMargin() {
 }
 
 bool MainWindow::saveFile(const QString &fileName) {
-    QFile file(fileName);
-    if (!file.open(QFile::WriteOnly)) {
-        QMessageBox::warning(this, tr("QSciTE"),
-                             tr("Cannot write file %1:\n%2.")
-                             .arg(fileName)
-                             .arg(file.errorString()));
-        return false;
-    }
+  QFile file(fileName);
+  
+  if (!file.open(QFile::WriteOnly)) {
+    QMessageBox::warning(this, tr("QSciTE"),
+                         tr("Cannot write file %1:\n%2.")
+                         .arg(fileName)
+                         .arg(file.errorString()));
+    return false;
+  }
 
-    QTextStream out(&file);
-    QApplication::setOverrideCursor(Qt::WaitCursor);
-    out << curDoc->text();
-    QApplication::restoreOverrideCursor();
-    statusBar()->showMessage(tr("File saved"), 2000);
-    setDocumentModified(false);
-    return true;
+  QTextStream out(&file);
+  QApplication::setOverrideCursor(Qt::WaitCursor);
+  out << curDoc->text();
+  QApplication::restoreOverrideCursor();
+  statusBar()->showMessage(tr("File saved"), 2000);
+  setDocumentModified(false);
+  return true;
 }
 
 void MainWindow::setWindowTitleForFile(const QString & fileName) {
-    QString shownName;
-    if (fileName.isEmpty()) {
-        shownName = "Untitled";
-    } else {
-        shownName = strippedName(fileName);
-    }
-    setWindowTitle(tr("%1[*] - %2").arg(shownName).arg(tr("QSciTE")));
+  QString shownName;
+  
+  if (fileName.isEmpty()) {
+    shownName = "Untitled";
+  } else {
+    shownName = strippedName(fileName);
+  }
+  
+  setWindowTitle(tr("%1[*] - %2").arg(shownName).arg(tr("QSciTE")));
 }
 
 void MainWindow::setCurrentTabTitle() {
 	int idx = tabWidget->currentIndex();
 	QString displayName = curFile.isEmpty() ? "Untitled" : strippedName(curFile);
+	
 	if (modified[idx]) {
 		displayName += "*";
 	}
+	
 	tabWidget->setTabText(idx, displayName);
 }
