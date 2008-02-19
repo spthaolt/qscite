@@ -21,6 +21,15 @@ MainPrefsDialog::MainPrefsDialog(QWidget * parent, Qt::WindowFlags f) :
 	
 	connect(this, SIGNAL(accepted()), this, SLOT(writeValues()));
 	
+	connect(lwTypes, SIGNAL(currentTextChanged(const QString &)),
+	        this,    SLOT(lexerSelected(const QString&)));
+	        
+	connect(btnAddExt, SIGNAL(clicked()), this, SLOT(addExt()));
+	connect(btnDelExt, SIGNAL(clicked()), this, SLOT(delExt()));
+	
+	connect(btnAddMagic, SIGNAL(clicked()), this, SLOT(addMagic()));
+	connect(btnDelMagic, SIGNAL(clicked()), this, SLOT(delMagic()));
+	
 	connect(cbxTextFont, SIGNAL(currentIndexChanged(int)), this, SLOT(updateSampleDoc()));
 	connect(sbPtSize, SIGNAL(valueChanged(int)), this, SLOT(updateSampleDoc()));
 	connect(sbFgR, SIGNAL(valueChanged(int)), this, SLOT(updateSampleDoc()));
@@ -110,6 +119,82 @@ void MainPrefsDialog::populate() {
 	sbTermBgR->setValue(termBack.red());
 	sbTermBgG->setValue(termBack.green());
 	sbTermBgB->setValue(termBack.blue());
+	settings.endGroup();
+}
+
+void MainPrefsDialog::lexerSelected(const QString & lexer) {
+	/* Don't signal in response to our own changes */
+	lwExtns->disconnect(SIGNAL(itemChanged(QListWidgetItem *)));
+	lwMagic->disconnect(SIGNAL(itemChanged(QListWidgetItem *)));
+	
+	lwExtns->clear();
+	settings.beginGroup("extensions");
+	for (int i = 0, j = settings.beginReadArray(lexer); i < j; ++i) {
+		settings.setArrayIndex(i);
+		(new QListWidgetItem(settings.value("ext").toString(), lwExtns))->setFlags((Qt::ItemFlags)35);
+	}
+	settings.endArray();
+	settings.endGroup();
+	
+	lwMagic->clear();
+	settings.beginGroup("magic");
+	for (int i = 0, j = settings.beginReadArray(lexer); i < j; ++i) {
+		settings.setArrayIndex(i);
+		(new QListWidgetItem(settings.value("str").toString(), lwMagic))->setFlags((Qt::ItemFlags)35);
+	}
+	settings.endArray();
+	settings.endGroup();
+	
+	// Now we can signal.
+	connect(lwExtns, SIGNAL(itemChanged(QListWidgetItem *)), this, SLOT(saveExts()));
+	connect(lwMagic, SIGNAL(itemChanged(QListWidgetItem *)), this, SLOT(saveMagic()));
+}
+
+void MainPrefsDialog::addExt() {
+	QListWidgetItem * newItem = new QListWidgetItem("<new>", lwExtns);
+	newItem->setFlags((Qt::ItemFlags)35);
+	lwExtns->setFocus();
+	lwExtns->editItem(newItem);
+}
+
+void MainPrefsDialog::delExt() {
+	delete lwExtns->takeItem(lwExtns->currentRow());
+	saveExts();
+}
+
+void MainPrefsDialog::saveExts() {
+	settings.beginGroup("extensions");
+	settings.remove(lwTypes->currentItem()->text());
+	settings.beginWriteArray(lwTypes->currentItem()->text(), lwExtns->count());
+	for (int i = 0; i < lwExtns->count(); ++i) {
+		settings.setArrayIndex(i);
+		settings.setValue("ext", lwExtns->item(i)->text());
+	}
+	settings.endArray();
+	settings.endGroup();
+}
+
+void MainPrefsDialog::addMagic() {
+	QListWidgetItem * newItem = new QListWidgetItem("<new>", lwMagic);
+	newItem->setFlags((Qt::ItemFlags)35);
+	lwMagic->setFocus();
+	lwMagic->editItem(newItem);
+}
+
+void MainPrefsDialog::delMagic() {
+	delete lwMagic->takeItem(lwMagic->currentRow());
+	saveMagic();
+}
+
+void MainPrefsDialog::saveMagic() {
+	settings.beginGroup("magic");
+	settings.remove(lwTypes->currentItem()->text());
+	settings.beginWriteArray(lwTypes->currentItem()->text(), lwMagic->count());
+	for (int i = 0; i < lwMagic->count(); ++i) {
+		settings.setArrayIndex(i);
+		settings.setValue("str", lwMagic->item(i)->text());
+	}
+	settings.endArray();
 	settings.endGroup();
 }
 

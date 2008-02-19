@@ -19,6 +19,16 @@ signals:
 	void prefsWereReset();
 	
 private slots:
+	void lexerSelected(const QString & lexer);
+	
+	void addExt();
+	void delExt();
+	void saveExts();
+	
+	void addMagic();
+	void delMagic();
+	void saveMagic();
+	
 	void resetToDefaults();
 	void updateSampleDoc();
 	void updateSampleTerm();
