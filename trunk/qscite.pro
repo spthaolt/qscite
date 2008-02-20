@@ -8,7 +8,9 @@ MOC_DIR     = build
 OBJECTS_DIR = build
 RCC_DIR     = build
 UI_DIR      = build
-DESTDIR		= build
+!macx {
+    DESTDIR = build
+}
 
 CONFIG       += release thread
 
