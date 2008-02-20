@@ -24,6 +24,11 @@ private:
 	FileDescriptorMonitor * watcher;
 	// We need to know where our original
 	QTextCursor savedCursor;
+	bool isCsiTerminator(char c);
+	bool isOscTerminator(char c, QString & cmd);
+	void handleEscape();
+	void handleControlSeq();
+	void handleOSCommand();
 };
 
 class FileDescriptorMonitor: public QThread {

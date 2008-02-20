@@ -16,6 +16,7 @@
 #endif
 #include <QtGui>
 #include "qterminal_pty.h"
+#include "utils.h"
 
 QTerminal::QTerminal(QWidget *parent, Qt::WindowFlags f) : QTextEdit(parent) {
   setWindowFlags(f);
@@ -32,7 +33,7 @@ QTerminal::QTerminal(QWidget *parent, Qt::WindowFlags f) : QTextEdit(parent) {
     /* if they don't have a shell, use bash */
     setenv("SHELL", "/bin/bash", 0);
     /* no special control features are supported */
-    setenv("TERM", "dumb", 1);
+    setenv("TERM", "xterm", 1);
     /* hand off to the shell of choice */
     execl(getenv("SHELL"), getenv("SHELL"), (char *)0);
   }
@@ -68,18 +69,20 @@ void QTerminal::readOutput() {
   char c;
   int count = read(fdMaster, &c, 1);
   while(count == 1) {
-  	if (c == '\r') {
+    if (c == '\x1b') { /* escape character */
+      handleEscape();
+    } else if (c == '\r') {
       /* ignore */
   	} else if (c == '\x08') { /* ^H (backspace) */
   	  this->moveCursor(QTextCursor::PreviousCharacter);
   	} else if (c == '\a') {
   	  QApplication::beep();
   	} else {
-	  if (!textCursor().atEnd()) {
-	    textCursor().deleteChar();
-	  }
-	  this->insertPlainText(QChar(c));
-	}
+  	  if (!textCursor().atEnd()) {
+  	    textCursor().deleteChar();
+  	  }
+  	  this->insertPlainText(QChar(c));
+  	}
     count = read(fdMaster, &c, 1);
   }
   if (count == -1 && errno == EAGAIN) {
@@ -88,6 +91,86 @@ void QTerminal::readOutput() {
     emit shellExited();
   }
   savedCursor = this->textCursor();
+}
+
+void QTerminal::handleEscape() {
+  char nextChar = 0;
+  read(fdMaster, &nextChar, 1);
+  switch (nextChar) {
+    case '[': //control sequence introducer
+      handleControlSeq();
+    break;
+    
+    case ']': //operating system command
+      handleOSCommand();
+    break;
+  }
+}
+
+void QTerminal::handleControlSeq() {
+  char nextChar = 0;
+  QString seq = "";
+  read(fdMaster, &nextChar, 1);
+  
+  while (!isCsiTerminator(nextChar)) {
+    seq += nextChar;
+    read(fdMaster, &nextChar, 1);
+  }
+  seq += nextChar;
+  
+  // we now have a complete Control Seqence
+  std::cout << "Intercepted Control Sequence: ";
+  printHex(seq);
+  std::cout << std::endl;
+}
+
+bool QTerminal::isCsiTerminator(char c) {
+  QString chars = "@ABCDEFGHIJKLMPSTXZ`bcdfghilmnpqrstuvwxz{|";
+  QChar theChar = QChar(c);
+  // make the compiler happy
+  for (int i = 0; i < chars.length(); ++i) {
+    if (chars.at(i) == theChar) {
+      return true;
+    }
+  }
+  return false;
+}
+
+void QTerminal::handleOSCommand() {
+  char nextChar = 0;
+  QString cmd = "";
+  read(fdMaster, &nextChar, 1);
+  
+  while (!isOscTerminator(nextChar, cmd)) {
+    cmd += nextChar;
+    read(fdMaster, &nextChar, 1);
+  }
+  
+  // we now have a complete Control Seqence
+  std::cout << "Intercepted OS Command: ";
+  printHex(cmd);
+  std::cout << std::endl;
+}
+
+bool QTerminal::isOscTerminator(char c, QString & cmd) {
+  if (c == '\x1b') {
+    char nextChar = 0;
+    read(fdMaster, &nextChar, 1);
+    if (nextChar == '\\') {
+      cmd += c;
+      cmd += nextChar;
+      return true;
+    } else {
+      cmd += c;
+      cmd += nextChar;
+      return false;
+    }
+  } else if (c == '\x07'){
+    cmd += c;
+    return true;
+  }
+  
+  return false;
 }
 
 void QTerminal::keyPressEvent(QKeyEvent * event) {  
@@ -132,13 +215,13 @@ void FileDescriptorMonitor::run() {
 		workingPollInterval = pollInterval;
 		if (rval != -1 && FD_ISSET(watchedFd, &workingFdSet)) {
 #ifdef QSCITE_DEBUG
-		 	std::cout << "readyForRead()" << std::endl;
+		 	//std::cout << "readyForRead()" << std::endl;
 #endif
 			emit readyForRead(watchedFd);
 		}
 #ifdef QSCITE_DEBUG
 		else {
-			std::cout << "select() timeout" << std::endl;
+			//std::cout << "select() timeout" << std::endl;
 		}
 #endif
 	}

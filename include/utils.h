@@ -26,3 +26,4 @@ using namespace std;
 vector<string> tokenize(string, char);
 
 QString strippedName(const QString &fullFileName);
+void printHex (QString & str);
