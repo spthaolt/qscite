@@ -138,35 +138,34 @@ bool QTerminal::isCsiTerminator(char c) {
 
 void QTerminal::handleOSCommand() {
   char nextChar = 0;
+  char otherChar = 0;
   QString cmd = "";
   read(fdMaster, &nextChar, 1);
-  
-  while (!isOscTerminator(nextChar, cmd)) {
+  while (!isOscTerminator(nextChar, otherChar)) {
     cmd += nextChar;
-    read(fdMaster, &nextChar, 1);
+    if (otherChar == 0) {
+      read(fdMaster, &nextChar, 1);
+    } else {
+      nextChar = otherChar;
+    }
   }
+  cmd += nextChar;
   
-  // we now have a complete Control Seqence
+  // we now have a complete OS Command
   std::cout << "Intercepted OS Command: ";
   printHex(cmd);
   std::cout << std::endl;
 }
 
-bool QTerminal::isOscTerminator(char c, QString & cmd) {
+bool QTerminal::isOscTerminator(char c, char & d) {
   if (c == '\x1b') {
-    char nextChar = 0;
-    read(fdMaster, &nextChar, 1);
-    if (nextChar == '\\') {
-      cmd += c;
-      cmd += nextChar;
+    read(fdMaster, &d, 1);
+    if (d == '\\') {
       return true;
     } else {
-      cmd += c;
-      cmd += nextChar;
       return false;
     }
   } else if (c == '\x07'){
-    cmd += c;
     return true;
   }
   

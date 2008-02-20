@@ -25,7 +25,7 @@ private:
 	// We need to know where our original
 	QTextCursor savedCursor;
 	bool isCsiTerminator(char c);
-	bool isOscTerminator(char c, QString & cmd);
+	bool isOscTerminator(char c, char & d);
 	void handleEscape();
 	void handleControlSeq();
 	void handleOSCommand();
