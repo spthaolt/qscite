@@ -22,6 +22,8 @@ QTerminal::QTerminal(QWidget *parent, Qt::WindowFlags f) : QTextEdit(parent) {
 #ifdef QSCITE_DEBUG
   std::cout << "Constructing QTerminal" << std::endl;
 #endif
+  savedCursor = this->textCursor();
+
   /*
    * Launch a shell connected to the current process by a PTY
    */
@@ -62,18 +64,21 @@ QTerminal::~QTerminal() {
 }
 
 void QTerminal::readOutput() {
+  this->setTextCursor(savedCursor);
   char c;
   int count = read(fdMaster, &c, 1);
   while(count == 1) {
   	if (c == '\r') {
       /* ignore */
   	} else if (c == '\x08') { /* ^H (backspace) */
-  	  textCursor().deletePreviousChar();
+  	  this->moveCursor(QTextCursor::PreviousCharacter);
   	} else if (c == '\a') {
   	  QApplication::beep();
   	} else {
+	  if (!textCursor().atEnd()) {
+	    textCursor().deleteChar();
+	  }
 	  this->insertPlainText(QChar(c));
-	  this->moveCursor(QTextCursor::End, QTextCursor::KeepAnchor);
 	}
     count = read(fdMaster, &c, 1);
   }
@@ -82,6 +87,7 @@ void QTerminal::readOutput() {
   } else {
     emit shellExited();
   }
+  savedCursor = this->textCursor();
 }
 
 void QTerminal::keyPressEvent(QKeyEvent * event) {  
@@ -94,7 +100,7 @@ void QTerminal::keyPressEvent(QKeyEvent * event) {
     write(fdMaster, "\x1b\x5b\x42", 3);
     event->accept();
     // FIXME: make sure left and right arrows work
-  } /*else if (event->key() == Qt::Key_Right) {
+  } else if (event->key() == Qt::Key_Right) {
     write(fdMaster, "\x1b\x5b\x43", 3);
     //this->moveCursor(QTextCursor::Right, QTextCursor::KeepAnchor);
     event->accept();
@@ -102,8 +108,9 @@ void QTerminal::keyPressEvent(QKeyEvent * event) {
     write(fdMaster, "\x1b\x5b\x44", 3);
     //this->moveCursor(QTextCursor::Left, QTextCursor::KeepAnchor);
     event->accept();
-  } */ else {
+  } else {
     write(fdMaster, event->text().toAscii().data(), event->text().length());
+    event->accept();
   }
 }
 

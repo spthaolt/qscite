@@ -31,6 +31,7 @@
 #include "prefs.h"
 
 #ifdef _WIN32
+
   #include "qterminal.h"
 #else
   #include "qterminal_pty.h"
@@ -81,7 +82,11 @@ void MainWindow::createDocument() {
   fileNames->push_back("");
   modified.push_back(false);
   tabWidget->addTab(curDoc, "Untitled");
-  changeTabs(tabWidget->count() - 1);
+  if (tabWidget->count() > 1) {
+    changeTabs(tabWidget->count() - 1);
+  } else {
+    curDocChanged(0);
+  }
 }
 
 void MainWindow::toggleTerminal() {
@@ -154,6 +159,7 @@ bool MainWindow::closeFile() {
         curFile = "";
         setWindowTitle(tr("QSciTE"));
         setWindowModified(false);
+        curDoc = NULL;
       }
       
       return true;
@@ -172,6 +178,7 @@ void MainWindow::open() {
     }
     
     loadFile(fileName);
+	setCurrentTabTitle();
   }
 }
 
@@ -281,6 +288,7 @@ void MainWindow::writeSettings() {
     } else {
       settings.setValue("pos", pos());
       settings.setValue("size", size());
+	  settings.setValue("maximized", false);
     }
   }
 }
@@ -374,7 +382,9 @@ void MainWindow::redoSetMargin() {
     numLines /= 10.0;
   }
 
-  curDoc->setMarginWidth(1, exLength);
+  if (curDoc->marginWidth(1) > 0) {
+    curDoc->setMarginWidth(1, exLength);
+  }
 }
 
 bool MainWindow::saveFile(const QString &fileName) {
@@ -393,7 +403,7 @@ bool MainWindow::saveFile(const QString &fileName) {
   out << curDoc->text();
   QApplication::restoreOverrideCursor();
   statusBar()->showMessage(tr("File saved"), 2000);
-  setDocumentModified(false);
+  curDoc->setModified(false);
   return true;
 }
 

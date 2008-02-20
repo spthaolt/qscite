@@ -22,6 +22,8 @@ private:
 	int shellPid;
 	int fdMaster;
 	FileDescriptorMonitor * watcher;
+	// We need to know where our original
+	QTextCursor savedCursor;
 };
 
 class FileDescriptorMonitor: public QThread {
