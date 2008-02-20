@@ -50,9 +50,10 @@ QString strippedName(const QString &fullFileName) {
 
 void printHex (QString & thestr) {
   string str = thestr.toStdString();
-  for (int i = 0; i < str.length(); ++i) {
-    char c = str[i];
-    for (int i=2*sizeof(char) - 1; i>=0; i--) {
+  
+  for (unsigned int j = 0; j < str.length(); ++j) {
+    char c = str[j];
+    for (int i = 2 * sizeof(char) - 1; i >= 0; --i) {
         cout << "0123456789ABCDEF"[((c >> i*4) & 0xF)];
     }
     cout << " ";
