@@ -119,13 +119,15 @@ void QTerminal::handleControlSeq() {
   }
 
 #ifdef QSCITE_DEBUG
-  // we now have a complete Control Seqence
-  std::cout << "Intercepted Control Sequence: ";
+  // enable the lines below for CS debugging
+  /*std::cout << "Intercepted Control Sequence: ";
   printHex(seq);
   std::cout << std::endl;
-  std::cout << "Control Suffix: " << nextChar << std::endl;
+  std::cout << "Control Suffix: " << nextChar << std::endl;*/
 #endif
   switch (nextChar) {
+    case 'C': //move cursor forward one character
+      this->moveCursor(QTextCursor::Right, QTextCursor::MoveAnchor);
     case 'J':
       eraseDisplay(seq.toInt());
     break;
@@ -170,27 +172,32 @@ void QTerminal::handleOSCommand() {
   cmd += nextChar;
   
 #ifdef QSCITE_DEBUG
-  // we now have a complete OS Command
-  std::cout << "Intercepted OS Command: ";
+  // enable the lines below for OSC debugging
+  /*std::cout << "Intercepted OS Command: ";
   printHex(cmd);
-  std::cout << std::endl;
+  std::cout << std::endl;*/
 #endif
   
   switch(nextChar) {
     case '\x07': //ascii BEL character
-      if (cmd.at(0) == '1' && cmd.at(1) == '1') {
+      if (cmd.at(0) == '1') {
         QPalette palette = this->palette();
-        cmd.remove(0,3);
-        cmd.remove(cmd.length() - 1, 1);
-        palette.setColor(QPalette::Base, QColor(cmd));
-        this->setPalette(palette);
-      }
-      
-      if (cmd.at(0) == '1' && cmd.at(1) == '0') {
-        QPalette palette = this->palette();
-        cmd.remove(0,3);
-        cmd.remove(cmd.length() - 1, 1);
-        palette.setColor(QPalette::Text, QColor(cmd));
+        QString colorStr = cmd;
+        colorStr.remove(0,3);
+        colorStr.remove(colorStr.length() - 1, 1);
+        
+        if (cmd.at(1) == '0') {
+#ifdef QSCITE_DEBUG
+          std::cout << "setting terminal text color to " << colorStr.toStdString() << std::endl;
+#endif
+          palette.setColor(QPalette::Text, QColor(colorStr));
+        } else if (cmd.at(1) == '1') {
+#ifdef QSCITE_DEBUG
+          std::cout << "setting terminal background color to " << colorStr.toStdString() << std::endl;
+#endif
+          palette.setColor(QPalette::Base, QColor(colorStr));
+        }
+        
         this->setPalette(palette);
       }
     break;
