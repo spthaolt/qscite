@@ -9,6 +9,7 @@
 #include <sys/select.h>
 #include <sys/time.h>
 #include <unistd.h>
+#include <string>
 #ifdef __APPLE__
 #include <util.h>
 #else
@@ -174,6 +175,26 @@ void QTerminal::handleOSCommand() {
   printHex(cmd);
   std::cout << std::endl;
 #endif
+  
+  switch(nextChar) {
+    case '\x07': //ascii BEL character
+      if (cmd.at(0) == '1' && cmd.at(1) == '1') {
+        QPalette palette = this->palette();
+        cmd.remove(0,3);
+        cmd.remove(cmd.length() - 1, 1);
+        palette.setColor(QPalette::Base, QColor(cmd));
+        this->setPalette(palette);
+      }
+      
+      if (cmd.at(0) == '1' && cmd.at(1) == '0') {
+        QPalette palette;
+        cmd.remove(0,3);
+        cmd.remove(cmd.length() - 1, 1);
+        palette.setColor(QPalette::Text, QColor(cmd));
+        this->setPalette(palette);
+      }
+    break;
+  }
 }
 
 bool QTerminal::isOscTerminator(char c, char & d) {
