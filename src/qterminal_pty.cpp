@@ -116,12 +116,26 @@ void QTerminal::handleControlSeq() {
     seq += nextChar;
     read(fdMaster, &nextChar, 1);
   }
-  seq += nextChar;
-  
+
+#ifdef QSCITE_DEBUG
   // we now have a complete Control Seqence
   std::cout << "Intercepted Control Sequence: ";
   printHex(seq);
   std::cout << std::endl;
+  std::cout << "Control Suffix: " << nextChar << std::endl;
+#endif
+  switch (nextChar) {
+    case 'J':
+      eraseDisplay(seq.toInt());
+    break;
+    
+    case 'K':
+      eraseInLine(seq.toInt());
+    break;
+    
+    case 'P':
+      deleteChars(seq.toInt());
+  }
 }
 
 bool QTerminal::isCsiTerminator(char c) {
@@ -141,20 +155,25 @@ void QTerminal::handleOSCommand() {
   char otherChar = 0;
   QString cmd = "";
   read(fdMaster, &nextChar, 1);
+  
   while (!isOscTerminator(nextChar, otherChar)) {
     cmd += nextChar;
+    
     if (otherChar == 0) {
       read(fdMaster, &nextChar, 1);
     } else {
       nextChar = otherChar;
+      otherChar = 0;
     }
   }
   cmd += nextChar;
   
+#ifdef QSCITE_DEBUG
   // we now have a complete OS Command
   std::cout << "Intercepted OS Command: ";
   printHex(cmd);
   std::cout << std::endl;
+#endif
 }
 
 bool QTerminal::isOscTerminator(char c, char & d) {
@@ -193,6 +212,41 @@ void QTerminal::keyPressEvent(QKeyEvent * event) {
   } else {
     write(fdMaster, event->text().toAscii().data(), event->text().length());
     event->accept();
+  }
+}
+
+void QTerminal::eraseDisplay(int arg) {
+  switch (arg) {
+    case 0:
+    break;
+    case 1:
+    break;
+    case 2:
+      this->clear();
+    break;
+    case 3:
+    break;
+  }
+}
+
+void QTerminal::eraseInLine(int arg) {
+  switch (arg) {
+    case 0:
+      this->moveCursor(QTextCursor::End, QTextCursor::KeepAnchor);
+      this->textCursor().deleteChar();
+    break;
+    case 1:
+    break;
+    case 2:
+    break;
+    case 3:
+    break;
+  }
+}
+
+void QTerminal::deleteChars(int arg) {
+  for (int i = 0; i < arg; ++i) {
+    this->textCursor().deleteChar();
   }
 }
 
