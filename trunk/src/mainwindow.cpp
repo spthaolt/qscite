@@ -38,7 +38,7 @@
 #endif
 
 MainWindow::MainWindow() :
-  termWidget(NULL),
+  termWidget(NULL), copyFromTerm(false),
   termInDrawer(QSettings().value("terminalInDrawer", false).toBool())
 {
   openFiles = new std::vector<QsciScintilla *>;
@@ -70,8 +70,8 @@ MainWindow::MainWindow() :
   closeTabButton->setDefaultAction(closeAct);
   tabWidget->setCornerWidget(closeTabButton);
 
-  connect(curDoc, SIGNAL(modificationChanged(bool)), this, SLOT(setDocumentModified(bool)));
   connect(tabWidget, SIGNAL(currentChanged(int)), this, SLOT(curDocChanged(int)));
+  connect(QApplication::instance(), SIGNAL(focusChanged(QWidget *, QWidget *)), this, SLOT(noticeFocusChange(QWidget *, QWidget *)));
   setWindowTitleForFile("");
 }
 
@@ -87,40 +87,12 @@ void MainWindow::createDocument() {
   } else {
     curDocChanged(0);
   }
-}
-
-void MainWindow::toggleTerminal() {
-  QSettings settings;
-  
-  if (termWidget != NULL) {
-#ifdef QSCITE_DEBUG
-    std::cout << "Closing terminal" << std::endl;
-#endif
-    termWidget->disconnect();
-    termWidget->deleteLater();
-    termWidget = NULL;
-  } else {
-#ifdef QSCITE_DEBUG
-  	std::cout << "Opening terminal" << std::endl;
-#endif
-    termWidget = new QTerminal(this);
-    applyPrefsToTerminal(termWidget);
-    
-    if (termInDrawer) {
-      termWidget->setWindowFlags(Qt::Drawer);
-      termWidget->show();
-    } else {
-      ((QSplitter *)centralWidget())->addWidget(termWidget);
-    }
-    
-    connect(termWidget, SIGNAL(shellExited()), this, SLOT(toggleTerminal()));
-    termWidget->setFocus();
-  }
+  connect(curDoc, SIGNAL(copyAvailable(bool)), this, SLOT(updateCopyAvailable(bool)));
 }
 
 void MainWindow::changeTabs(int index) {
 #ifdef QSCITE_DEBUG
-  std::cout << "attempting to change tabs to index " << index << endl;
+  std::cout << "attempting to change tabs to index " << index << std::endl;
 #endif
   tabWidget->setCurrentIndex(index);
 }
@@ -138,105 +110,6 @@ void MainWindow::closeEvent(QCloseEvent *event) {
   event->accept();
 }
 
-void MainWindow::newFile() {
-  createDocument();
-}
-
-bool MainWindow::closeFile() {
-  if (tabWidget->count()) {
-    if (maybeSave()) {
-      QsciScintilla * theEditor = curDoc;
-      int curTabIndex = tabWidget->currentIndex();
-      tabWidget->removeTab(curTabIndex);
-      fileNames->erase(fileNames->begin() + curTabIndex);
-      modified.erase(modified.begin() + curTabIndex);
-      delete theEditor;
-      
-      if (tabWidget->count()) {	// there are tabs left
-        changeTabs(curTabIndex > 1 ? curTabIndex - 1 : 0);
-      } else {
-        // just to make sure...
-        curFile = "";
-        setWindowTitle(tr("QSciTE"));
-        setWindowModified(false);
-        curDoc = NULL;
-      }
-      
-      return true;
-    }
-  }
-  
-  return false;
-}
-
-void MainWindow::open() {
-  QString fileName = QFileDialog::getOpenFileName(this);
-  
-  if (!fileName.isEmpty()) {
-    if ((!tabWidget->count()) || (!curFile.isEmpty()) || modified[tabWidget->currentIndex()]) {
-      createDocument();
-    }
-    
-    loadFile(fileName);
-	setCurrentTabTitle();
-  }
-}
-
-bool MainWindow::save() {
-  if (tabWidget->count()) {
-    if (curFile.isEmpty()) {
-      return saveAs();
-    } else {
-      return saveFile(curFile);
-    }
-  }
-  
-  // make the compiler happy :)
-  return false;
-}
-
-bool MainWindow::saveAs() {
-  if (tabWidget->count()) {
-    QString fileName = QFileDialog::getSaveFileName(this);
-    
-    if (fileName.isEmpty()) {
-      return false;
-    }
-  
-    return saveFile(fileName);
-  }
-  
-  return false;
-}
-
-void MainWindow::fontDialog() {
-  if (tabWidget->count()) {
-  	QsciLexer * lexer = curDoc->lexer();
-  	bool ok;
-  	
-  	if (lexer) {
-  	  QFont baseFont = QFontDialog::getFont(&ok, lexer->font(lexer->defaultStyle()));
-  	  
-  	  if (ok) {
-  	    setLexerFont(lexer, baseFont.family(), baseFont.pointSize());
-  	  }
-  	} else {
-      QFont font = QFontDialog::getFont(&ok, curDoc->font());
-      
-      if (ok) {
-        curDoc->setFont(font);
-      }
-  	}
-  }
-}
-
-void MainWindow::about() {
-   QMessageBox::about(this, tr("About QSciTE"),
-       tr("<b>QSciTE</b> is a clone of SciTE, based on the Scintilla library"
-          " and Qt4. It is heavily based on the example code included with"
-          " Qscintilla2, and is licensed under the GNU GPL version 2."));
-}
-
 void MainWindow::setDocumentModified(bool wasModified) {
 #ifdef QSCITE_DEBUG
   std::cout << "setDocumentModified(" << wasModified << ')' << std::endl;
@@ -251,66 +124,13 @@ void MainWindow::setDocumentModified(bool wasModified) {
 
 void MainWindow::curDocChanged(int idx) { 
   curDoc->disconnect(SIGNAL(modificationChanged(bool)));
+  curDoc->disconnect(SIGNAL(linesChanged()));
   curDoc = (QsciScintilla *)tabWidget->currentWidget();
   connect(curDoc, SIGNAL(modificationChanged(bool)), this, SLOT(setDocumentModified(bool)));
+  connect(curDoc, SIGNAL(linesChanged()), this, SLOT(redoSetMargin()));
   curFile = (*fileNames)[idx];
   setWindowTitleForFile(curFile);
   setWindowModified(modified[idx]);
-}
-
-
-void MainWindow::readSettings() {
-	QSettings settings;
-
-	if (settings.value("version", 0).toInt() < 1) {
-#ifdef QSCITE_DEBUG
-		std::cout << "Using default preferences" << std::endl;
-#endif
-		writeDefaultSettings(settings);
-	}
-
-	QPoint pos = settings.value("pos", QPoint(200, 200)).toPoint();
-	QSize size = settings.value("size", QSize(400, 400)).toSize();
-	resize(size);
-	move(pos);
-	
-	if (settings.value("maximized", false).toBool()) {
-		setWindowState(windowState() | Qt::WindowMaximized);
-	}
-}
-
-void MainWindow::writeSettings() {
-  QSettings settings;
-  
-  if (settings.value("saveWindowGeometry", false).toBool()) {
-    if (isMaximized()) {
-      settings.setValue("maximized", true);
-    } else {
-      settings.setValue("pos", pos());
-      settings.setValue("size", size());
-	  settings.setValue("maximized", false);
-    }
-  }
-}
-
-void MainWindow::globalPrefs() {
-	MainPrefsDialog * dlgPrefs = new MainPrefsDialog(this, Qt::Sheet);
-
-	connect(dlgPrefs, SIGNAL(accepted()), this, SLOT(prefsWereChanged()), Qt::QueuedConnection);
-	connect(dlgPrefs, SIGNAL(prefsWereReset()), this, SLOT(prefsWereChanged()));
-	connect(dlgPrefs, SIGNAL(finished(int)), this, SLOT(reapPrefs()));
-	
-	dlgPrefs->show();
-}
-
-void MainWindow::prefsWereChanged() {
-	if (termWidget != NULL) {
-		applyPrefsToTerminal(termWidget);
-	}
-}
-
-void MainWindow::reapPrefs() {
-	sender()->deleteLater();
 }
 
 bool MainWindow::maybeSave() {
@@ -373,17 +193,17 @@ void MainWindow::loadFile(const QString &fileName) {
 
 
 void MainWindow::redoSetMargin() {
-  double numLines = (double)curDoc->lines();
-  QString exLength = "99999";
-  numLines /= 10000;
-  
-  while (numLines > 1) {
-    exLength += "9";
-    numLines /= 10.0;
-  }
-
   if (curDoc->marginWidth(1) > 0) {
-    curDoc->setMarginWidth(1, exLength);
+    double numLines = (double)curDoc->lines();
+    QString exLength = "99";
+    numLines /= 10;
+  
+    while (numLines >= 1) {
+      exLength += "9";
+      numLines /= 10.0;
+    }
+
+	  curDoc->setMarginWidth(1, exLength);
   }
 }
 
@@ -428,4 +248,19 @@ void MainWindow::setCurrentTabTitle() {
 	}
 	
 	tabWidget->setTabText(idx, displayName);
+}
+
+void MainWindow::updateCopyAvailable(bool yes) {
+	if (sender() == QApplication::focusWidget()) {
+		cutAct->setEnabled(yes);
+		copyAct->setEnabled(yes);
+	}
+}
+
+void MainWindow::noticeFocusChange(QWidget * prev, QWidget * current) {
+	if (termWidget != NULL && current == termWidget) {
+		copyFromTerm = true;
+	} else if (curDoc != NULL && current == curDoc) {
+		copyFromTerm = false;
+	}
 }

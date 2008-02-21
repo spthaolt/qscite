@@ -346,7 +346,15 @@ void applySettingsToDoc(QsciScintilla * curDoc) {
 	if (settings.value("showLineNumbers").toBool()) {
 		curDoc->setMarginLineNumbers(1, true);
 		// set default margin width to 4 characters (will adjust with different files)
-		curDoc->setMarginWidth(1, "9999");
+    double numLines = (double)curDoc->lines();
+    QString exLength = "99";
+    numLines /= 10;
+  
+    while (numLines >= 1) {
+      exLength += "9";
+      numLines /= 10.0;
+    }
+		curDoc->setMarginWidth(1, exLength);
 	} else {
 		curDoc->setMarginWidth(1, 0);
 	}

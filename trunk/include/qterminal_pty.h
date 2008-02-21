@@ -3,6 +3,7 @@
 #include <QTextEdit>
 #include <QThread>
 #include <sys/select.h>
+class QMimeData;
 
 class FileDescriptorMonitor;
 
@@ -15,6 +16,9 @@ public:
 
 signals:
 	void shellExited();
+
+protected:
+	void insertFromMimeData(const QMimeData * data);
 
 private slots:
 	void readOutput();

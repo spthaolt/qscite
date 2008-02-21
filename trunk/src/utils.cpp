@@ -18,9 +18,9 @@
  ***************************************************************************/
 
 #include "utils.h"
-#include "mainwindow.h"
 #include <vector>
 #include <string>
+#include <iostream>
 #include <QString>
 #include <QFileInfo>
 
