@@ -29,6 +29,9 @@ private:
 	void handleEscape();
 	void handleControlSeq();
 	void handleOSCommand();
+	void eraseDisplay(int arg);
+	void eraseInLine(int arg = 0);
+	void deleteChars(int arg = 1);
 };
 
 class FileDescriptorMonitor: public QThread {
