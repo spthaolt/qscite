@@ -250,6 +250,11 @@ void QTerminal::deleteChars(int arg) {
   }
 }
 
+void QTerminal::insertFromMimeData(const QMimeData* data) {
+	QString s = data->text();
+	write(fdMaster, s.toAscii().data(), s.length());
+}
+
 FileDescriptorMonitor::FileDescriptorMonitor(int fd, QObject * parent) :
 	QThread(parent), watchedFd(fd)
 {

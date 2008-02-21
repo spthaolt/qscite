@@ -17,11 +17,11 @@
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
  
-#include <iostream>
 #include <vector>
 #include <string>
-#include <qstring.h>
-using namespace std;
+#include <QString>
+using std::vector;
+using std::string;
 
 vector<string> tokenize(string, char);
 

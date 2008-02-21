@@ -38,19 +38,28 @@ protected:
     void closeEvent(QCloseEvent *event);
 
 private slots:
+    /* Slots corresponding to UI actions */
     void newFile();
     bool closeFile();
     void open();
     bool save();
     bool saveAs();
+    void editCopy();
+    void editCut();
+    void editPaste();
     void about();
-    void curDocChanged(int idx);
-    void setDocumentModified(bool wasModified = true);
     void fontDialog();
     void globalPrefs();
-    void reapPrefs();
-    void prefsWereChanged();
     void toggleTerminal();
+    
+    /* Internal slots */
+    void curDocChanged(int idx);
+    void setDocumentModified(bool wasModified = true);
+    void reapPrefs();
+    void redoSetMargin();
+    void prefsWereChanged();
+    void updateCopyAvailable(bool);
+    void noticeFocusChange(QWidget *, QWidget *);
 
 private:
     void createActions();
@@ -58,7 +67,6 @@ private:
     void createToolBars();
     void createStatusBar();
     void readSettings();
-    void redoSetMargin();
     void writeSettings();
     bool maybeSave();
     void loadFile(const QString &fileName);
@@ -74,6 +82,7 @@ private:
     std::vector<QsciScintilla *> * openFiles;
     QTabWidget * tabWidget;
     QTerminal * termWidget;
+    bool copyFromTerm;
     std::vector<QString> * fileNames;
     
     QString curFile;

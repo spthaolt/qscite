@@ -36,19 +36,19 @@ void MainWindow::createActions() {
     cutAct->setShortcut(tr("Ctrl+X"));
     cutAct->setStatusTip(tr("Cut the current selection's contents to the "
                             "clipboard"));
-    connect(cutAct, SIGNAL(triggered()), curDoc, SLOT(cut()));
+    connect(cutAct, SIGNAL(triggered()), this, SLOT(editCut()));
 
     copyAct = new QAction(QIcon(":/images/editcopy.svg"), tr("&Copy"), this);
     copyAct->setShortcut(tr("Ctrl+C"));
     copyAct->setStatusTip(tr("Copy the current selection's contents to the "
                              "clipboard"));
-    connect(copyAct, SIGNAL(triggered()), curDoc, SLOT(copy()));
+    connect(copyAct, SIGNAL(triggered()), this, SLOT(editCopy()));
 
     pasteAct = new QAction(QIcon(":/images/editpaste.svg"), tr("&Paste"), this);
     pasteAct->setShortcut(tr("Ctrl+V"));
     pasteAct->setStatusTip(tr("Paste the clipboard's contents into the current "
                               "selection"));
-    connect(pasteAct, SIGNAL(triggered()), curDoc, SLOT(paste()));
+    connect(pasteAct, SIGNAL(triggered()), this, SLOT(editPaste()));
     
     prefsAct = new QAction(QIcon(":/images/configure.svg"), tr("P&references"), this);
     // TODO: set shortcut, tip, etc.

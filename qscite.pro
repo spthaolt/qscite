@@ -2,7 +2,7 @@ TEMPLATE     = app
 
 DEPENDPATH   += include src ui
 
-INCLUDEPATH  += . include
+INCLUDEPATH  += include
 
 MOC_DIR     = build
 OBJECTS_DIR = build
@@ -22,6 +22,8 @@ HEADERS       = mainwindow.h \
 SOURCES       = main.cpp \
                 mainwindow.cpp \
                 mainwindow_startup.cpp \
+                mainwindow_uislots.cpp \
+                mainwindow_prefs.cpp \
                 utils.cpp \
                 lexer_utils.cpp \
                 prefs.cpp 
