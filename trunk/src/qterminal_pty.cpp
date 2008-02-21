@@ -187,7 +187,7 @@ void QTerminal::handleOSCommand() {
       }
       
       if (cmd.at(0) == '1' && cmd.at(1) == '0') {
-        QPalette palette;
+        QPalette palette = this->palette();
         cmd.remove(0,3);
         cmd.remove(cmd.length() - 1, 1);
         palette.setColor(QPalette::Text, QColor(cmd));
