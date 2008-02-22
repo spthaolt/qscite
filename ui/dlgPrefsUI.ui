@@ -15,7 +15,7 @@
   <property name="windowTitle" >
    <string>Preferences - QSciTE</string>
   </property>
-  <widget class="QWidget" name="" >
+  <widget class="QWidget" name="layoutWidget" >
    <property name="geometry" >
     <rect>
      <x>10</x>
@@ -37,19 +37,16 @@
        <attribute name="title" >
         <string>General</string>
        </attribute>
-       <widget class="QWidget" name="" >
+       <widget class="QWidget" name="layoutWidget" >
         <property name="geometry" >
          <rect>
-          <x>0</x>
-          <y>0</y>
-          <width>371</width>
-          <height>231</height>
+          <x>10</x>
+          <y>10</y>
+          <width>361</width>
+          <height>221</height>
          </rect>
         </property>
         <layout class="QVBoxLayout" >
-         <property name="spacing" >
-          <number>0</number>
-         </property>
          <item>
           <widget class="QCheckBox" name="cbSaveSize" >
            <property name="text" >
@@ -58,238 +55,244 @@
           </widget>
          </item>
          <item>
-          <widget class="QGroupBox" name="gbDocMode" >
-           <property name="title" >
-            <string>Default display settings</string>
-           </property>
-           <property name="flat" >
-            <bool>false</bool>
-           </property>
-           <widget class="QWidget" name="" >
-            <property name="geometry" >
-             <rect>
-              <x>10</x>
-              <y>22</y>
-              <width>341</width>
-              <height>187</height>
-             </rect>
-            </property>
-            <layout class="QVBoxLayout" >
-             <item>
-              <widget class="QCheckBox" name="cbWrapMode" >
-               <property name="text" >
-                <string>Wrap long lines</string>
-               </property>
-              </widget>
-             </item>
-             <item>
-              <layout class="QHBoxLayout" >
-               <item>
-                <widget class="QLabel" name="lblWrapMarkers" >
-                 <property name="text" >
-                  <string>Wrap indicators:</string>
-                 </property>
-                 <property name="buddy" >
-                  <cstring>cbxWrapMarkers</cstring>
-                 </property>
-                </widget>
-               </item>
-               <item>
-                <widget class="QComboBox" name="cbxWrapMarkers" >
-                 <property name="sizePolicy" >
-                  <sizepolicy vsizetype="Fixed" hsizetype="MinimumExpanding" >
-                   <horstretch>0</horstretch>
-                   <verstretch>0</verstretch>
-                  </sizepolicy>
-                 </property>
-                 <item>
-                  <property name="text" >
-                   <string>None</string>
-                  </property>
-                 </item>
-                 <item>
-                  <property name="text" >
-                   <string>Near text</string>
-                  </property>
-                 </item>
-                 <item>
-                  <property name="text" >
-                   <string>Near border</string>
-                  </property>
-                 </item>
-                </widget>
-               </item>
-              </layout>
-             </item>
-             <item>
-              <layout class="QHBoxLayout" >
-               <item>
-                <widget class="QCheckBox" name="cbLineNos" >
-                 <property name="text" >
-                  <string>Line numbers</string>
-                 </property>
-                </widget>
-               </item>
-               <item>
-                <widget class="QCheckBox" name="cbIndentGuides" >
-                 <property name="text" >
-                  <string>Indentation guides</string>
-                 </property>
-                </widget>
-               </item>
-              </layout>
-             </item>
-             <item>
-              <layout class="QHBoxLayout" >
-               <item>
-                <widget class="QLabel" name="lblUseTabs" >
-                 <property name="text" >
-                  <string>Indent using:</string>
-                 </property>
-                 <property name="buddy" >
-                  <cstring>cbxUseTabs</cstring>
-                 </property>
-                </widget>
-               </item>
-               <item>
-                <widget class="QComboBox" name="cbxUseTabs" >
-                 <property name="sizePolicy" >
-                  <sizepolicy vsizetype="Fixed" hsizetype="MinimumExpanding" >
-                   <horstretch>0</horstretch>
-                   <verstretch>0</verstretch>
-                  </sizepolicy>
-                 </property>
-                 <item>
-                  <property name="text" >
-                   <string>Spaces</string>
-                  </property>
-                 </item>
-                 <item>
-                  <property name="text" >
-                   <string>Tabs</string>
-                  </property>
-                 </item>
-                </widget>
-               </item>
-              </layout>
-             </item>
-             <item>
-              <layout class="QHBoxLayout" >
-               <item>
-                <widget class="QLabel" name="lblIndentSize" >
-                 <property name="text" >
-                  <string>Indent size:</string>
-                 </property>
-                 <property name="buddy" >
-                  <cstring>sbIndentSize</cstring>
-                 </property>
-                </widget>
-               </item>
-               <item>
-                <widget class="QSpinBox" name="sbIndentSize" >
-                 <property name="sizePolicy" >
-                  <sizepolicy vsizetype="Fixed" hsizetype="MinimumExpanding" >
-                   <horstretch>0</horstretch>
-                   <verstretch>0</verstretch>
-                  </sizepolicy>
-                 </property>
-                 <property name="minimum" >
-                  <number>1</number>
-                 </property>
-                </widget>
-               </item>
-              </layout>
-             </item>
-             <item>
-              <widget class="QCheckBox" name="cbAutoIndent" >
-               <property name="text" >
-                <string>Auto indent</string>
-               </property>
-              </widget>
-             </item>
-            </layout>
-           </widget>
-          </widget>
-         </item>
-        </layout>
-       </widget>
-      </widget>
-      <widget class="QWidget" name="tabFileTypes" >
-       <attribute name="title" >
-        <string>File types</string>
-       </attribute>
-       <widget class="QWidget" name="" >
-        <property name="geometry" >
-         <rect>
-          <x>0</x>
-          <y>0</y>
-          <width>371</width>
-          <height>231</height>
-         </rect>
-        </property>
-        <layout class="QGridLayout" >
-         <item row="0" column="0" >
-          <widget class="QLabel" name="lblTypes" >
+          <widget class="QCheckBox" name="cbTermDrawer" >
            <property name="text" >
-            <string>File types:</string>
+            <string>Terminal in drawer (requires restart)</string>
            </property>
           </widget>
          </item>
-         <item row="0" column="1" >
-          <widget class="QLabel" name="lblExtns" >
-           <property name="text" >
-            <string>Extensions:</string>
-           </property>
-          </widget>
-         </item>
-         <item row="0" column="2" >
-          <widget class="QLabel" name="lblMagic" >
-           <property name="text" >
-            <string>First line matches:</string>
-           </property>
-          </widget>
-         </item>
-         <item rowspan="2" row="1" column="0" >
-          <widget class="QListWidget" name="lwTypes" />
-         </item>
-         <item row="1" column="1" >
-          <widget class="QListWidget" name="lwExtns" />
-         </item>
-         <item row="1" column="2" >
-          <widget class="QListWidget" name="lwMagic" />
-         </item>
-         <item row="2" column="1" >
+         <item>
           <layout class="QHBoxLayout" >
            <item>
-            <widget class="QToolButton" name="btnAddExt" >
+            <widget class="QLabel" name="lblRemember" >
              <property name="text" >
-              <string>+</string>
+              <string>Remember</string>
              </property>
             </widget>
            </item>
            <item>
-            <widget class="QToolButton" name="btnDelExt" >
+            <widget class="QSpinBox" name="spinBox" >
+             <property name="maximum" >
+              <number>25</number>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <widget class="QLabel" name="lblRecentFiles" >
+             <property name="sizePolicy" >
+              <sizepolicy vsizetype="Preferred" hsizetype="MinimumExpanding" >
+               <horstretch>0</horstretch>
+               <verstretch>0</verstretch>
+              </sizepolicy>
+             </property>
              <property name="text" >
-              <string>-</string>
+              <string>recently opened file(s)</string>
              </property>
             </widget>
            </item>
           </layout>
          </item>
-         <item row="2" column="2" >
+         <item>
+          <spacer>
+           <property name="orientation" >
+            <enum>Qt::Vertical</enum>
+           </property>
+           <property name="sizeHint" >
+            <size>
+             <width>20</width>
+             <height>40</height>
+            </size>
+           </property>
+          </spacer>
+         </item>
+        </layout>
+       </widget>
+      </widget>
+      <widget class="QWidget" name="tabText" >
+       <attribute name="title" >
+        <string>Text</string>
+       </attribute>
+       <widget class="QWidget" name="layoutWidget_2" >
+        <property name="geometry" >
+         <rect>
+          <x>10</x>
+          <y>10</y>
+          <width>361</width>
+          <height>225</height>
+         </rect>
+        </property>
+        <layout class="QVBoxLayout" >
+         <item>
+          <widget class="QLabel" name="lblForNew" >
+           <property name="text" >
+            <string>For newly opened documents:</string>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QCheckBox" name="cbWrapMode" >
+           <property name="text" >
+            <string>Wrap long lines</string>
+           </property>
+          </widget>
+         </item>
+         <item>
           <layout class="QHBoxLayout" >
            <item>
-            <widget class="QToolButton" name="btnAddMagic" >
+            <widget class="QLabel" name="lblWrapMarkers" >
              <property name="text" >
-              <string>+</string>
+              <string>Wrap indicators:</string>
+             </property>
+             <property name="buddy" >
+              <cstring>cbxWrapMarkers</cstring>
              </property>
             </widget>
            </item>
            <item>
-            <widget class="QToolButton" name="btnDelMagic" >
-             <property name="text" >
-              <string>-</string>
+            <widget class="QComboBox" name="cbxWrapMarkers" >
+             <property name="sizePolicy" >
+              <sizepolicy vsizetype="Fixed" hsizetype="MinimumExpanding" >
+               <horstretch>0</horstretch>
+               <verstretch>0</verstretch>
+              </sizepolicy>
              </property>
+             <item>
+              <property name="text" >
+               <string>None</string>
+              </property>
+             </item>
+             <item>
+              <property name="text" >
+               <string>Near text</string>
+              </property>
+             </item>
+             <item>
+              <property name="text" >
+               <string>Near border</string>
+              </property>
+             </item>
+            </widget>
+           </item>
+          </layout>
+         </item>
+         <item>
+          <layout class="QHBoxLayout" >
+           <item>
+            <widget class="QCheckBox" name="cbLineNos" >
+             <property name="text" >
+              <string>Line numbers</string>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <widget class="QCheckBox" name="cbIndentGuides" >
+             <property name="text" >
+              <string>Indentation guides</string>
+             </property>
+            </widget>
+           </item>
+          </layout>
+         </item>
+         <item>
+          <layout class="QHBoxLayout" >
+           <item>
+            <widget class="QLabel" name="lblUseTabs" >
+             <property name="text" >
+              <string>Indent using:</string>
+             </property>
+             <property name="buddy" >
+              <cstring>cbxUseTabs</cstring>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <widget class="QComboBox" name="cbxUseTabs" >
+             <property name="sizePolicy" >
+              <sizepolicy vsizetype="Fixed" hsizetype="MinimumExpanding" >
+               <horstretch>0</horstretch>
+               <verstretch>0</verstretch>
+              </sizepolicy>
+             </property>
+             <item>
+              <property name="text" >
+               <string>Spaces</string>
+              </property>
+             </item>
+             <item>
+              <property name="text" >
+               <string>Tabs</string>
+              </property>
+             </item>
+            </widget>
+           </item>
+          </layout>
+         </item>
+         <item>
+          <layout class="QHBoxLayout" >
+           <item>
+            <widget class="QLabel" name="lblIndentSize" >
+             <property name="text" >
+              <string>Indent size:</string>
+             </property>
+             <property name="buddy" >
+              <cstring>sbIndentSize</cstring>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <widget class="QSpinBox" name="sbIndentSize" >
+             <property name="sizePolicy" >
+              <sizepolicy vsizetype="Fixed" hsizetype="MinimumExpanding" >
+               <horstretch>0</horstretch>
+               <verstretch>0</verstretch>
+              </sizepolicy>
+             </property>
+             <property name="minimum" >
+              <number>1</number>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <widget class="QCheckBox" name="cbAutoIndent" >
+             <property name="text" >
+              <string>Auto indent</string>
+             </property>
+            </widget>
+           </item>
+          </layout>
+         </item>
+         <item>
+          <layout class="QHBoxLayout" >
+           <item>
+            <widget class="QLabel" name="label" >
+             <property name="text" >
+              <string>Line endings:</string>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <widget class="QComboBox" name="comboBox" >
+             <property name="sizePolicy" >
+              <sizepolicy vsizetype="Fixed" hsizetype="MinimumExpanding" >
+               <horstretch>0</horstretch>
+               <verstretch>0</verstretch>
+              </sizepolicy>
+             </property>
+             <item>
+              <property name="text" >
+               <string>LF (Unix)</string>
+              </property>
+             </item>
+             <item>
+              <property name="text" >
+               <string>CRLF (Windows)</string>
+              </property>
+             </item>
+             <item>
+              <property name="text" >
+               <string>CR (Mac OS Classic)</string>
+              </property>
+             </item>
             </widget>
            </item>
           </layout>
@@ -299,9 +302,9 @@
       </widget>
       <widget class="QWidget" name="tabFonts" >
        <attribute name="title" >
-        <string>Fonts</string>
+        <string>Font</string>
        </attribute>
-       <widget class="QWidget" name="" >
+       <widget class="QWidget" name="layoutWidget" >
         <property name="geometry" >
          <rect>
           <x>0</x>
@@ -404,7 +407,7 @@
            <property name="title" >
             <string>Plain text color:</string>
            </property>
-           <widget class="QWidget" name="" >
+           <widget class="QWidget" name="layoutWidget" >
             <property name="geometry" >
              <rect>
               <x>10</x>
@@ -540,9 +543,9 @@
       </widget>
       <widget class="QWidget" name="tabTerminal" >
        <attribute name="title" >
-        <string>Terminal</string>
+        <string>Terminal font</string>
        </attribute>
-       <widget class="QWidget" name="" >
+       <widget class="QWidget" name="layoutWidget" >
         <property name="geometry" >
          <rect>
           <x>0</x>
@@ -560,7 +563,7 @@
            <item>
             <widget class="QLabel" name="lblTermFont" >
              <property name="text" >
-              <string>Font:</string>
+              <string>Family:</string>
              </property>
             </widget>
            </item>
@@ -645,7 +648,7 @@
            <property name="title" >
             <string>Plain text color:</string>
            </property>
-           <widget class="QWidget" name="" >
+           <widget class="QWidget" name="layoutWidget" >
             <property name="geometry" >
              <rect>
               <x>10</x>
@@ -776,12 +779,88 @@
            </property>
           </widget>
          </item>
-         <item>
-          <widget class="QCheckBox" name="cbTermDrawer" >
+        </layout>
+       </widget>
+      </widget>
+      <widget class="QWidget" name="tabFileTypes" >
+       <attribute name="title" >
+        <string>File types</string>
+       </attribute>
+       <widget class="QWidget" name="layoutWidget" >
+        <property name="geometry" >
+         <rect>
+          <x>0</x>
+          <y>0</y>
+          <width>371</width>
+          <height>231</height>
+         </rect>
+        </property>
+        <layout class="QGridLayout" >
+         <item row="0" column="0" >
+          <widget class="QLabel" name="lblTypes" >
            <property name="text" >
-            <string>Run in drawer (requires restart)</string>
+            <string>File types:</string>
            </property>
           </widget>
+         </item>
+         <item row="0" column="1" >
+          <widget class="QLabel" name="lblExtns" >
+           <property name="text" >
+            <string>Extensions:</string>
+           </property>
+          </widget>
+         </item>
+         <item row="0" column="2" >
+          <widget class="QLabel" name="lblMagic" >
+           <property name="text" >
+            <string>First line matches:</string>
+           </property>
+          </widget>
+         </item>
+         <item rowspan="2" row="1" column="0" >
+          <widget class="QListWidget" name="lwTypes" />
+         </item>
+         <item row="1" column="1" >
+          <widget class="QListWidget" name="lwExtns" />
+         </item>
+         <item row="1" column="2" >
+          <widget class="QListWidget" name="lwMagic" />
+         </item>
+         <item row="2" column="1" >
+          <layout class="QHBoxLayout" >
+           <item>
+            <widget class="QToolButton" name="btnAddExt" >
+             <property name="text" >
+              <string>+</string>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <widget class="QToolButton" name="btnDelExt" >
+             <property name="text" >
+              <string>-</string>
+             </property>
+            </widget>
+           </item>
+          </layout>
+         </item>
+         <item row="2" column="2" >
+          <layout class="QHBoxLayout" >
+           <item>
+            <widget class="QToolButton" name="btnAddMagic" >
+             <property name="text" >
+              <string>+</string>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <widget class="QToolButton" name="btnDelMagic" >
+             <property name="text" >
+              <string>-</string>
+             </property>
+            </widget>
+           </item>
+          </layout>
          </item>
         </layout>
        </widget>

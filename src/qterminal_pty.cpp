@@ -283,6 +283,13 @@ void QTerminal::insertFromMimeData(const QMimeData* data) {
 	write(fdMaster, s.toAscii().data(), s.length());
 }
 
+void QTerminal::changeDir(const QString & dir) {
+	/* Hope we are talking to a prompt and not a text editor */
+	write(fdMaster, "cd ", 3);
+	write(fdMaster, dir.toAscii().data(), dir.length());
+	write(fdMaster, "\n", 1);
+}
+
 FileDescriptorMonitor::FileDescriptorMonitor(int fd, QObject * parent) :
 	QThread(parent), watchedFd(fd)
 {

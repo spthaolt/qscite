@@ -73,16 +73,11 @@ void MainWindow::createActions() {
 
     cutAct->setEnabled(false);
     copyAct->setEnabled(false);
-    connect(curDoc, SIGNAL(copyAvailable(bool)),
-            cutAct, SLOT(setEnabled(bool)));
-    connect(curDoc, SIGNAL(copyAvailable(bool)),
-            copyAct, SLOT(setEnabled(bool)));
 }
 
 void MainWindow::createMenus() {
     fileMenu = menuBar()->addMenu(tr("&File"));
     fileMenu->addAction(newAct);
-    fileMenu->addAction(terminalAct);
     fileMenu->addAction(openAct);
     fileMenu->addAction(closeAct);
     fileMenu->addAction(saveAct);
@@ -99,6 +94,7 @@ void MainWindow::createMenus() {
     
     viewMenu = menuBar()->addMenu(tr("&View"));
     viewMenu->addAction(fontAct);
+    fileMenu->addAction(terminalAct);
 
     menuBar()->addSeparator();
 

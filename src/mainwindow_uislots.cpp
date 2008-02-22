@@ -29,8 +29,8 @@ void MainWindow::toggleTerminal() {
     termWidget->deleteLater();
     termWidget = NULL;
     
-    if (curDoc) {
-      curDoc->setFocus();
+    if (openFiles.size() > curDocIdx) {
+      openFiles[curDocIdx].edWidget->setFocus();
     }
     
     copyFromTerm = false;
@@ -57,27 +57,27 @@ void MainWindow::toggleTerminal() {
 
 void MainWindow::newFile() {
   createDocument();
-  curDoc->setFocus();
+  openFiles[curDocIdx].edWidget->setFocus();
 }
 
 bool MainWindow::closeFile() {
   if (tabWidget->count()) {
     if (maybeSave()) {
-      QsciScintilla * theEditor = curDoc;
-      int curTabIndex = tabWidget->currentIndex();
-      tabWidget->removeTab(curTabIndex);
-      fileNames->erase(fileNames->begin() + curTabIndex);
-      modified.erase(modified.begin() + curTabIndex);
+      QsciScintilla * theEditor = openFiles[curDocIdx].edWidget;
+
+      tabWidget->removeTab(curDocIdx);
+      
+      openFiles.erase(openFiles.begin() + curDocIdx);
+
       delete theEditor;
       
-      if (tabWidget->count()) {	// there are tabs left
-        changeTabs(curTabIndex > 1 ? curTabIndex - 1 : 0);
-      } else {
-        // just to make sure...
-        curFile = "";
+      if (tabWidget->count() == 0) { // out of tabs
         setWindowTitle(tr("QSciTE"));
         setWindowModified(false);
-        curDoc = NULL;
+      } else if (curDocIdx == 0) { // can't go left, notice new document
+        curDocChanged(0);
+      } else { // choose the tab to the left
+        changeTabs(curDocIdx - 1);
       }
       
       return true;
@@ -92,25 +92,26 @@ void MainWindow::open() {
   
   while (fileNames.count()) {
     if (!fileNames.back().isEmpty()) {
-      if ((!tabWidget->count()) || (!curFile.isEmpty()) || modified[tabWidget->currentIndex()]) {
+      if ((!tabWidget->count()) || (!openFiles[curDocIdx].baseName.isEmpty()) || openFiles[curDocIdx].edWidget->isModified()) {
         createDocument();
       }
       
       loadFile(fileNames.back());
       setCurrentTabTitle();
-  	  curDoc->setFocus();
     }
     
     fileNames.pop_back();
   }
+  
+  openFiles[curDocIdx].edWidget->setFocus();
 }
 
 bool MainWindow::save() {
   if (tabWidget->count()) {
-    if (curFile.isEmpty()) {
+    if (openFiles[curDocIdx].fullName.isEmpty()) {
       return saveAs();
     } else {
-      return saveFile(curFile);
+      return saveFile(openFiles[curDocIdx].fullName);
     }
   }
   
@@ -134,7 +135,7 @@ bool MainWindow::saveAs() {
 
 void MainWindow::fontDialog() {
   if (tabWidget->count()) {
-  	QsciLexer * lexer = curDoc->lexer();
+  	QsciLexer * lexer = openFiles[curDocIdx].edWidget->lexer();
   	bool ok;
   	
   	if (lexer) {
@@ -144,10 +145,10 @@ void MainWindow::fontDialog() {
   	    setLexerFont(lexer, baseFont.family(), baseFont.pointSize());
   	  }
   	} else {
-      QFont font = QFontDialog::getFont(&ok, curDoc->font());
+      QFont font = QFontDialog::getFont(&ok, openFiles[curDocIdx].edWidget->font());
       
       if (ok) {
-        curDoc->setFont(font);
+        openFiles[curDocIdx].edWidget->setFont(font);
       }
   	}
   }
@@ -164,19 +165,19 @@ void MainWindow::editCopy() {
 	if (copyFromTerm) {
 		termWidget->copy();
 	} else {
-		curDoc->copy();
+		openFiles[curDocIdx].edWidget->copy();
 	}
 }
 
 void MainWindow::editCut() {
 	if (!copyFromTerm) {
-		curDoc->cut();
+		openFiles[curDocIdx].edWidget->cut();
 	}
 }
 
 void MainWindow::editPaste() {
 	if (!copyFromTerm) {
-		curDoc->paste();
+		openFiles[curDocIdx].edWidget->paste();
 	} else {
 		termWidget->paste();
 	}

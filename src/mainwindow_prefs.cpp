@@ -66,8 +66,8 @@ void MainWindow::prefsWereChanged() {
 	if (termWidget != NULL) {
 		applyPrefsToTerminal(termWidget);
 	}
-	if (curDoc != NULL) {
-		applySettingsToDoc(curDoc);
+	if (openFiles.size() > curDocIdx) {
+		applySettingsToDoc(openFiles[curDocIdx].edWidget);
 	}
 }
 
