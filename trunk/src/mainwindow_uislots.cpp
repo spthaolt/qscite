@@ -28,7 +28,11 @@ void MainWindow::toggleTerminal() {
     termWidget->disconnect();
     termWidget->deleteLater();
     termWidget = NULL;
-    curDoc->setFocus();
+    
+    if (curDoc) {
+      curDoc->setFocus();
+    }
+    
     copyFromTerm = false;
   } else {
 #ifdef QSCITE_DEBUG
