@@ -9,6 +9,7 @@ QTerminal::QTerminal(QWidget *parent, Qt::WindowFlags f) : QTextEdit(parent) {
   QObject::connect(shell, SIGNAL(readyReadStandardOutput()), this, SLOT(readStandardOut()));
   QObject::connect(shell, SIGNAL(readyReadStandardError()), this, SLOT(readStandardErr()));
   shell->start("cmd.exe", QStringList() << "", QIODevice::ReadWrite);
+  this->insertPlainText("TERMINAL NOT PROPERLY SUPPORTED ON WIN32 YET!\r\n");
   // This var protects against mouse interference with the cursor
   curCursorLoc = this->textCursor();
   inputCharCount = 0;
