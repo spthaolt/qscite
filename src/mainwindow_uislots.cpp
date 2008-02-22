@@ -88,17 +88,20 @@ bool MainWindow::closeFile() {
 }
 
 void MainWindow::open() {
-  QString fileName = QFileDialog::getOpenFileName(this);
+  QStringList fileNames = QFileDialog::getOpenFileNames(this, "Select one or more files to open");
   
-  if (!fileName.isEmpty()) {
-    if ((!tabWidget->count()) || (!curFile.isEmpty()) || modified[tabWidget->currentIndex()]) {
-      createDocument();
+  while (fileNames.count()) {
+    if (!fileNames.back().isEmpty()) {
+      if ((!tabWidget->count()) || (!curFile.isEmpty()) || modified[tabWidget->currentIndex()]) {
+        createDocument();
+      }
+      
+      loadFile(fileNames.back());
+      setCurrentTabTitle();
+  	  curDoc->setFocus();
     }
     
-    loadFile(fileName);
-	setCurrentTabTitle();
-	
-	curDoc->setFocus();
+    fileNames.pop_back();
   }
 }
 
