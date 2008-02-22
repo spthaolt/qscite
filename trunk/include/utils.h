@@ -17,13 +17,6 @@
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
  
-#include <vector>
-#include <string>
 #include <QString>
-using std::vector;
-using std::string;
 
-vector<string> tokenize(string, char);
-
-QString strippedName(const QString &fullFileName);
 void printHex (QString & str);

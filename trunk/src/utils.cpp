@@ -18,35 +18,11 @@
  ***************************************************************************/
 
 #include "utils.h"
-#include <vector>
 #include <string>
 #include <iostream>
 #include <QString>
-#include <QFileInfo>
 
-using namespace std;
-
-vector<string> tokenize(string strIn, char delim) {
-	vector<string> tokenized;
-	int tokStart = 0, tokEnd = 0;
-	
-	tokStart = strIn.find_first_not_of(delim);
-	while (tokStart != -1) {
-		tokEnd = strIn.find(delim, tokStart);
-		tokenized.push_back(strIn.substr(tokStart, tokEnd - tokStart));
-		tokStart = strIn.find_first_not_of(delim, tokEnd);
-	}
-	
-	return tokenized;
-}
-
-QString strippedName(const QString &fullFileName) {
-  if (fullFileName.isEmpty()) {
-    return "Untitled Document";
-  } else {
-    return QFileInfo(fullFileName).fileName();
-  }
-}
+using std::string;
 
 void printHex (QString & thestr) {
   string str = thestr.toStdString();
@@ -59,12 +35,12 @@ void printHex (QString & thestr) {
     }
     char c = str[j];
     for (int i = 2 * sizeof(char) - 1; i >= 0; --i) {
-        cout << "0123456789ABCDEF"[((c >> i*4) & 0xF)];
+        std::cout << "0123456789ABCDEF"[((c >> i*4) & 0xF)];
     }
-    cout << " ";
+    std::cout << " ";
   }
   
-  cout << "-- " << readableStr;
+  std::cout << "-- " << readableStr;
 }
 
 

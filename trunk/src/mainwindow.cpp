@@ -39,12 +39,9 @@
 
 MainWindow::MainWindow() :
   termWidget(NULL), copyFromTerm(false),
-  termInDrawer(QSettings().value("terminalInDrawer", false).toBool())
+  termInDrawer(QSettings().value("terminalInDrawer", false).toBool()),
+  curDocIdx(0)
 {
-  openFiles = new std::vector<QsciScintilla *>;
-  fileNames = new std::vector<QString>;
-  fileNames->push_back(QString(""));
-
   readSettings();
   
   if (!termInDrawer) {
@@ -76,11 +73,12 @@ MainWindow::MainWindow() :
 }
 
 void MainWindow::createDocument() {
-  curDoc = new QsciScintilla();
+  QsciScintilla * curDoc = new QsciScintilla();
+  curDoc->setUtf8(true);
   applySettingsToDoc(curDoc);
-  openFiles->push_back(curDoc);
-  fileNames->push_back("");
-  modified.push_back(false);
+
+  openFiles.push_back(FileData(curDoc));
+  
   tabWidget->addTab(curDoc, "Untitled");
   if (tabWidget->count() > 1) {
     changeTabs(tabWidget->count() - 1);
@@ -114,30 +112,31 @@ void MainWindow::setDocumentModified(bool wasModified) {
 #ifdef QSCITE_DEBUG
   std::cout << "setDocumentModified(" << wasModified << ')' << std::endl;
  #endif
-  int who = tabWidget->currentIndex();
-  if (modified[who] != wasModified) {
-    modified[who] = wasModified;
-	setCurrentTabTitle();
-    setWindowModified(wasModified);
-  }
+  setCurrentTabTitle();
+  setWindowModified(wasModified);
 }
 
-void MainWindow::curDocChanged(int idx) { 
-  curDoc->disconnect(SIGNAL(modificationChanged(bool)));
-  curDoc->disconnect(SIGNAL(linesChanged()));
-  curDoc = (QsciScintilla *)tabWidget->currentWidget();
-  connect(curDoc, SIGNAL(modificationChanged(bool)), this, SLOT(setDocumentModified(bool)));
-  connect(curDoc, SIGNAL(linesChanged()), this, SLOT(redoSetMargin()));
-  curFile = (*fileNames)[idx];
-  setWindowTitleForFile(curFile);
-  setWindowModified(modified[idx]);
+void MainWindow::curDocChanged(int idx) {
+#ifdef QSCITE_DEBUG
+  std::cout << "curDocChanged(" << idx << ')' << std::endl;
+#endif
+  
+  openFiles[curDocIdx].edWidget->disconnect(SIGNAL(modificationChanged(bool)));
+  openFiles[curDocIdx].edWidget->disconnect(SIGNAL(linesChanged()));
+  
+  curDocIdx = idx;
+  
+  connect(openFiles[curDocIdx].edWidget, SIGNAL(modificationChanged(bool)), this, SLOT(setDocumentModified(bool)));
+  connect(openFiles[curDocIdx].edWidget, SIGNAL(linesChanged()), this, SLOT(redoSetMargin()));
+  
+  setWindowTitleForFile(openFiles[curDocIdx].baseName);
+  setWindowModified(openFiles[curDocIdx].edWidget->isModified());
 }
 
 bool MainWindow::maybeSave() {
-  if (modified[tabWidget->currentIndex()]) {
+  if (openFiles[curDocIdx].edWidget->isModified()) {
     int ret = QMessageBox::warning(this, tr("QSciTE"),
-                 tr((strippedName(curFile).toStdString() + " has been modified.\n"
-                    "Do you want to save your changes?").c_str()),
+                 tr("%1 has been modified.\nDo you want to save your changes?").arg(openFiles[curDocIdx].baseName.isEmpty() ? tr("<Untitled document>") : openFiles[curDocIdx].baseName),
                  QMessageBox::Yes | QMessageBox::Default,
                  QMessageBox::No,
                  QMessageBox::Cancel | QMessageBox::Escape);
@@ -164,28 +163,27 @@ void MainWindow::loadFile(const QString &fileName) {
 
   QTextStream in(&file);
   QApplication::setOverrideCursor(Qt::WaitCursor);
-  curDoc->setText(in.readAll());
+  openFiles[curDocIdx].edWidget->setText(in.readAll());
   QApplication::restoreOverrideCursor();
   
-  curFile = fileName;
-  (*fileNames)[tabWidget->currentIndex()] = fileName;
+  openFiles[curDocIdx].setPathName(fileName);
 
-  setWindowTitleForFile(fileName);
-  curDoc->setModified(false);
+  setWindowTitleForFile(openFiles[curDocIdx].baseName);
+  openFiles[curDocIdx].edWidget->setModified(false);
   
   redoSetMargin();
   
-  QFont currentFont = curDoc->font();
-  QsciLexer * newLexer = getLexerForDocument(fileName, curDoc->text());
+  QFont currentFont = openFiles[curDocIdx].edWidget->font();
+  QsciLexer * newLexer = getLexerForDocument(fileName, openFiles[curDocIdx].edWidget->text());
   
   if (newLexer != NULL) {
 #ifdef QSCITE_DEBUG
     std::cout << "Using lexer " << newLexer->lexer() << std::endl;
 #endif
-  	newLexer->setParent(curDoc);
-    curDoc->setLexer(newLexer);
+  	newLexer->setParent(openFiles[curDocIdx].edWidget);
+    openFiles[curDocIdx].edWidget->setLexer(newLexer);
     setLexerFont(newLexer, currentFont.family(), currentFont.pointSize());
-    curDoc->setCaretForegroundColor(QColor(0,0,0));
+    openFiles[curDocIdx].edWidget->setCaretForegroundColor(QColor(0,0,0));
   }
   
   statusBar()->showMessage(tr("File loaded"), 2000);
@@ -193,6 +191,7 @@ void MainWindow::loadFile(const QString &fileName) {
 
 
 void MainWindow::redoSetMargin() {
+  QsciScintilla * curDoc = openFiles[curDocIdx].edWidget;
   if (curDoc->marginWidth(1) > 0) {
     double numLines = (double)curDoc->lines();
     QString exLength = "99";
@@ -220,10 +219,10 @@ bool MainWindow::saveFile(const QString &fileName) {
 
   QTextStream out(&file);
   QApplication::setOverrideCursor(Qt::WaitCursor);
-  out << curDoc->text();
+  out << openFiles[curDocIdx].edWidget->text();
   QApplication::restoreOverrideCursor();
   statusBar()->showMessage(tr("File saved"), 2000);
-  curDoc->setModified(false);
+  openFiles[curDocIdx].edWidget->setModified(false);
   return true;
 }
 
@@ -233,21 +232,21 @@ void MainWindow::setWindowTitleForFile(const QString & fileName) {
   if (fileName.isEmpty()) {
     shownName = "Untitled";
   } else {
-    shownName = strippedName(fileName);
+    // strippedName() is gone since we should always be passed a basename
+    shownName = fileName;
   }
   
   setWindowTitle(tr("%1[*] - %2").arg(shownName).arg(tr("QSciTE")));
 }
 
 void MainWindow::setCurrentTabTitle() {
-	int idx = tabWidget->currentIndex();
-	QString displayName = curFile.isEmpty() ? "Untitled" : strippedName(curFile);
+	QString displayName = openFiles[curDocIdx].baseName.isEmpty() ? "Untitled" : openFiles[curDocIdx].baseName;
 	
-	if (modified[idx]) {
+	if (openFiles[curDocIdx].edWidget->isModified()) {
 		displayName += "*";
 	}
 	
-	tabWidget->setTabText(idx, displayName);
+	tabWidget->setTabText(curDocIdx, displayName);
 }
 
 void MainWindow::updateCopyAvailable(bool yes) {
@@ -260,7 +259,18 @@ void MainWindow::updateCopyAvailable(bool yes) {
 void MainWindow::noticeFocusChange(QWidget * prev, QWidget * current) {
 	if (termWidget != NULL && current == termWidget) {
 		copyFromTerm = true;
-	} else if (curDoc != NULL && current == curDoc) {
+	} else if (openFiles.size() > curDocIdx && current == openFiles[curDocIdx].edWidget) {
 		copyFromTerm = false;
 	}
+}
+
+FileData::FileData(QsciScintilla * doc) : edWidget(doc) { ; }
+FileData::FileData(const FileData & src) : fullName(src.fullName), baseName(src.baseName), path(src.path), edWidget(src.edWidget) {
+}
+
+void FileData::setPathName(const QString & newPathName) {
+	fullName = newPathName;
+	QFileInfo info(newPathName);
+	baseName = info.fileName();
+	path = info.absolutePath();
 }

@@ -27,6 +27,20 @@ class QsciScintilla;
 class QTabWidget;
 class QTerminal;
 
+struct FileData {
+
+	FileData(QsciScintilla * doc = NULL);
+	FileData(const FileData & src);
+	
+	QString fullName;
+	QString baseName;
+	QString path;
+	
+	QsciScintilla * edWidget;
+	
+	void setPathName(const QString & newPathName);
+};
+
 class MainWindow : public QMainWindow
 {
     Q_OBJECT
@@ -77,17 +91,14 @@ private:
     void changeTabs(int index);
     void documentWasModified();
     
-
-    QsciScintilla * curDoc;
-    std::vector<QsciScintilla *> * openFiles;
+    std::vector<FileData> openFiles;
     QTabWidget * tabWidget;
     QTerminal * termWidget;
-    bool copyFromTerm;
-    std::vector<QString> * fileNames;
     
-    QString curFile;
-    std::vector<bool> modified;
+    bool copyFromTerm;
     bool termInDrawer;
+
+    unsigned int curDocIdx;
 
     QMenu *fileMenu;
     QMenu *editMenu;

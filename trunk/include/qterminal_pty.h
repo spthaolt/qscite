@@ -14,6 +14,9 @@ public:
 	~QTerminal();
 	void keyPressEvent(QKeyEvent * event);
 
+public slots:
+	void changeDir(const QString & dir);
+
 signals:
 	void shellExited();
 
