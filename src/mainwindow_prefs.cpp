@@ -36,6 +36,12 @@ void MainWindow::readSettings() {
 	if (settings.value("maximized", false).toBool()) {
 		setWindowState(windowState() | Qt::WindowMaximized);
 	}
+	
+	for (int i = 0, j = settings.beginReadArray("recentFiles"); i < j; ++i) {
+		settings.setArrayIndex(i);
+		recentFiles.push_back(QFileInfo(settings.value("info").toString()));
+	}
+	settings.endArray();
 }
 
 void MainWindow::writeSettings() {
@@ -49,6 +55,15 @@ void MainWindow::writeSettings() {
       settings.setValue("size", size());
 	  settings.setValue("maximized", false);
     }
+  }
+  
+  if (settings.value("recentFileCount", 0).toInt() > 0) {
+    settings.beginWriteArray("recentFiles");
+    for (int i = 0; i < recentFiles.size(); ++i) {
+    	settings.setArrayIndex(i);
+    	settings.setValue("info", recentFiles[i].canonicalFilePath());
+    }
+    settings.endArray();
   }
 }
 

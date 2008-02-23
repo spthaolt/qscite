@@ -58,4 +58,5 @@ win32 {
 debug {
   CONFIG  += warn_on
   DEFINES += QSCITE_DEBUG
+  QMAKE_CXXFLAGS += -g
 }

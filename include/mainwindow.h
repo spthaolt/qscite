@@ -21,6 +21,9 @@
 #define _QSCITE_MAINWINDOW_H
 
 #include <QMainWindow>
+#include <QList>
+#include <QFileInfo>
+
 class QAction;
 class QMenu;
 class QsciScintilla;
@@ -56,6 +59,7 @@ private slots:
     void newFile();
     bool closeFile();
     void open();
+    void openRecent(QAction * src);
     bool save();
     bool saveAs();
     void editCopy();
@@ -64,7 +68,7 @@ private slots:
     void about();
     void fontDialog();
     void globalPrefs();
-    void toggleTerminal();
+    void toggleTerminal(bool alive = false);
     
     /* Internal slots */
     void curDocChanged(int idx);
@@ -92,6 +96,7 @@ private:
     void documentWasModified();
     
     std::vector<FileData> openFiles;
+    QList<QFileInfo> recentFiles;
     QTabWidget * tabWidget;
     QTerminal * termWidget;
     
@@ -101,6 +106,7 @@ private:
     unsigned int curDocIdx;
 
     QMenu *fileMenu;
+    QMenu *recentMenu;
     QMenu *editMenu;
     QMenu *viewMenu;
     QMenu *helpMenu;

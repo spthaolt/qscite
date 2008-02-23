@@ -45,13 +45,15 @@ MainWindow::MainWindow() :
   readSettings();
   
   if (!termInDrawer) {
-    QSplitter * mainWidget = new QSplitter(this);
-    mainWidget->setOrientation(Qt::Vertical);
-	  
-    tabWidget = new QTabWidget(mainWidget);
-    mainWidget->addWidget(tabWidget);
-    
-    setCentralWidget(mainWidget);
+//     QSplitter * mainWidget = new QSplitter(this);
+//     mainWidget->setOrientation(Qt::Vertical);
+// 	  
+//     tabWidget = new QTabWidget(mainWidget);
+//     mainWidget->addWidget(tabWidget);
+//     setCentralWidget(mainWidget);
+
+    tabWidget = new QTabWidget(this);
+    setCentralWidget(tabWidget);
   } else {
     tabWidget = new QTabWidget(this);
     setCentralWidget(tabWidget);
@@ -86,6 +88,8 @@ void MainWindow::createDocument() {
     curDocChanged(0);
   }
   connect(curDoc, SIGNAL(copyAvailable(bool)), this, SLOT(updateCopyAvailable(bool)));
+  connect(curDoc, SIGNAL(modificationChanged(bool)), this, SLOT(setDocumentModified(bool)));
+  connect(curDoc, SIGNAL(linesChanged()), this, SLOT(redoSetMargin()));
 }
 
 void MainWindow::changeTabs(int index) {
@@ -96,6 +100,9 @@ void MainWindow::changeTabs(int index) {
 }
 
 void MainWindow::closeEvent(QCloseEvent *event) {
+  if (termWidget != NULL) {
+    toggleTerminal();
+  }
   while(tabWidget->count()) {
     changeTabs(0);
     if (!closeFile()) {
@@ -121,16 +128,15 @@ void MainWindow::curDocChanged(int idx) {
   std::cout << "curDocChanged(" << idx << ')' << std::endl;
 #endif
   
-  openFiles[curDocIdx].edWidget->disconnect(SIGNAL(modificationChanged(bool)));
-  openFiles[curDocIdx].edWidget->disconnect(SIGNAL(linesChanged()));
-  
   curDocIdx = idx;
   
-  connect(openFiles[curDocIdx].edWidget, SIGNAL(modificationChanged(bool)), this, SLOT(setDocumentModified(bool)));
-  connect(openFiles[curDocIdx].edWidget, SIGNAL(linesChanged()), this, SLOT(redoSetMargin()));
-  
-  setWindowTitleForFile(openFiles[curDocIdx].baseName);
-  setWindowModified(openFiles[curDocIdx].edWidget->isModified());
+  if (openFiles.size() > curDocIdx) { 
+    setWindowTitleForFile(openFiles[curDocIdx].baseName);
+    setWindowModified(openFiles[curDocIdx].edWidget->isModified());
+    if (termWidget != NULL && !openFiles[curDocIdx].fullName.isEmpty()) {
+      termWidget->changeDir(openFiles[curDocIdx].path);
+    }
+  }
 }
 
 bool MainWindow::maybeSave() {
@@ -170,6 +176,9 @@ void MainWindow::loadFile(const QString &fileName) {
 
   setWindowTitleForFile(openFiles[curDocIdx].baseName);
   openFiles[curDocIdx].edWidget->setModified(false);
+  if (termWidget != NULL) {
+    termWidget->changeDir(openFiles[curDocIdx].path);
+  }
   
   redoSetMargin();
   
@@ -223,6 +232,7 @@ bool MainWindow::saveFile(const QString &fileName) {
   QApplication::restoreOverrideCursor();
   statusBar()->showMessage(tr("File saved"), 2000);
   openFiles[curDocIdx].edWidget->setModified(false);
+  //addRecentFile(fileName);
   return true;
 }
 

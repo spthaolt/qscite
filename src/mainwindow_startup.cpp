@@ -79,6 +79,7 @@ void MainWindow::createMenus() {
     fileMenu = menuBar()->addMenu(tr("&File"));
     fileMenu->addAction(newAct);
     fileMenu->addAction(openAct);
+    recentMenu = fileMenu->addMenu(tr("Open &Recent"));
     fileMenu->addAction(closeAct);
     fileMenu->addAction(saveAct);
     fileMenu->addAction(saveAsAct);
@@ -94,13 +95,18 @@ void MainWindow::createMenus() {
     
     viewMenu = menuBar()->addMenu(tr("&View"));
     viewMenu->addAction(fontAct);
-    fileMenu->addAction(terminalAct);
+    viewMenu->addAction(terminalAct);
 
     menuBar()->addSeparator();
 
     helpMenu = menuBar()->addMenu(tr("&Help"));
     helpMenu->addAction(aboutAct);
     helpMenu->addAction(aboutQtAct);
+    
+    for (int i = 0; i < recentFiles.size(); ++i) {
+    	recentMenu->addAction(recentFiles[i].fileName(), this, SLOT(openRecent(QAction *)))->setStatusTip(recentFiles[i].filePath());
+    }
+    recentMenu->menuAction()->setEnabled(!recentFiles.empty());
 }
 
 void MainWindow::createToolBars() {

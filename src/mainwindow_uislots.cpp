@@ -18,10 +18,16 @@
   #include "qterminal_pty.h"
 #endif
 
-void MainWindow::toggleTerminal() {
+void MainWindow::toggleTerminal(bool alive) {
+  if (alive) { // we were called by a dock window reporting itself visible
+    return;
+  }
   QSettings settings;
   
   if (termWidget != NULL) {
+    if (!termInDrawer) {
+      termWidget->parent()->deleteLater();
+    }
 #ifdef QSCITE_DEBUG
     std::cout << "Closing terminal" << std::endl;
 #endif
@@ -40,12 +46,18 @@ void MainWindow::toggleTerminal() {
 #endif
     termWidget = new QTerminal(this);
     applyPrefsToTerminal(termWidget);
+    if (openFiles.size() > curDocIdx && !openFiles[curDocIdx].fullName.isEmpty()) {
+    	termWidget->changeDir(openFiles[curDocIdx].path);
+    }
     
     if (termInDrawer) {
       termWidget->setWindowFlags(Qt::Drawer);
       termWidget->show();
     } else {
-      ((QSplitter *)centralWidget())->addWidget(termWidget);
+      QDockWidget * termDock = new QDockWidget(tr("QSciTE Terminal"), this);
+      termDock->setWidget(termWidget);
+      this->addDockWidget(Qt::BottomDockWidgetArea, termDock);
+      //connect(termDock, SIGNAL(visibilityChanged(bool)), this, SLOT(toggleTerminal(bool)));
     }
     
     connect(termWidget, SIGNAL(shellExited()), this, SLOT(toggleTerminal()));
@@ -65,20 +77,19 @@ bool MainWindow::closeFile() {
     if (maybeSave()) {
       QsciScintilla * theEditor = openFiles[curDocIdx].edWidget;
 
-      tabWidget->removeTab(curDocIdx);
-      
       openFiles.erase(openFiles.begin() + curDocIdx);
+      tabWidget->removeTab(curDocIdx);      
 
       delete theEditor;
       
       if (tabWidget->count() == 0) { // out of tabs
         setWindowTitle(tr("QSciTE"));
         setWindowModified(false);
-      } else if (curDocIdx == 0) { // can't go left, notice new document
+      } /* else if (curDocIdx == 0) { // can't go left, notice new document
         curDocChanged(0);
       } else { // choose the tab to the left
         changeTabs(curDocIdx - 1);
-      }
+      } */
       
       return true;
     }
@@ -98,12 +109,25 @@ void MainWindow::open() {
       
       loadFile(fileNames.back());
       setCurrentTabTitle();
+      
+      //addRecentFile(fileNames.back());
     }
     
     fileNames.pop_back();
   }
   
-  openFiles[curDocIdx].edWidget->setFocus();
+  if (!openFiles.empty()) {
+    openFiles[curDocIdx].edWidget->setFocus();
+  }
+}
+
+void MainWindow::openRecent(QAction * src) {
+  if ((!tabWidget->count()) || (!openFiles[curDocIdx].baseName.isEmpty()) || openFiles[curDocIdx].edWidget->isModified()) {
+	createDocument();
+  }
+  
+  loadFile(src->statusTip());
+  setCurrentTabTitle();	
 }
 
 bool MainWindow::save() {
