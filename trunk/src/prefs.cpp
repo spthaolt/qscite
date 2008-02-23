@@ -9,6 +9,7 @@
 #include "lexer_utils.h"
 
 #ifdef _WIN32
+
   #include "qterminal.h"
 #else
   #include "qterminal_pty.h"
@@ -64,6 +65,7 @@ void MainPrefsDialog::populate() {
 	 * "General" tab
 	 */
 	cbSaveSize->setChecked(settings.value("saveWindowGeometry").toBool());
+	sbRecentCount->setValue(settings.value("recentFileCount").toInt());
 	cbWrapMode->setChecked(
 		settings.value("wrapMode").toInt() == QsciScintilla::WrapWord
 	);
@@ -230,6 +232,7 @@ void MainPrefsDialog::writeValues() {
 	 * "General" tab
 	 */
 	settings.setValue("saveWindowGeometry", cbSaveSize->isChecked());
+	settings.setValue("recentFileCount", sbRecentCount->value());
 
 	settings.setValue("wrapMode", cbWrapMode->isChecked() ? QsciScintilla::WrapWord : QsciScintilla::WrapNone);
 	settings.setValue("wrapIndicatorMode", cbxWrapMarkers->currentIndex());
@@ -298,6 +301,7 @@ void writeDefaultSettings(QSettings & settings) {
 	settings.setValue("terminalInDrawer", false);
 #endif
 
+    settings.setValue("recentFileCount", 0);
 	settings.setValue("saveWindowGeometry", true);
 
 	settings.setValue("EOLMode", QsciScintilla::EolUnix);
