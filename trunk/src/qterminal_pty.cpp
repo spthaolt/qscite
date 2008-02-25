@@ -190,7 +190,12 @@ void QTerminal::handleOSCommand() {
 #ifdef QSCITE_DEBUG
           std::cout << "setting terminal text color to " << colorStr.toStdString() << std::endl;
 #endif
-          palette.setColor(QPalette::Text, QColor(colorStr));
+          if (colorStr.toLower() == "green") {
+            palette.setColor(QPalette::Text, QColor((QRgb)0x00FF00));
+          } else {
+            palette.setColor(QPalette::Text, QColor(colorStr));
+          }
+          
         } else if (cmd.at(1) == '1') {
 #ifdef QSCITE_DEBUG
           std::cout << "setting terminal background color to " << colorStr.toStdString() << std::endl;

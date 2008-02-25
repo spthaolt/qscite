@@ -8,19 +8,19 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>400</width>
-    <height>320</height>
+    <width>409</width>
+    <height>321</height>
    </rect>
   </property>
   <property name="windowTitle" >
    <string>Preferences - QSciTE</string>
   </property>
-  <widget class="QWidget" name="" >
+  <widget class="QWidget" name="layoutWidget" >
    <property name="geometry" >
     <rect>
      <x>10</x>
      <y>10</y>
-     <width>381</width>
+     <width>391</width>
      <height>301</height>
     </rect>
    </property>
@@ -33,11 +33,14 @@
       <property name="tabShape" >
        <enum>QTabWidget::Rounded</enum>
       </property>
+      <property name="currentIndex" >
+       <number>0</number>
+      </property>
       <widget class="QWidget" name="tabGeneral" >
        <attribute name="title" >
         <string>General</string>
        </attribute>
-       <widget class="QWidget" name="" >
+       <widget class="QWidget" name="layoutWidget" >
         <property name="geometry" >
          <rect>
           <x>10</x>
@@ -112,13 +115,13 @@
        <attribute name="title" >
         <string>Text</string>
        </attribute>
-       <widget class="QWidget" name="" >
+       <widget class="QWidget" name="layoutWidget" >
         <property name="geometry" >
          <rect>
           <x>10</x>
           <y>10</y>
           <width>361</width>
-          <height>225</height>
+          <height>226</height>
          </rect>
         </property>
         <layout class="QVBoxLayout" >
@@ -304,7 +307,7 @@
        <attribute name="title" >
         <string>Font</string>
        </attribute>
-       <widget class="QWidget" name="" >
+       <widget class="QWidget" name="layoutWidget" >
         <property name="geometry" >
          <rect>
           <x>0</x>
@@ -407,7 +410,7 @@
            <property name="title" >
             <string>Plain text color:</string>
            </property>
-           <widget class="QWidget" name="" >
+           <widget class="QWidget" name="layoutWidget" >
             <property name="geometry" >
              <rect>
               <x>10</x>
@@ -545,7 +548,7 @@
        <attribute name="title" >
         <string>Terminal font</string>
        </attribute>
-       <widget class="QWidget" name="" >
+       <widget class="QWidget" name="layoutWidget" >
         <property name="geometry" >
          <rect>
           <x>0</x>
@@ -648,7 +651,7 @@
            <property name="title" >
             <string>Plain text color:</string>
            </property>
-           <widget class="QWidget" name="" >
+           <widget class="QWidget" name="layoutWidget" >
             <property name="geometry" >
              <rect>
               <x>10</x>
@@ -786,7 +789,7 @@
        <attribute name="title" >
         <string>File types</string>
        </attribute>
-       <widget class="QWidget" name="" >
+       <widget class="QWidget" name="layoutWidget" >
         <property name="geometry" >
          <rect>
           <x>0</x>
