@@ -84,14 +84,19 @@ private:
     void createMenus();
     void createToolBars();
     void createStatusBar();
+    
+    void createDocument();
+    
     void readSettings();
     void writeSettings();
+    
     bool maybeSave();
     void loadFile(const QString &fileName);
     bool saveFile(const QString &fileName);
+    void addRecentFile(const QString &fileName);
+    
     void setWindowTitleForFile(const QString & fileName);
     void setCurrentTabTitle();
-    void createDocument();
     void changeTabs(int index);
     void documentWasModified();
     

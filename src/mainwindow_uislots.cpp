@@ -50,8 +50,8 @@ void MainWindow::toggleTerminal(bool alive) {
     } else {
       QDockWidget * termDock = new QDockWidget(tr("QSciTE Terminal"), this);
       termDock->setWidget(termWidget);
+      termDock->setFeatures(QDockWidget::DockWidgetMovable | QDockWidget::DockWidgetFloatable);
       this->addDockWidget(Qt::BottomDockWidgetArea, termDock);
-      //connect(termDock, SIGNAL(visibilityChanged(bool)), this, SLOT(toggleTerminal(bool)));
     }
     
     connect(termWidget, SIGNAL(shellExited()), this, SLOT(toggleTerminal()));
@@ -104,7 +104,7 @@ void MainWindow::open() {
       loadFile(fileNames.back());
       setCurrentTabTitle();
       
-      //addRecentFile(fileNames.back());
+      addRecentFile(fileNames.back());
     }
     
     fileNames.pop_back();
@@ -116,6 +116,7 @@ void MainWindow::open() {
 }
 
 void MainWindow::openRecent(QAction * src) {
+  qDebug() << "openRecent(" << src->statusTip() << ')';
   if ((!tabWidget->count()) || (!openFiles[curDocIdx].baseName.isEmpty()) || openFiles[curDocIdx].edWidget->isModified()) {
 	createDocument();
   }
@@ -144,7 +145,8 @@ bool MainWindow::saveAs() {
     if (fileName.isEmpty()) {
       return false;
     }
-  
+    
+    addRecentFile(fileName);
     return saveFile(fileName);
   }
   
