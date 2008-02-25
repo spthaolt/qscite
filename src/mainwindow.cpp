@@ -38,6 +38,7 @@ MainWindow::MainWindow() :
   termInDrawer(QSettings().value("terminalInDrawer", false).toBool()),
   curDocIdx(0)
 {
+  this->setUnifiedTitleAndToolBarOnMac(true);
   readSettings();
   
   if (!termInDrawer) {
