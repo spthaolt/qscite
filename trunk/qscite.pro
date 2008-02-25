@@ -1,3 +1,5 @@
+CONFIG -= debug release
+
 TEMPLATE     = app
 
 DEPENDPATH   += include src ui
@@ -12,7 +14,7 @@ UI_DIR      = build
     DESTDIR = build
 }
 
-CONFIG       += release thread
+CONFIG       += debug thread
 
 HEADERS       = mainwindow.h \
                 utils.h \
@@ -55,8 +57,6 @@ win32 {
   SOURCES += qterminal.cpp
 }
 
-debug {
-  CONFIG  += warn_on
-  DEFINES += QSCITE_DEBUG
-  QMAKE_CXXFLAGS += -g
+release {
+  DEFINES += QT_NO_DEBUG_OUTPUT
 }

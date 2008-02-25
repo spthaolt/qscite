@@ -104,9 +104,10 @@ void MainWindow::createMenus() {
     helpMenu->addAction(aboutQtAct);
     
     for (int i = 0; i < recentFiles.size(); ++i) {
-    	recentMenu->addAction(recentFiles[i].fileName(), this, SLOT(openRecent(QAction *)))->setStatusTip(recentFiles[i].filePath());
+    	recentMenu->addAction( recentFiles[i].fileName() )->setStatusTip( recentFiles[i].filePath() );
     }
     recentMenu->menuAction()->setEnabled(!recentFiles.empty());
+    connect(recentMenu, SIGNAL(triggered(QAction *)), this, SLOT(openRecent(QAction *)));
 }
 
 void MainWindow::createToolBars() {

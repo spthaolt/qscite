@@ -41,20 +41,8 @@ MainWindow::MainWindow() :
   this->setUnifiedTitleAndToolBarOnMac(true);
   readSettings();
   
-  if (!termInDrawer) {
-//     QSplitter * mainWidget = new QSplitter(this);
-//     mainWidget->setOrientation(Qt::Vertical);
-// 	  
-//     tabWidget = new QTabWidget(mainWidget);
-//     mainWidget->addWidget(tabWidget);
-//     setCentralWidget(mainWidget);
-
-    tabWidget = new QTabWidget(this);
-    setCentralWidget(tabWidget);
-  } else {
-    tabWidget = new QTabWidget(this);
-    setCentralWidget(tabWidget);
-  }
+  tabWidget = new QTabWidget(this);
+  setCentralWidget(tabWidget);
   
   createDocument();
   createActions();
@@ -262,6 +250,25 @@ void MainWindow::noticeFocusChange(QWidget * prev, QWidget * current) {
 		copyFromTerm = false;
 	}
 }
+
+void MainWindow::addRecentFile(const QString & fileName) {
+	int maxRecentFiles = QSettings().value("recentFileCount",0).toInt();
+	
+	recentFiles.push_back(QFileInfo(fileName));
+	for (int i = 0; i < recentFiles.size() - 1; ++i) {
+		if (recentFiles[i] == recentFiles.back()) {
+			recentFiles.removeAt(i);
+		}
+		while (recentFiles.size() > maxRecentFiles) {
+			recentFiles.pop_front();
+		}
+	}
+	recentMenu->clear();
+    for (int i = 0; i < recentFiles.size(); ++i) {
+    	recentMenu->addAction( recentFiles[i].fileName() )->setStatusTip( recentFiles[i].filePath() );
+    }
+    recentMenu->menuAction()->setEnabled(!recentFiles.empty());
+}		
 
 FileData::FileData(QsciScintilla * doc) : edWidget(doc) { ; }
 FileData::FileData(const FileData & src) : fullName(src.fullName), baseName(src.baseName), path(src.path), edWidget(src.edWidget) {
