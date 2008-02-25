@@ -63,6 +63,8 @@ void QTerminal::readOutput() {
   char c;
   int count = read(fdMaster, &c, 1);
   while(count == 1) {
+    // ensure that the QTextEdit cursor keeps up with the terminal
+    this->moveCursor(QTextCursor::NoMove);
     if (c == '\x1b') { /* escape character */
       handleEscape();
     } else if (c == '\r') {
