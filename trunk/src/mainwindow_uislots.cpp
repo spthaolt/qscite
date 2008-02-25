@@ -1,10 +1,8 @@
 #include <QtGui>
+#include <QtDebug>
 #include <Qsci/qsciscintilla.h>
 #include <Qsci/qscilexer.h>
 
-#ifdef QSCITE_DEBUG
-#include <iostream>
-#endif
 
 #include "mainwindow.h"
 #include "utils.h"
@@ -12,7 +10,6 @@
 #include "prefs.h"
 
 #ifdef _WIN32
-
   #include "qterminal.h"
 #else
   #include "qterminal_pty.h"
@@ -28,9 +25,8 @@ void MainWindow::toggleTerminal(bool alive) {
     if (!termInDrawer) {
       termWidget->parent()->deleteLater();
     }
-#ifdef QSCITE_DEBUG
-    std::cout << "Closing terminal" << std::endl;
-#endif
+    
+    qDebug() << "Closing terminal";
     termWidget->disconnect();
     termWidget->deleteLater();
     termWidget = NULL;
@@ -41,9 +37,7 @@ void MainWindow::toggleTerminal(bool alive) {
     
     copyFromTerm = false;
   } else {
-#ifdef QSCITE_DEBUG
-  	std::cout << "Opening terminal" << std::endl;
-#endif
+  	qDebug() << "Opening terminal";
     termWidget = new QTerminal(this);
     applyPrefsToTerminal(termWidget);
     if (openFiles.size() > curDocIdx && !openFiles[curDocIdx].fullName.isEmpty()) {
