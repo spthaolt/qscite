@@ -18,12 +18,9 @@
  ***************************************************************************/
  
 #include <QtGui>
+#include <QtDebug>
 #include <Qsci/qsciscintilla.h>
 #include <Qsci/qscilexer.h>
-
-#ifdef QSCITE_DEBUG
-#include <iostream>
-#endif
 
 #include "mainwindow.h"
 #include "utils.h"
@@ -31,7 +28,6 @@
 #include "prefs.h"
 
 #ifdef _WIN32
-
   #include "qterminal.h"
 #else
   #include "qterminal_pty.h"
@@ -93,9 +89,7 @@ void MainWindow::createDocument() {
 }
 
 void MainWindow::changeTabs(int index) {
-#ifdef QSCITE_DEBUG
-  std::cout << "attempting to change tabs to index " << index << std::endl;
-#endif
+  qDebug() << "attempting to change tabs to index " << index;
   tabWidget->setCurrentIndex(index);
 }
 
@@ -116,17 +110,13 @@ void MainWindow::closeEvent(QCloseEvent *event) {
 }
 
 void MainWindow::setDocumentModified(bool wasModified) {
-#ifdef QSCITE_DEBUG
-  std::cout << "setDocumentModified(" << wasModified << ')' << std::endl;
- #endif
+  qDebug() << "setDocumentModified(" << wasModified << ')';
   setCurrentTabTitle();
   setWindowModified(wasModified);
 }
 
 void MainWindow::curDocChanged(int idx) {
-#ifdef QSCITE_DEBUG
-  std::cout << "curDocChanged(" << idx << ')' << std::endl;
-#endif
+  qDebug() << "curDocChanged(" << idx << ')';
   
   curDocIdx = idx;
   
@@ -186,9 +176,7 @@ void MainWindow::loadFile(const QString &fileName) {
   QsciLexer * newLexer = getLexerForDocument(fileName, openFiles[curDocIdx].edWidget->text());
   
   if (newLexer != NULL) {
-#ifdef QSCITE_DEBUG
-    std::cout << "Using lexer " << newLexer->lexer() << std::endl;
-#endif
+    qDebug() << "Using lexer " << newLexer->lexer();
   	newLexer->setParent(openFiles[curDocIdx].edWidget);
     openFiles[curDocIdx].edWidget->setLexer(newLexer);
     setLexerFont(newLexer, currentFont.family(), currentFont.pointSize());

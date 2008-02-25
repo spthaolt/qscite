@@ -1,4 +1,3 @@
-//#include <iostream>
 #include <QtGui>
 #include "qterminal.h"
 

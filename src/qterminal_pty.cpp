@@ -1,7 +1,3 @@
-#ifdef QSCITE_DEBUG
-#include <iostream>
-#endif
-
 #include <cstdlib>
 #include <sys/errno.h>
 #include <fcntl.h>
@@ -16,14 +12,13 @@
 #include <pty.h>
 #endif
 #include <QtGui>
+#include <QtDebug>
 #include "qterminal_pty.h"
 #include "utils.h"
 
 QTerminal::QTerminal(QWidget *parent, Qt::WindowFlags f) : QTextEdit(parent) {
   setWindowFlags(f);
-#ifdef QSCITE_DEBUG
-  std::cout << "Constructing QTerminal" << std::endl;
-#endif
+  qDebug() << "Constructing QTerminal";
   savedCursor = this->textCursor();
 
   /*
@@ -42,11 +37,9 @@ QTerminal::QTerminal(QWidget *parent, Qt::WindowFlags f) : QTextEdit(parent) {
   /*
    * We will use non-blocking I/O to read from the shell
    */
-  fcntl(fdMaster, F_SETFL, fcntl(fdMaster, F_GETFL, 0) | O_NONBLOCK);
+  fcntl(fdMaster, F_SETFL, fcntl(fdMaster, F_GETFL, 0) | O_NONBLOCK);  
+  qDebug() << "Shell PID " << shellPid << " on file descriptor " << fdMaster;
 
-#ifdef QSCITE_DEBUG  
-  std::cout << "Shell PID " << shellPid << " on file descriptor " << fdMaster << std::endl;
-#endif
   
   /*
    * Arrange to be notified when the shell emits output
@@ -118,13 +111,6 @@ void QTerminal::handleControlSeq() {
     read(fdMaster, &nextChar, 1);
   }
 
-#ifdef QSCITE_DEBUG
-  // enable the lines below for CS debugging
-  /*std::cout << "Intercepted Control Sequence: ";
-  printHex(seq);
-  std::cout << std::endl;
-  std::cout << "Control Suffix: " << nextChar << std::endl;*/
-#endif
   switch (nextChar) {
     case 'C': //move cursor forward one character
       this->moveCursor(QTextCursor::Right, QTextCursor::MoveAnchor);
@@ -169,14 +155,8 @@ void QTerminal::handleOSCommand() {
       otherChar = 0;
     }
   }
-  cmd += nextChar;
   
-#ifdef QSCITE_DEBUG
-  // enable the lines below for OSC debugging
-  /*std::cout << "Intercepted OS Command: ";
-  printHex(cmd);
-  std::cout << std::endl;*/
-#endif
+  cmd += nextChar;
   
   switch(nextChar) {
     case '\x07': //ascii BEL character
@@ -187,9 +167,8 @@ void QTerminal::handleOSCommand() {
         colorStr.remove(colorStr.length() - 1, 1);
         
         if (cmd.at(1) == '0') {
-#ifdef QSCITE_DEBUG
-          std::cout << "setting terminal text color to " << colorStr.toStdString() << std::endl;
-#endif
+          qDebug() << "setting terminal text color to " << colorStr;
+
           if (colorStr.toLower() == "green") {
             palette.setColor(QPalette::Text, QColor((QRgb)0x00FF00));
           } else {
@@ -197,9 +176,7 @@ void QTerminal::handleOSCommand() {
           }
           
         } else if (cmd.at(1) == '1') {
-#ifdef QSCITE_DEBUG
-          std::cout << "setting terminal background color to " << colorStr.toStdString() << std::endl;
-#endif
+          qDebug() << "setting terminal background color to " << colorStr;
           palette.setColor(QPalette::Base, QColor(colorStr));
         }
         
@@ -312,20 +289,14 @@ void FileDescriptorMonitor::run() {
 		int rval = select(watchedFd + 1, &workingFdSet, NULL, NULL, &workingPollInterval);
 		workingPollInterval = pollInterval;
 		if (rval != -1 && FD_ISSET(watchedFd, &workingFdSet)) {
-#ifdef QSCITE_DEBUG
-		 	//std::cout << "readyForRead()" << std::endl;
-#endif
+		 	//qDebug() << "readyForRead()";
 			emit readyForRead(watchedFd);
+		} else {
+			//qDebug() << "select() timeout";
 		}
-#ifdef QSCITE_DEBUG
-		else {
-			//std::cout << "select() timeout" << std::endl;
-		}
-#endif
 	}
-#ifdef QSCITE_DEBUG
-	std::cout << "FileDescriptorMonitor exiting" << std::endl;
-#endif
+	
+	qDebug() << "FileDescriptorMonitor exiting";
 }
 	
 void FileDescriptorMonitor::stop() {

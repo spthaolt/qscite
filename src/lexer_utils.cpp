@@ -3,6 +3,7 @@
 #include <QString>
 #include <QSettings>
 #include <QFont>
+#include <QtDebug>
 
 #include <Qsci/qscilexerbash.h>
 #include <Qsci/qscilexercpp.h>
@@ -13,10 +14,6 @@
 #include <Qsci/qscilexerperl.h>
 #include <Qsci/qscilexerpython.h>
 #include <Qsci/qscilexerruby.h>
-
-#ifdef QSCITE_DEBUG
-#include <iostream>
-#endif
 
 #include <cassert>
 
@@ -66,21 +63,16 @@ void writeDefaultExtensions(QSettings & settings) {
 	assert(settings.group() == "extensions");
 
 	for (int i = 0, j = 0; !supportedLexers[i].isEmpty(); ++i, ++j) {
-#ifdef QSCITE_DEBUG
-		std::cout << qPrintable(supportedLexers[i]) << std::endl;
-#endif
+		qDebug() << qPrintable(supportedLexers[i]);
 		settings.beginWriteArray(supportedLexers[i]);
+		
 		for (int k = 0; !defaultExtensions[j].isEmpty(); ++j, ++k) {
 			settings.setArrayIndex(k);
-#ifdef QSCITE_DEBUG
-			std::cout << k << ": " << qPrintable(defaultExtensions[j]) << ' ';
-#endif
+			qDebug() << k << ": " << qPrintable(defaultExtensions[j]) << ' ';
 			settings.setValue("ext", defaultExtensions[j]);
 		}
+		
 		settings.endArray();
-#ifdef QSCITE_DEBUG
-		std::cout << std::endl;
-#endif
 	}
 	settings.setValue("version", 1);
 } // writeDefaultExtensions
@@ -89,21 +81,16 @@ void writeDefaultMagic(QSettings & settings) {
 	assert(settings.group() == "magic");
 
 	for (int i = 0, j = 0; !supportedLexers[i].isEmpty(); ++i, ++j) {
-#ifdef QSCITE_DEBUG
-		std::cout << qPrintable(supportedLexers[i]) << std::endl;
-#endif
+		qDebug() << qPrintable(supportedLexers[i]);
 		settings.beginWriteArray(supportedLexers[i]);
+		
 		for (int k = 0; !defaultMagic[j].isEmpty(); ++j, ++k) {
 			settings.setArrayIndex(k);
-#ifdef QSCITE_DEBUG
-			std::cout << k << ": " << qPrintable(defaultMagic[j]) << ' ';
-#endif
+			qDebug() << k << ": " << qPrintable(defaultMagic[j]) << ' ';
 			settings.setValue("str", defaultMagic[j]);
 		}
+		
 		settings.endArray();
-#ifdef QSCITE_DEBUG
-		std::cout << std::endl;
-#endif
 	}
 	settings.setValue("version", 1);
 } // writeDefaultMagic
@@ -122,9 +109,7 @@ QsciLexer* getLexerForDocument(const QString& fileName, const QString& text) {
 		settings.beginGroup("extensions");
 		
 		if (settings.value("version", 0).toInt() < 1) {
-#ifdef QSCITE_DEBUG
-			std::cout << "Using default extension mappings" << std::endl;
-#endif
+			qDebug() << "Using default extension mappings";
 			writeDefaultExtensions(settings);
 		}
 		
@@ -135,35 +120,34 @@ QsciLexer* getLexerForDocument(const QString& fileName, const QString& text) {
 		 */
 
 		arrSize = settings.beginReadArray("bash");
-#ifdef QSCITE_DEBUG
-		std::cout << "Found " << arrSize << " extensions for bash" << std::endl;
-#endif
+		qDebug() << "Found " << arrSize << " extensions for bash";
+		
 		for (int i = 0; i < arrSize; ++i) {
 			settings.setArrayIndex(i);
 			if (ext == settings.value("ext","").toString()) {
 				return new QsciLexerBash();
 			}
 		}
-		settings.endArray();
 		
+		settings.endArray();
 		arrSize = settings.beginReadArray("cpp");
-#ifdef QSCITE_DEBUG
-		std::cout << "Found " << arrSize << " extensions for CPP" << std::endl;
-#endif
+		qDebug() << "Found " << arrSize << " extensions for CPP";
+
 		for (int i = 0; i < arrSize; ++i) {
 			settings.setArrayIndex(i);
+			
 			if (ext == settings.value("ext","").toString()) {
 				return new QsciLexerCPP();
 			}
 		}
-		settings.endArray();
 		
+		settings.endArray();
 		arrSize = settings.beginReadArray("csharp");
-#ifdef QSCITE_DEBUG
-		std::cout << "Found " << arrSize << " extensions for CSharp" << std::endl;
-#endif
+		qDebug() << "Found " << arrSize << " extensions for CSharp";
+		
 		for (int i = 0; i < arrSize; ++i) {
 			settings.setArrayIndex(i);
+			
 			if (ext == settings.value("ext","").toString()) {
 				return new QsciLexerCSharp();
 			}
@@ -171,187 +155,183 @@ QsciLexer* getLexerForDocument(const QString& fileName, const QString& text) {
 		settings.endArray();
 		
 		arrSize = settings.beginReadArray("css");
-#ifdef QSCITE_DEBUG
-		std::cout << "Found " << arrSize << " extensions for CSS" << std::endl;
-#endif
+		qDebug() << "Found " << arrSize << " extensions for CSS";
+
 		for (int i = 0; i < arrSize; ++i) {
 			settings.setArrayIndex(i);
+			
 			if (ext == settings.value("ext","").toString()) {
 				return new QsciLexerCSS();
 			}
 		}
-		settings.endArray();
 		
+		settings.endArray();
 		arrSize = settings.beginReadArray("html");
-#ifdef QSCITE_DEBUG
-		std::cout << "Found " << arrSize << " extensions for HTML" << std::endl;
-#endif
+		qDebug() << "Found " << arrSize << " extensions for HTML";
+
 		for (int i = 0; i < arrSize; ++i) {
 			settings.setArrayIndex(i);
+			
 			if (ext == settings.value("ext","").toString()) {
 				return new QsciLexerHTML();
 			}
 		}
-		settings.endArray();
 		
+		settings.endArray();
 		arrSize = settings.beginReadArray("java");
-#ifdef QSCITE_DEBUG
-		std::cout << "Found " << arrSize << " extensions for Java" << std::endl;
-#endif
+		qDebug() << "Found " << arrSize << " extensions for Java";
+
 		for (int i = 0; i < arrSize; ++i) {
 			settings.setArrayIndex(i);
+			
 			if (ext == settings.value("ext","").toString()) {
 				return new QsciLexerJava();
 			}
 		}
-		settings.endArray();
 		
+		settings.endArray();
 		arrSize = settings.beginReadArray("perl");
-#ifdef QSCITE_DEBUG
-		std::cout << "Found " << arrSize << " extensions for Perl" << std::endl;
-#endif
+		qDebug() << "Found " << arrSize << " extensions for Perl";
+
 		for (int i = 0; i < arrSize; ++i) {
 			settings.setArrayIndex(i);
+			
 			if (ext == settings.value("ext","").toString()) {
 				return new QsciLexerPerl();
 			}
 		}
-		settings.endArray();
 		
+		settings.endArray();
 		arrSize = settings.beginReadArray("python");
-#ifdef QSCITE_DEBUG
-		std::cout << "Found " << arrSize << " extensions for Python" << std::endl;
-#endif
+		qDebug() << "Found " << arrSize << " extensions for Python";
+
 		for (int i = 0; i < arrSize; ++i) {
 			settings.setArrayIndex(i);
+			
 			if (ext == settings.value("ext","").toString()) {
 				return new QsciLexerPython();
 			}
 		}
+		
 		settings.endArray();
 		
 		arrSize = settings.beginReadArray("ruby");
-#ifdef QSCITE_DEBUG
-		std::cout << "Found " << arrSize << " extensions for Ruby" << std::endl;
-#endif
+		qDebug() << "Found " << arrSize << " extensions for Ruby";
+
 		for (int i = 0; i < arrSize; ++i) {
 			settings.setArrayIndex(i);
+			
 			if (ext == settings.value("ext","").toString()) {
 				return new QsciLexerRuby();
 			}
 		}
-		settings.endArray();
 		
+		settings.endArray();
 		settings.endGroup();
 	}
 	
 	/*
 	 * No extension or unmatched extension. Use magic.
 	 */
-#ifdef QSCITE_DEBUG
-	std::cout << "Using magic" << std::endl;
-#endif
+	qDebug() << "Using magic";
 	settings.beginGroup("magic");
+
 	if (!settings.value("version", 0).toInt()) {
-#ifdef QSCITE_DEBUG
-		std::cout << "Using default magic" << std::endl;
-#endif
+		qDebug() << "Using default magic";
 		writeDefaultMagic(settings);
 	}
 
 	arrSize = settings.beginReadArray("bash");
-#ifdef QSCITE_DEBUG
-	std::cout << "Found " << arrSize << " magics for bash" << std::endl;
-#endif
+	qDebug() << "Found " << arrSize << " magics for bash";
+
 	for (int i = 0; i < arrSize; ++i) {
 		settings.setArrayIndex(i);
+		
 		if (firstLine.contains(settings.value("str").toString())) {
 			return new QsciLexerBash();
 		}
 	}
+	
 	settings.endArray();
 	
 	arrSize = settings.beginReadArray("css");
-#ifdef QSCITE_DEBUG
-	std::cout << "Found " << arrSize << " magics for CSS" << std::endl;
-#endif
+	qDebug() << "Found " << arrSize << " magics for CSS";
+
 	for (int i = 0; i < arrSize; ++i) {
 		settings.setArrayIndex(i);
+		
 		if (firstLine.contains(settings.value("str").toString())) {
 			return new QsciLexerCSS();
 		}
 	}
-	settings.endArray();
 	
+	settings.endArray();
 	arrSize = settings.beginReadArray("html");
-#ifdef QSCITE_DEBUG
-	std::cout << "Found " << arrSize << " magics for HTML" << std::endl;
-#endif
+	qDebug() << "Found " << arrSize << " magics for HTML";
+
 	for (int i = 0; i < arrSize; ++i) {
 		settings.setArrayIndex(i);
+		
 		if (firstLine.contains(settings.value("str").toString())) {
 			return new QsciLexerHTML();
 		}
 	}
-	settings.endArray();
 	
+	settings.endArray();
 	arrSize = settings.beginReadArray("java");
-#ifdef QSCITE_DEBUG
-	std::cout << "Found " << arrSize << " magics for Java" << std::endl;
-#endif
+	qDebug() << "Found " << arrSize << " magics for Java";
+
 	for (int i = 0; i < arrSize; ++i) {
 		settings.setArrayIndex(i);
+		
 		if (firstLine.contains(settings.value("str").toString())) {
 			return new QsciLexerJava();
 		}
 	}
-	settings.endArray();
 	
+	settings.endArray();
 	arrSize = settings.beginReadArray("perl");
-#ifdef QSCITE_DEBUG
-	std::cout << "Found " << arrSize << " magics for Perl" << std::endl;
-#endif
+	qDebug() << "Found " << arrSize << " magics for Perl";
 	for (int i = 0; i < arrSize; ++i) {
 		settings.setArrayIndex(i);
+		
 		if (firstLine.contains(settings.value("str").toString())) {
 			return new QsciLexerPerl();
 		}
 	}
-	settings.endArray();
 	
+	settings.endArray();
 	arrSize = settings.beginReadArray("python");
-#ifdef QSCITE_DEBUG
-	std::cout << "Found " << arrSize << " magics for Python" << std::endl;
-#endif
+	qDebug() << "Found " << arrSize << " magics for Python";
+
 	for (int i = 0; i < arrSize; ++i) {
 		settings.setArrayIndex(i);
+		
 		if (firstLine.contains(settings.value("str").toString())) {
 			return new QsciLexerPython();
 		}
 	}
-	settings.endArray();
 	
+	settings.endArray();
 	arrSize = settings.beginReadArray("ruby");
-#ifdef QSCITE_DEBUG
-	std::cout << "Found " << arrSize << " magics for Ruby" << std::endl;
-#endif
+	qDebug() << "Found " << arrSize << " magics for Ruby";
+
 	for (int i = 0; i < arrSize; ++i) {
 		settings.setArrayIndex(i);
+		
 		if (firstLine.contains(settings.value("str").toString())) {
 			return new QsciLexerRuby();
 		}
 	}
-	settings.endArray();
 	
+	settings.endArray();
 	settings.endGroup();
 		
 	/*
 	 * Couldn't identify extension or magic.
 	 * Return no lexer, indicating plain text.
 	 */
-#ifdef QSCITE_DEBUG
-  std::cout << "No appropriate lexer found; using plain text." << std::endl;
-#endif
+  qDebug() << "No appropriate lexer found; using plain text.";
 	return NULL;
 }
 

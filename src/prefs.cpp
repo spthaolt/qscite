@@ -1,15 +1,11 @@
 #include <QtGui>
+#include <QtDebug>
 #include <Qsci/qsciscintilla.h>
-
-#ifdef QSCITE_DEBUG
-#include <iostream>
-#endif
 
 #include "prefs.h"
 #include "lexer_utils.h"
 
 #ifdef _WIN32
-
   #include "qterminal.h"
 #else
   #include "qterminal_pty.h"
@@ -403,11 +399,9 @@ void applySettingsToDoc(QsciScintilla * curDoc) {
 
 	curDoc->setFont(baseFont);
 	
-#ifdef QSCITE_DEBUG
 	QFontInfo test(baseFont);
-	std::cout << "Current font family: " << test.family().toStdString() << std::endl;
-	std::cout << "Exact font match: " << (test.exactMatch() ? "true" : "false") << std::endl;
-#endif
+	qDebug() << "Current font family: " << test.family();
+	qDebug() << "Exact font match: " << (test.exactMatch() ? "true" : "false");
 	
 	curDoc->setColor(settings.value("font/docColorFg").value<QColor>());
 	curDoc->setCaretForegroundColor(curDoc->color());

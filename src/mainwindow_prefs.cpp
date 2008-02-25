@@ -1,10 +1,7 @@
 #include <QtGui>
+#include <QtDebug>
 #include <Qsci/qsciscintilla.h>
 #include <Qsci/qscilexer.h>
-
-#ifdef QSCITE_DEBUG
-#include <iostream>
-#endif
 
 #include "mainwindow.h"
 #include "utils.h"
@@ -12,7 +9,6 @@
 #include "prefs.h"
 
 #ifdef _WIN32
-
   #include "qterminal.h"
 #else
   #include "qterminal_pty.h"
@@ -22,9 +18,7 @@ void MainWindow::readSettings() {
 	QSettings settings;
 
 	if (settings.value("version", 0).toInt() < 1) {
-#ifdef QSCITE_DEBUG
-		std::cout << "Using default preferences" << std::endl;
-#endif
+		qDebug() << "Using default preferences";
 		writeDefaultSettings(settings);
 	}
 
