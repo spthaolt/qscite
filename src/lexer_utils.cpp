@@ -12,6 +12,7 @@
 #include <Qsci/qscilexerhtml.h>
 #include <Qsci/qscilexerjava.h>
 #include <Qsci/qscilexerperl.h>
+#include <Qsci/qscilexerpov.h>
 #include <Qsci/qscilexerpython.h>
 #include <Qsci/qscilexerruby.h>
 
@@ -21,9 +22,35 @@
  * array. Please keep these in alphabetical order.
  */
 const QString supportedLexers[] = {
-	"bash", "cpp", "csharp", "css", "html", "java", "perl", "python",
+	"bash", "cpp", "csharp", "css", "html", "java", "perl", "pov", "python",
 	"ruby", "" 
 };
+
+QsciLexer * getLexerByName(const QString & lexerName) {
+	if (lexerName == "bash") {
+		return new QsciLexerBash();
+	} else if (lexerName == "cpp") {
+		return new QsciLexerCPP();
+	} else if (lexerName == "csharp") {
+		return new QsciLexerCSharp();
+	} else if (lexerName == "css") {
+		return new QsciLexerCSS();
+	} else if (lexerName == "html") {
+		return new QsciLexerHTML();
+	} else if (lexerName == "java") {
+		return new QsciLexerJava();
+	} else if (lexerName == "perl") {
+		return new QsciLexerPerl();
+	} else if (lexerName == "pov") {
+		return new QsciLexerPOV();
+	} else if (lexerName == "python") {
+		return new QsciLexerPython();
+	} else if (lexerName == "ruby") {
+		return new QsciLexerRuby();
+	} else {
+		return NULL;
+	}
+}
 
 namespace {	
 	/* Default extensions for each lexer (in order listed in supportedLexers[]).
@@ -37,6 +64,7 @@ namespace {
 		/* html   */ "html", "xhtml", "xml", "plist", "",
 		/* java   */ "java", "",
 		/* perl   */ "pl", "pm", "",
+		/* pov    */ "pov", "inc", "",
 		/* python */ "py", "pyw", "",
 		/* ruby   */ "rb", ""
 	};
@@ -54,6 +82,7 @@ namespace {
 		/* html   */ "<?xml", "<!DOCTYPE", "",
 		/* java   */ "",
 		/* perl   */ "perl", "",
+		/* pov    */ "",
 		/* python */ "python", "",
 		/* ruby   */ "ruby", ""
 	};	
@@ -112,121 +141,18 @@ QsciLexer* getLexerForDocument(const QString& fileName, const QString& text) {
 			qDebug() << "Using default extension mappings";
 			writeDefaultExtensions(settings);
 		}
-		
-		/* This is way too much repeated code. Is there any way to get a
-		 * reference to a class in C++?
-		 *
-		 * Please keep the languages in alphabetical order here too.
-		 */
 
-		arrSize = settings.beginReadArray("bash");
-		qDebug() << "Found " << arrSize << " extensions for bash";
-		
-		for (int i = 0; i < arrSize; ++i) {
-			settings.setArrayIndex(i);
-			if (ext == settings.value("ext","").toString()) {
-				return new QsciLexerBash();
+		for (int i = 0; !supportedLexers[i].isEmpty(); ++i) {
+			arrSize = settings.beginReadArray(supportedLexers[i]);
+			qDebug() << "Found" << arrSize << "extensions for" << supportedLexers[i];
+			for (int j = 0; j < arrSize; ++j) {
+				settings.setArrayIndex(j);
+				if (ext == settings.value("ext", "").toString()) {
+					return getLexerByName(supportedLexers[i]);
+				}
 			}
+			settings.endArray();
 		}
-		
-		settings.endArray();
-		arrSize = settings.beginReadArray("cpp");
-		qDebug() << "Found " << arrSize << " extensions for CPP";
-
-		for (int i = 0; i < arrSize; ++i) {
-			settings.setArrayIndex(i);
-			
-			if (ext == settings.value("ext","").toString()) {
-				return new QsciLexerCPP();
-			}
-		}
-		
-		settings.endArray();
-		arrSize = settings.beginReadArray("csharp");
-		qDebug() << "Found " << arrSize << " extensions for CSharp";
-		
-		for (int i = 0; i < arrSize; ++i) {
-			settings.setArrayIndex(i);
-			
-			if (ext == settings.value("ext","").toString()) {
-				return new QsciLexerCSharp();
-			}
-		}
-		settings.endArray();
-		
-		arrSize = settings.beginReadArray("css");
-		qDebug() << "Found " << arrSize << " extensions for CSS";
-
-		for (int i = 0; i < arrSize; ++i) {
-			settings.setArrayIndex(i);
-			
-			if (ext == settings.value("ext","").toString()) {
-				return new QsciLexerCSS();
-			}
-		}
-		
-		settings.endArray();
-		arrSize = settings.beginReadArray("html");
-		qDebug() << "Found " << arrSize << " extensions for HTML";
-
-		for (int i = 0; i < arrSize; ++i) {
-			settings.setArrayIndex(i);
-			
-			if (ext == settings.value("ext","").toString()) {
-				return new QsciLexerHTML();
-			}
-		}
-		
-		settings.endArray();
-		arrSize = settings.beginReadArray("java");
-		qDebug() << "Found " << arrSize << " extensions for Java";
-
-		for (int i = 0; i < arrSize; ++i) {
-			settings.setArrayIndex(i);
-			
-			if (ext == settings.value("ext","").toString()) {
-				return new QsciLexerJava();
-			}
-		}
-		
-		settings.endArray();
-		arrSize = settings.beginReadArray("perl");
-		qDebug() << "Found " << arrSize << " extensions for Perl";
-
-		for (int i = 0; i < arrSize; ++i) {
-			settings.setArrayIndex(i);
-			
-			if (ext == settings.value("ext","").toString()) {
-				return new QsciLexerPerl();
-			}
-		}
-		
-		settings.endArray();
-		arrSize = settings.beginReadArray("python");
-		qDebug() << "Found " << arrSize << " extensions for Python";
-
-		for (int i = 0; i < arrSize; ++i) {
-			settings.setArrayIndex(i);
-			
-			if (ext == settings.value("ext","").toString()) {
-				return new QsciLexerPython();
-			}
-		}
-		
-		settings.endArray();
-		
-		arrSize = settings.beginReadArray("ruby");
-		qDebug() << "Found " << arrSize << " extensions for Ruby";
-
-		for (int i = 0; i < arrSize; ++i) {
-			settings.setArrayIndex(i);
-			
-			if (ext == settings.value("ext","").toString()) {
-				return new QsciLexerRuby();
-			}
-		}
-		
-		settings.endArray();
 		settings.endGroup();
 	}
 	
@@ -241,90 +167,18 @@ QsciLexer* getLexerForDocument(const QString& fileName, const QString& text) {
 		writeDefaultMagic(settings);
 	}
 
-	arrSize = settings.beginReadArray("bash");
-	qDebug() << "Found " << arrSize << " magics for bash";
-
-	for (int i = 0; i < arrSize; ++i) {
-		settings.setArrayIndex(i);
-		
-		if (firstLine.contains(settings.value("str").toString())) {
-			return new QsciLexerBash();
+	for (int i = 0; !supportedLexers[i].isEmpty(); ++i) {
+		arrSize = settings.beginReadArray(supportedLexers[i]);
+		qDebug() << "Found" << arrSize << "magics for" << supportedLexers[i];
+		for (int j = 0; j < arrSize; ++j) {
+			settings.setArrayIndex(j);
+			if (firstLine.contains(settings.value("str", "").toString())) {
+				return getLexerByName(supportedLexers[i]);
+			}
 		}
+		settings.endArray();
 	}
 	
-	settings.endArray();
-	
-	arrSize = settings.beginReadArray("css");
-	qDebug() << "Found " << arrSize << " magics for CSS";
-
-	for (int i = 0; i < arrSize; ++i) {
-		settings.setArrayIndex(i);
-		
-		if (firstLine.contains(settings.value("str").toString())) {
-			return new QsciLexerCSS();
-		}
-	}
-	
-	settings.endArray();
-	arrSize = settings.beginReadArray("html");
-	qDebug() << "Found " << arrSize << " magics for HTML";
-
-	for (int i = 0; i < arrSize; ++i) {
-		settings.setArrayIndex(i);
-		
-		if (firstLine.contains(settings.value("str").toString())) {
-			return new QsciLexerHTML();
-		}
-	}
-	
-	settings.endArray();
-	arrSize = settings.beginReadArray("java");
-	qDebug() << "Found " << arrSize << " magics for Java";
-
-	for (int i = 0; i < arrSize; ++i) {
-		settings.setArrayIndex(i);
-		
-		if (firstLine.contains(settings.value("str").toString())) {
-			return new QsciLexerJava();
-		}
-	}
-	
-	settings.endArray();
-	arrSize = settings.beginReadArray("perl");
-	qDebug() << "Found " << arrSize << " magics for Perl";
-	for (int i = 0; i < arrSize; ++i) {
-		settings.setArrayIndex(i);
-		
-		if (firstLine.contains(settings.value("str").toString())) {
-			return new QsciLexerPerl();
-		}
-	}
-	
-	settings.endArray();
-	arrSize = settings.beginReadArray("python");
-	qDebug() << "Found " << arrSize << " magics for Python";
-
-	for (int i = 0; i < arrSize; ++i) {
-		settings.setArrayIndex(i);
-		
-		if (firstLine.contains(settings.value("str").toString())) {
-			return new QsciLexerPython();
-		}
-	}
-	
-	settings.endArray();
-	arrSize = settings.beginReadArray("ruby");
-	qDebug() << "Found " << arrSize << " magics for Ruby";
-
-	for (int i = 0; i < arrSize; ++i) {
-		settings.setArrayIndex(i);
-		
-		if (firstLine.contains(settings.value("str").toString())) {
-			return new QsciLexerRuby();
-		}
-	}
-	
-	settings.endArray();
 	settings.endGroup();
 		
 	/*

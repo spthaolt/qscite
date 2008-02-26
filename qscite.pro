@@ -1,5 +1,3 @@
-CONFIG -= debug release
-
 TEMPLATE     = app
 
 DEPENDPATH   += include src ui
@@ -14,7 +12,7 @@ UI_DIR      = build
     DESTDIR = build
 }
 
-CONFIG       += debug thread
+CONFIG       += thread
 
 HEADERS       = mainwindow.h \
                 utils.h \

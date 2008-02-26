@@ -42,6 +42,11 @@ MainWindow::MainWindow() :
   readSettings();
   
   tabWidget = new QTabWidget(this);
+  
+  // We might need to support a lot of tabs
+  tabWidget->setUsesScrollButtons(true);
+  tabWidget->setElideMode(Qt::ElideNone);
+  
   setCentralWidget(tabWidget);
   
   createDocument();

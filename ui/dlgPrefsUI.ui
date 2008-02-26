@@ -34,7 +34,7 @@
        <enum>QTabWidget::Rounded</enum>
       </property>
       <property name="currentIndex" >
-       <number>0</number>
+       <number>2</number>
       </property>
       <widget class="QWidget" name="tabGeneral" >
        <attribute name="title" >
@@ -274,7 +274,7 @@
             </widget>
            </item>
            <item>
-            <widget class="QComboBox" name="comboBox" >
+            <widget class="QComboBox" name="cbxEOLMode" >
              <property name="sizePolicy" >
               <sizepolicy vsizetype="Fixed" hsizetype="MinimumExpanding" >
                <horstretch>0</horstretch>
