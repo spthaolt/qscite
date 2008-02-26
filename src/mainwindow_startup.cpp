@@ -9,7 +9,11 @@ void MainWindow::createActions() {
     connect(newAct, SIGNAL(triggered()), this, SLOT(newFile()));
     
     closeAct = new QAction(QIcon(":/images/fileclose.svg"), tr("&Close"), this);
+#ifndef Q_WS_MAC
     closeAct->setShortcut(tr("Ctrl+F4"));
+#else
+	closeAct->setShortcut(tr("Ctrl+W"));
+#endif
     closeAct->setStatusTip(tr("Close the current file"));
     connect(closeAct, SIGNAL(triggered()), this, SLOT(closeFile()));
 
@@ -78,9 +82,11 @@ void MainWindow::createActions() {
 void MainWindow::createMenus() {
     fileMenu = menuBar()->addMenu(tr("&File"));
     fileMenu->addAction(newAct);
+ 	fileMenu->addSeparator();
     fileMenu->addAction(openAct);
     recentMenu = fileMenu->addMenu(tr("Open &Recent"));
     fileMenu->addAction(closeAct);
+ 	fileMenu->addSeparator();
     fileMenu->addAction(saveAct);
     fileMenu->addAction(saveAsAct);
     fileMenu->addSeparator();

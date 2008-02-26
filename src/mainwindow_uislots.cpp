@@ -79,12 +79,7 @@ bool MainWindow::closeFile() {
       if (tabWidget->count() == 0) { // out of tabs
         setWindowTitle(tr("QSciTE"));
         setWindowModified(false);
-      } /* else if (curDocIdx == 0) { // can't go left, notice new document
-        curDocChanged(0);
-      } else { // choose the tab to the left
-        changeTabs(curDocIdx - 1);
-      } */
-      
+      }
       return true;
     }
   }
@@ -146,7 +141,9 @@ bool MainWindow::saveAs() {
       return false;
     }
     
-    addRecentFile(fileName);
+	addRecentFile(fileName);
+	openFiles[curDocIdx].setPathName(fileName);
+	setWindowTitleForFile(openFiles[curDocIdx].baseName);
     return saveFile(fileName);
   }
   

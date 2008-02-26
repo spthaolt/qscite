@@ -29,6 +29,7 @@ int main(int argc, char *argv[])
     app.setApplicationName("QSciTE");
     app.setOrganizationName("QSciteTeam");
     MainWindow mainWin;
+    app.installEventFilter(&mainWin);
     mainWin.show();
     return app.exec();
 }
