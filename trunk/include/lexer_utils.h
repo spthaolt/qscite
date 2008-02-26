@@ -7,6 +7,8 @@ class QSettings;
 
 QsciLexer* getLexerForDocument(const QString & fileName, const QString & text);
 
+QsciLexer * getLexerByName(const QString & lexerName);
+
 void setLexerFont(QsciLexer * lexer, const QString & family, int size);
 
 void writeDefaultExtensions(QSettings & settings);
