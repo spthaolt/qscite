@@ -209,7 +209,7 @@ bool MainWindow::saveFile(const QString &fileName) {
   QApplication::restoreOverrideCursor();
   statusBar()->showMessage(tr("File saved"), 2000);
   openFiles[curDocIdx].edWidget->setModified(false);
-  //addRecentFile(fileName);
+
   return true;
 }
 
@@ -256,7 +256,7 @@ void MainWindow::addRecentFile(const QString & fileName) {
 	
 	recentFiles.push_back(QFileInfo(fileName));
 	for (int i = 0; i < recentFiles.size() - 1; ++i) {
-		if (recentFiles[i] == recentFiles.back()) {
+		if (recentFiles[i].canonicalFilePath() == recentFiles.back().canonicalFilePath()) {
 			recentFiles.removeAt(i);
 		}
 		while (recentFiles.size() > maxRecentFiles) {
@@ -268,7 +268,24 @@ void MainWindow::addRecentFile(const QString & fileName) {
     	recentMenu->addAction( recentFiles[i].fileName() )->setStatusTip( recentFiles[i].filePath() );
     }
     recentMenu->menuAction()->setEnabled(!recentFiles.empty());
-}		
+}
+
+bool MainWindow::eventFilter(QObject * target, QEvent * event) {
+	if (target == qApp && event->type() == QEvent::FileOpen) {
+		if ((!tabWidget->count()) || (!openFiles[curDocIdx].baseName.isEmpty()) || openFiles[curDocIdx].edWidget->isModified()) {
+			createDocument();
+		}
+		QString fileName = dynamic_cast<QFileOpenEvent *>(event)->file();
+		loadFile(fileName);
+		addRecentFile(fileName);
+		setCurrentTabTitle();
+		event->accept();
+		return true;
+	} else {
+		return QMainWindow::eventFilter(target, event);
+	}
+}
+
 
 FileData::FileData(QsciScintilla * doc) : edWidget(doc) { ; }
 FileData::FileData(const FileData & src) : fullName(src.fullName), baseName(src.baseName), path(src.path), edWidget(src.edWidget) {

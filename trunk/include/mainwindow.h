@@ -53,6 +53,7 @@ public:
 
 protected:
     void closeEvent(QCloseEvent *event);
+    bool eventFilter(QObject * target, QEvent * event);
 
 private slots:
     /* Slots corresponding to UI actions */
