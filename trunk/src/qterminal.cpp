@@ -31,6 +31,10 @@ void QTerminal::readStandardErr() {
   this->moveCursor(QTextCursor::End, QTextCursor::KeepAnchor);
 }
 
+void QTerminal::changeDir(const QString & dir) {
+  // remain compatible with QTerminal_pty
+}
+
 void QTerminal::keyPressEvent(QKeyEvent * event) {
   int key = event->key();
   
