@@ -29,6 +29,7 @@ class QMenu;
 class QsciScintilla;
 class QTabWidget;
 class QTerminal;
+class TextDisplayPanel;
 
 struct FileData {
 
@@ -47,6 +48,8 @@ struct FileData {
 class MainWindow : public QMainWindow
 {
     Q_OBJECT
+
+	friend class TextDisplayPanel;
 
 public:
     MainWindow();
@@ -70,11 +73,13 @@ private slots:
     void fontDialog();
     void globalPrefs();
     void toggleTerminal(bool alive = false);
+    void textDisplay();
     
     /* Internal slots */
     void curDocChanged(int idx);
     void setDocumentModified(bool wasModified = true);
     void reapPrefs();
+    void textDisplayDeleted();
     void redoSetMargin();
     void prefsWereChanged();
     void updateCopyAvailable(bool);
@@ -105,6 +110,7 @@ private:
     QList<QFileInfo> recentFiles;
     QTabWidget * tabWidget;
     QTerminal * termWidget;
+    TextDisplayPanel * textSettingsWidget;
     
     bool copyFromTerm;
     bool termInDrawer;
@@ -135,7 +141,8 @@ private:
     QAction *aboutQtAct;
     
     QAction *fontAct;
-    QAction * terminalAct;
+    QAction *terminalAct;
+    QAction *textDisplayAct;
 };
 
 #endif

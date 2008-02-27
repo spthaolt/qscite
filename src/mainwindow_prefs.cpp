@@ -7,6 +7,7 @@
 #include "utils.h"
 #include "lexer_utils.h"
 #include "prefs.h"
+#include "textdisplay.h"
 
 #ifdef _WIN32
   #include "qterminal.h"
@@ -77,10 +78,36 @@ void MainWindow::prefsWereChanged() {
 	}
 	if (openFiles.size() > curDocIdx) {
 		applySettingsToDoc(openFiles[curDocIdx].edWidget);
+		if (textSettingsWidget != NULL) {
+			textSettingsWidget->populate();
+		}
 	}
 }
 
 void MainWindow::reapPrefs() {
 	sender()->deleteLater();
+}
+
+void MainWindow::textDisplay() {
+	if (textSettingsWidget == NULL) {
+		textSettingsWidget = new TextDisplayPanel(this,
+#ifdef Q_WS_MAC
+			Qt::Drawer
+#else
+			Qt::Tool
+#endif
+		);
+		
+		connect(textSettingsWidget, SIGNAL(destroyed()), this, SLOT(textDisplayDeleted()));
+		connect(tabWidget, SIGNAL(currentChanged(int)), textSettingsWidget, SLOT(populate()));
+		
+		textSettingsWidget->show();
+	} else {
+		textSettingsWidget->close();
+	}
+}
+
+void MainWindow::textDisplayDeleted() {
+	textSettingsWidget = NULL;
 }
 

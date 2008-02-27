@@ -52,6 +52,15 @@ QsciLexer * getLexerByName(const QString & lexerName) {
 	}
 }
 
+int indexOfLexer(const QString & lexerName) {
+	for (int i = 0; !supportedLexers[i].isEmpty(); ++i) {
+		if (lexerName == supportedLexers[i]) {
+			return i;
+		}
+	}
+	return -1;
+}
+
 namespace {	
 	/* Default extensions for each lexer (in order listed in supportedLexers[]).
 	 * End of extensions for each lexer marked with "".
@@ -189,10 +198,10 @@ QsciLexer* getLexerForDocument(const QString& fileName, const QString& text) {
 	return NULL;
 }
 
-#define MAX_STYLE_IDX 50
+#define MAX_STYLE_IDX 127
 
 void setLexerFont(QsciLexer * lexer, const QString & family, int size) {
-	for (int i = 0; i < MAX_STYLE_IDX; ++i) {
+	for (int i = 0; i <= MAX_STYLE_IDX; ++i) {
 		if (!(lexer->description(i)).isEmpty()) { // This style is in use
 			QFont curFont = lexer->font(i);
 			curFont.setFamily(family);
