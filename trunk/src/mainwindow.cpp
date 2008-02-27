@@ -26,6 +26,7 @@
 #include "utils.h"
 #include "lexer_utils.h"
 #include "prefs.h"
+#include "textdisplay.h"
 
 #ifdef _WIN32
   #include "qterminal.h"
@@ -34,7 +35,9 @@
 #endif
 
 MainWindow::MainWindow() :
-  termWidget(NULL), copyFromTerm(false),
+  termWidget(NULL),
+  textSettingsWidget(NULL),
+  copyFromTerm(false),
   termInDrawer(QSettings().value("terminalInDrawer", false).toBool()),
   curDocIdx(0)
 {
@@ -67,6 +70,7 @@ MainWindow::MainWindow() :
 void MainWindow::createDocument() {
   QsciScintilla * curDoc = new QsciScintilla();
   curDoc->setUtf8(true);
+  curDoc->SendScintilla(QsciScintillaBase::SCI_SETLAYOUTCACHE, QsciScintillaBase::SC_CACHE_DOCUMENT);
   applySettingsToDoc(curDoc);
 
   openFiles.push_back(FileData(curDoc));
@@ -177,20 +181,26 @@ void MainWindow::loadFile(const QString &fileName) {
     openFiles[curDocIdx].edWidget->setCaretForegroundColor(QColor(0,0,0));
   }
   
+  if (textSettingsWidget != NULL) {
+    textSettingsWidget->populate();
+  }
   statusBar()->showMessage(tr("File loaded"), 2000);
 }
 
 
 void MainWindow::redoSetMargin() {
   QsciScintilla * curDoc = openFiles[curDocIdx].edWidget;
+  int numLines = curDoc->lines();
+  if (numLines < 1000) {
+    return;
+  }
   if (curDoc->marginWidth(1) > 0) {
-    double numLines = (double)curDoc->lines();
-    QString exLength = "99";
-    numLines /= 10;
+    QString exLength = "9999";
+	numLines /= 1000;
   
     while (numLines >= 1) {
       exLength += "9";
-      numLines /= 10.0;
+      numLines /= 10;
     }
 
 	  curDoc->setMarginWidth(1, exLength);

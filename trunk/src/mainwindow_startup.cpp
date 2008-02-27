@@ -66,6 +66,9 @@ void MainWindow::createActions() {
     
     terminalAct = new QAction(QIcon(":/images/openterm.svg"), tr("Terminal"), this);
     connect(terminalAct, SIGNAL(triggered()), this, SLOT(toggleTerminal()));
+    
+    textDisplayAct = new QAction(QIcon(":/images/font.svg"), tr("Text &Display..."), this);
+    connect(textDisplayAct, SIGNAL(triggered()), this, SLOT(textDisplay()));
 
     aboutAct = new QAction(tr("&About"), this);
     aboutAct->setStatusTip(tr("Show QSciTE's About box"));
@@ -100,7 +103,7 @@ void MainWindow::createMenus() {
     editMenu->addAction(prefsAct);
     
     viewMenu = menuBar()->addMenu(tr("&View"));
-    viewMenu->addAction(fontAct);
+    viewMenu->addAction(textDisplayAct);
     viewMenu->addAction(terminalAct);
 
     menuBar()->addSeparator();

@@ -3,11 +3,11 @@
 #include <Qsci/qsciscintilla.h>
 #include <Qsci/qscilexer.h>
 
-
 #include "mainwindow.h"
 #include "utils.h"
 #include "lexer_utils.h"
 #include "prefs.h"
+#include "textdisplay.h"
 
 #ifdef _WIN32
   #include "qterminal.h"
@@ -79,6 +79,9 @@ bool MainWindow::closeFile() {
       if (tabWidget->count() == 0) { // out of tabs
         setWindowTitle(tr("QSciTE"));
         setWindowModified(false);
+        if (textSettingsWidget != NULL) {
+          textSettingsWidget->setEnabled(false);
+		}
       }
       return true;
     }
@@ -159,6 +162,7 @@ void MainWindow::fontDialog() {
   	  QFont baseFont = QFontDialog::getFont(&ok, lexer->font(lexer->defaultStyle()));
   	  
   	  if (ok) {
+		openFiles[curDocIdx].edWidget->setFont(baseFont);
   	    setLexerFont(lexer, baseFont.family(), baseFont.pointSize());
   	  }
   	} else {

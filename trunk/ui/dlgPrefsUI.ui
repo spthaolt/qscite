@@ -33,9 +33,6 @@
       <property name="tabShape" >
        <enum>QTabWidget::Rounded</enum>
       </property>
-      <property name="currentIndex" >
-       <number>2</number>
-      </property>
       <widget class="QWidget" name="tabGeneral" >
        <attribute name="title" >
         <string>General</string>
@@ -283,17 +280,17 @@
              </property>
              <item>
               <property name="text" >
-               <string>LF (Unix)</string>
-              </property>
-             </item>
-             <item>
-              <property name="text" >
                <string>CRLF (Windows)</string>
               </property>
              </item>
              <item>
               <property name="text" >
                <string>CR (Mac OS Classic)</string>
+              </property>
+             </item>
+             <item>
+              <property name="text" >
+               <string>LF (Unix)</string>
               </property>
              </item>
             </widget>

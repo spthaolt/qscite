@@ -75,6 +75,7 @@ void MainPrefsDialog::populate() {
 	);
 	sbIndentSize->setValue(settings.value("indentWidth").toInt());
 	cbAutoIndent->setChecked(settings.value("autoIndent").toBool());
+	cbxEOLMode->setCurrentIndex(settings.value("EOLMode").toInt());
 	
 	/*
 	 * "File types" tab
@@ -239,6 +240,7 @@ void MainPrefsDialog::writeValues() {
 	settings.setValue("indentUseTabs", (bool)(cbxUseTabs->currentIndex()));
 	settings.setValue("indentWidth", sbIndentSize->value());
 	settings.setValue("autoIndent", cbAutoIndent->isChecked());
+	settings.setValue("EOLMode", cbxEOLMode->currentIndex());
 	
 	/*
 	 * "File types" tab
@@ -346,13 +348,13 @@ void applySettingsToDoc(QsciScintilla * curDoc) {
 	if (settings.value("showLineNumbers").toBool()) {
 		curDoc->setMarginLineNumbers(1, true);
 		// set default margin width to 4 characters (will adjust with different files)
-    double numLines = (double)curDoc->lines();
-    QString exLength = "99";
-    numLines /= 10;
+    int numLines = curDoc->lines();
+    QString exLength = "9999";
+    numLines /= 1000;
   
     while (numLines >= 1) {
       exLength += "9";
-      numLines /= 10.0;
+      numLines /= 10;
     }
 		curDoc->setMarginWidth(1, exLength);
 	} else {
@@ -398,6 +400,9 @@ void applySettingsToDoc(QsciScintilla * curDoc) {
 	);
 
 	curDoc->setFont(baseFont);
+	if (curDoc->lexer() != NULL) {
+		setLexerFont(curDoc->lexer(), baseFont.family(), baseFont.pointSize());
+	}
 	
 	QFontInfo test(baseFont);
 	qDebug() << "Current font family: " << test.family();

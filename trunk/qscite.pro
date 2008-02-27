@@ -17,7 +17,8 @@ CONFIG       += thread
 HEADERS       = mainwindow.h \
                 utils.h \
                 lexer_utils.h \
-                prefs.h
+                prefs.h \
+                textdisplay.h
 
 SOURCES       = main.cpp \
                 mainwindow.cpp \
@@ -26,9 +27,11 @@ SOURCES       = main.cpp \
                 mainwindow_prefs.cpp \
                 utils.cpp \
                 lexer_utils.cpp \
-                prefs.cpp 
+                prefs.cpp \
+                textdisplay.cpp
 
-FORMS         = dlgPrefsUI.ui
+FORMS         = dlgPrefsUI.ui \
+                frmTextDisplay.ui
 
 RESOURCES     = qscite.qrc
 
