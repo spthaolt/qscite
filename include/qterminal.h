@@ -9,6 +9,7 @@ public:
     QTerminal(QWidget * parent = 0, Qt::WindowFlags f = 0);
     ~QTerminal();
     void keyPressEvent(QKeyEvent * event);
+    void changeDir(const QString & dir);
 
 private slots:
     void readStandardOut();
