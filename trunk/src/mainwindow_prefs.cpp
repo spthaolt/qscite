@@ -34,7 +34,10 @@ void MainWindow::readSettings() {
 	
 	for (int i = 0, j = settings.beginReadArray("recentFiles"); i < j; ++i) {
 		settings.setArrayIndex(i);
-		recentFiles.push_back(QFileInfo(settings.value("info").toString()));
+		QFileInfo curFile(settings.value("info").toString());
+		if (curFile.exists() && curFile.isFile()) {
+			recentFiles.push_back(curFile);
+		}
 	}
 	settings.endArray();
 }
@@ -55,8 +58,12 @@ void MainWindow::writeSettings() {
   if (settings.value("recentFileCount", 0).toInt() > 0) {
     settings.beginWriteArray("recentFiles");
     for (int i = 0; i < recentFiles.size(); ++i) {
-    	settings.setArrayIndex(i);
-    	settings.setValue("info", recentFiles[i].canonicalFilePath());
+    	if (recentFiles[i].exists() && recentFiles[i].isFile()) {
+			settings.setArrayIndex(i);
+			settings.setValue("info", recentFiles[i].canonicalFilePath());
+		} else {
+			recentFiles.removeAt(i--);
+		}
     }
     settings.endArray();
   }
