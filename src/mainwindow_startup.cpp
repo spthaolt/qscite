@@ -113,7 +113,11 @@ void MainWindow::createMenus() {
     helpMenu->addAction(aboutQtAct);
     
     for (int i = 0; i < recentFiles.size(); ++i) {
-    	recentMenu->addAction( recentFiles[i].fileName() )->setStatusTip( recentFiles[i].filePath() );
+		if (recentFiles[i].exists() && recentFiles[i].isFile()) {
+			recentMenu->addAction( recentFiles[i].fileName() )->setStatusTip( recentFiles[i].filePath() );
+		} else {
+			recentFiles.removeAt(i--);
+		}
     }
     recentMenu->menuAction()->setEnabled(!recentFiles.empty());
     connect(recentMenu, SIGNAL(triggered(QAction *)), this, SLOT(openRecent(QAction *)));

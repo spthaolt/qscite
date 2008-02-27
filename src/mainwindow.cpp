@@ -70,7 +70,7 @@ MainWindow::MainWindow() :
 void MainWindow::createDocument() {
   QsciScintilla * curDoc = new QsciScintilla();
   curDoc->setUtf8(true);
-  curDoc->SendScintilla(QsciScintillaBase::SCI_SETLAYOUTCACHE, QsciScintillaBase::SC_CACHE_DOCUMENT);
+  curDoc->SendScintilla(QsciScintillaBase::SCI_SETLAYOUTCACHE, QsciScintillaBase::SC_CACHE_PAGE);
   applySettingsToDoc(curDoc);
 
   openFiles.push_back(FileData(curDoc));
@@ -271,8 +271,8 @@ void MainWindow::addRecentFile(const QString & fileName) {
 	
 	recentFiles.push_back(QFileInfo(fileName));
 	for (int i = 0; i < recentFiles.size() - 1; ++i) {
-		if (recentFiles[i].canonicalFilePath() == recentFiles.back().canonicalFilePath()) {
-			recentFiles.removeAt(i);
+		if (recentFiles[i].canonicalFilePath() == recentFiles.back().canonicalFilePath() || !(recentFiles[i].exists() && recentFiles[i].isFile())) {
+			recentFiles.removeAt(i--);
 		}
 		while (recentFiles.size() > maxRecentFiles) {
 			recentFiles.pop_front();
