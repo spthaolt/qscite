@@ -14,10 +14,13 @@ public:
 private slots:
     void readStandardOut();
     void readStandardErr();
+    void processFinished();
 private:
     QProcess * shell;
     int inputCharCount;
     QTextCursor curCursorLoc;
+    QString cmdStr;
+    void printPrompt();
 };
 
 #endif /*QTERMINAL_H_*/

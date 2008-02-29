@@ -3,12 +3,14 @@
 
 QTerminal::QTerminal(QWidget *parent, Qt::WindowFlags f) : QTextEdit(parent) {
   setWindowFlags(f);
+  cmdStr = "";
   shell = new QProcess();
   shell->setProcessChannelMode(QProcess::MergedChannels);
   QObject::connect(shell, SIGNAL(readyReadStandardOutput()), this, SLOT(readStandardOut()));
   QObject::connect(shell, SIGNAL(readyReadStandardError()), this, SLOT(readStandardErr()));
-  shell->start("cmd.exe", QStringList() << "", QIODevice::ReadWrite);
-  this->insertPlainText("TERMINAL NOT PROPERLY SUPPORTED ON WIN32 YET!\r\n");
+  //QObject::connect(shell, SIGNAL(finished()), this, SLOT(processFinished()));
+  shell->start("cmd.exe", QStringList() << "/C" << "cmd.exe", QIODevice::ReadWrite);
+  this->insertPlainText("TERMINAL VERY ALPHA QUALITY ON WIN32!\r\n");
   // This var protects against mouse interference with the cursor
   curCursorLoc = this->textCursor();
   inputCharCount = 0;
@@ -18,6 +20,10 @@ QTerminal::~QTerminal() {
   shell->kill();
   shell->waitForFinished();
   delete shell;
+}
+
+void QTerminal::printPrompt () {
+  this->insertPlainText(QApplication::applicationDirPath() + ">");
 }
 
 void QTerminal::readStandardOut() {
@@ -31,8 +37,15 @@ void QTerminal::readStandardErr() {
   this->moveCursor(QTextCursor::End, QTextCursor::KeepAnchor);
 }
 
+void QTerminal::processFinished() {
+  printPrompt();
+}
+
 void QTerminal::changeDir(const QString & dir) {
-  // remain compatible with QTerminal_pty
+	/* Hope we are talking to a prompt and not a text editor */
+	shell->write("cd ", 3);
+	shell->write(dir.toAscii().data(), dir.length());
+	shell->write("\r\n", 2);
 }
 
 void QTerminal::keyPressEvent(QKeyEvent * event) {
@@ -90,6 +103,12 @@ void QTerminal::keyPressEvent(QKeyEvent * event) {
   }
 
   // now pass a char* copy of the input to the shell process
-  shell->write(event->text().toAscii().data(), event->text().length());
+  if (key == Qt::Key_Return || key == Qt::Key_Enter) {
+    shell->write("\r\n", 2);
+  } else if (key == Qt::Key_Backspace) {
+    shell->write("\0x1AH", 2);
+  } else {
+    shell->write(event->text().toAscii().data(), event->text().length());
+  }
   curCursorLoc = this->textCursor();
 }
