@@ -9,7 +9,7 @@ QTerminal::QTerminal(QWidget *parent, Qt::WindowFlags f) : QTextEdit(parent) {
   QObject::connect(shell, SIGNAL(readyReadStandardOutput()), this, SLOT(readStandardOut()));
   QObject::connect(shell, SIGNAL(readyReadStandardError()), this, SLOT(readStandardErr()));
   //QObject::connect(shell, SIGNAL(finished()), this, SLOT(processFinished()));
-  shell->start("cmd.exe", QStringList() << "/C" << "cmd.exe", QIODevice::ReadWrite);
+  shell->start("cmd.exe", QStringList() << "", QIODevice::ReadWrite);
   this->insertPlainText("TERMINAL VERY ALPHA QUALITY ON WIN32!\r\n");
   // This var protects against mouse interference with the cursor
   curCursorLoc = this->textCursor();
@@ -57,7 +57,6 @@ void QTerminal::keyPressEvent(QKeyEvent * event) {
   if (key != Qt::Key_Backspace) {
     if (key == Qt::Key_Return || key == Qt::Key_Enter) {
       inputCharCount = 0;
-      QTextEdit::keyPressEvent(event);
     } else if (key == Qt::Key_Up || key == Qt::Key_Down) {
       // TODO: see if there's a way to hack the bash history in here...
     } else if (key == Qt::Key_Left) {
@@ -97,6 +96,7 @@ void QTerminal::keyPressEvent(QKeyEvent * event) {
     if (inputCharCount) {
       --inputCharCount;
       QTextEdit::keyPressEvent(event);
+      cmdStr.remove(inputCharCount, 1);
     } else {
       QApplication::beep();
     }
@@ -104,11 +104,18 @@ void QTerminal::keyPressEvent(QKeyEvent * event) {
 
   // now pass a char* copy of the input to the shell process
   if (key == Qt::Key_Return || key == Qt::Key_Enter) {
+    this->moveCursor(QTextCursor::End);
+    shell->write(cmdStr.toAscii().data(), cmdStr.length());
     shell->write("\r\n", 2);
-  } else if (key == Qt::Key_Backspace) {
-    shell->write("\0x1AH", 2);
+    QTextEdit::keyPressEvent(event);
+    cmdStr = "";
   } else {
-    shell->write(event->text().toAscii().data(), event->text().length());
+    QString input = event->text();
+    for (int i = 0; i < input.length(); ++i) {
+      if (input.at(i).isPrint()) {
+        cmdStr.insert(inputCharCount - 1, input.at(i));
+      }
+    }
   }
   curCursorLoc = this->textCursor();
 }
