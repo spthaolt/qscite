@@ -35,6 +35,16 @@ void MainWindow::createActions() {
     exitAct->setShortcut(tr("Ctrl+Q"));
     exitAct->setStatusTip(tr("Exit QSciTE"));
     connect(exitAct, SIGNAL(triggered()), this, SLOT(close()));
+    
+    undoAct = new QAction(QIcon(":/images/undo.svg"), tr("Undo"), this);
+    undoAct->setShortcut(tr("Ctrl+Z"));
+    undoAct->setStatusTip(tr("Undo the last action performed."));
+    connect(undoAct, SIGNAL(triggered()), openFiles[curDocIdx].edWidget, SLOT(undo()));
+    
+    redoAct = new QAction(QIcon(":/images/redo.svg"), tr("Redo"), this);
+    redoAct->setShortcut(tr("Ctrl+Shift+Z"));
+    redoAct->setStatusTip(tr("Redo an action previously undone."));
+    connect(redoAct, SIGNAL(triggered()), openFiles[curDocIdx].edWidget, SLOT(redo()));
 
     cutAct = new QAction(QIcon(":/images/editcut.svg"), tr("Cu&t"), this);
     cutAct->setShortcut(tr("Ctrl+X"));
@@ -96,6 +106,9 @@ void MainWindow::createMenus() {
     fileMenu->addAction(exitAct);
 
     editMenu = menuBar()->addMenu(tr("&Edit"));
+    editMenu->addAction(undoAct);
+    editMenu->addAction(redoAct);
+    editMenu->addSeparator();
     editMenu->addAction(cutAct);
     editMenu->addAction(copyAct);
     editMenu->addAction(pasteAct);

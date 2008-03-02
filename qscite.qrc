@@ -11,5 +11,7 @@
     <file>images/configure.svg</file>
     <file>images/font.svg</file>
     <file>images/openterm.svg</file>
+    <file>images/undo.svg</file>
+    <file>images/redo.svg</file>
 </qresource>
 </RCC>

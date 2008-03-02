@@ -118,11 +118,22 @@ void MainWindow::curDocChanged(int idx) {
   
   curDocIdx = idx;
   
+  if (openFiles.size() > 1) {
+    undoAct->disconnect(SIGNAL(triggered()));
+    redoAct->disconnect(SIGNAL(triggered()));
+  }
+  
   if (openFiles.size() > curDocIdx) { 
     setWindowTitleForFile(openFiles[curDocIdx].baseName);
     setWindowModified(openFiles[curDocIdx].edWidget->isModified());
+    
     if (termWidget != NULL && !openFiles[curDocIdx].fullName.isEmpty()) {
       termWidget->changeDir(openFiles[curDocIdx].path);
+    }
+    
+    if (openFiles.size() > 1) {
+      connect(undoAct, SIGNAL(triggered()), openFiles[curDocIdx].edWidget, SLOT(undo()));
+      connect(redoAct, SIGNAL(triggered()), openFiles[curDocIdx].edWidget, SLOT(redo()));
     }
   }
 }
@@ -134,6 +145,7 @@ bool MainWindow::maybeSave() {
                  QMessageBox::Yes | QMessageBox::Default,
                  QMessageBox::No,
                  QMessageBox::Cancel | QMessageBox::Escape);
+    
     if (ret == QMessageBox::Yes) {
       return save();
     } else if (ret == QMessageBox::Cancel) {
