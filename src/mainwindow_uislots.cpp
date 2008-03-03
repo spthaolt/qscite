@@ -203,23 +203,3 @@ void MainWindow::editPaste() {
 		termWidget->paste();
 	}
 }
-
-void MainWindow::nextDoc() {
-  int newIdx = curDocIdx + 1;
-  
-  if (newIdx >= tabWidget->count()) {
-    newIdx = 0;
-  }
-  
-  changeTabs(newIdx);
-}
-
-void MainWindow::prevDoc() {
-  int newIdx = curDocIdx - 1;
-  
-  if (newIdx < 0) {
-    newIdx = tabWidget->count() - 1 ;
-  }
-  
-  changeTabs(newIdx);
-}

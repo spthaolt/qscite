@@ -1,20 +1,17 @@
 <!DOCTYPE RCC><RCC version="1.0">
 <qresource>
-    <file>images/editcopy.png</file>
-    <file>images/editcut.png</file>
-    <file>images/filenew.png</file>
-    <file>images/fileopen.png</file>
-    <file>images/editpaste.png</file>
-    <file>images/filesave.png</file>
-    <file>images/filesaveas.png</file>
-    <file>images/fileclose.png</file>
-    <file>images/fileexit.png</file>
-    <file>images/configure.png</file>
-    <file>images/font.png</file>
-    <file>images/terminal.png</file>
-    <file>images/undo.png</file>
-    <file>images/redo.png</file>
-    <file>images/nextTab.png</file>
-    <file>images/prevTab.png</file>
+    <file>images/editcopy.svg</file>
+    <file>images/editcut.svg</file>
+    <file>images/filenew.svg</file>
+    <file>images/fileopen.svg</file>
+    <file>images/editpaste.svg</file>
+    <file>images/filesave.svg</file>
+    <file>images/filesaveas.svg</file>
+    <file>images/fileclose.svg</file>
+    <file>images/configure.svg</file>
+    <file>images/font.svg</file>
+    <file>images/openterm.svg</file>
+    <file>images/undo.svg</file>
+    <file>images/redo.svg</file>
 </qresource>
 </RCC>
