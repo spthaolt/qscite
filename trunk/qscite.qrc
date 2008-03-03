@@ -10,11 +10,11 @@
     <file>images/fileclose.png</file>
     <file>images/fileexit.png</file>
     <file>images/configure.png</file>
-    <file>images/font.svg</file>
+    <file>images/font.png</file>
     <file>images/terminal.png</file>
     <file>images/undo.png</file>
     <file>images/redo.png</file>
     <file>images/nextTab.png</file>
-    <file>images/nextTab.png</file>
+    <file>images/prevTab.png</file>
 </qresource>
 </RCC>
