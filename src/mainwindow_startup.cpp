@@ -68,7 +68,7 @@ void MainWindow::createActions() {
     // TODO: set shortcut, tip, etc.
     connect(prefsAct, SIGNAL(triggered()), this, SLOT(globalPrefs()));
     
-    fontAct = new QAction(QIcon(":/images/font.svg"), tr("&Font"), this);
+    fontAct = new QAction(QIcon(":/images/font.png"), tr("&Font"), this);
     //fontAct->setShortcut(tr(""))
     fontAct->setStatusTip(tr("Set the display font."));
     
@@ -77,7 +77,7 @@ void MainWindow::createActions() {
     terminalAct = new QAction(QIcon(":/images/terminal.png"), tr("Terminal"), this);
     connect(terminalAct, SIGNAL(triggered()), this, SLOT(toggleTerminal()));
     
-    textDisplayAct = new QAction(QIcon(":/images/font.svg"), tr("Text &Display..."), this);
+    textDisplayAct = new QAction(QIcon(":/images/font.png"), tr("Text &Display..."), this);
     connect(textDisplayAct, SIGNAL(triggered()), this, SLOT(textDisplay()));
 
     aboutAct = new QAction(tr("&About"), this);
@@ -87,6 +87,16 @@ void MainWindow::createActions() {
     aboutQtAct = new QAction(tr("About &Qt"), this);
     aboutQtAct->setStatusTip(tr("Show the Qt library's About box"));
     connect(aboutQtAct, SIGNAL(triggered()), qApp, SLOT(aboutQt()));
+    
+    nextAct = new QAction(QIcon(":/images/nextTab.png"), tr("Forward"), this);
+    nextAct->setStatusTip(tr("Change to the next open document"));
+    nextAct->setShortcut(tr("Alt+Right"));
+    connect(nextAct, SIGNAL(triggered()), this, SLOT(nextDoc()));
+    
+    prevAct = new QAction(QIcon(":/images/prevTab.png"), tr("Back"), this);
+    prevAct->setStatusTip(tr("Change to the previous open document"));
+    prevAct->setShortcut(tr("Alt+Left"));
+    connect(prevAct, SIGNAL(triggered()), this, SLOT(prevDoc()));
 
     cutAct->setEnabled(false);
     copyAct->setEnabled(false);
@@ -139,24 +149,24 @@ void MainWindow::createMenus() {
 
 void MainWindow::createToolBars() {
     QSize buttonSize = QSize(22, 22);
-    fileToolBar = addToolBar(tr("File"));
-    fileToolBar->addAction(newAct);
-    fileToolBar->addAction(openAct);
-    fileToolBar->addAction(saveAct);
-    fileToolBar->addAction(saveAsAct);
-    fileToolBar->addSeparator();
-    fileToolBar->addAction(terminalAct);
-    //fileToolBar->addAction(closeAct);
-    fileToolBar->setIconSize(buttonSize);
-
-    editToolBar = addToolBar(tr("Edit"));
-    editToolBar->addAction(undoAct);
-    editToolBar->addAction(redoAct);
-    editToolBar->addSeparator();
-    editToolBar->addAction(cutAct);
-    editToolBar->addAction(copyAct);
-    editToolBar->addAction(pasteAct);
-    editToolBar->setIconSize(buttonSize);
+    mainToolBar = addToolBar(tr("Main"));
+    mainToolBar->addAction(newAct);
+    mainToolBar->addAction(openAct);
+    mainToolBar->addSeparator();
+    mainToolBar->addAction(prevAct);
+    mainToolBar->addAction(nextAct);
+    mainToolBar->addSeparator();
+    mainToolBar->addAction(saveAct);
+    mainToolBar->addAction(saveAsAct);
+    mainToolBar->addSeparator();
+    mainToolBar->addAction(terminalAct);
+    mainToolBar->setIconSize(buttonSize);
+    mainToolBar->addAction(undoAct);
+    mainToolBar->addAction(redoAct);
+    mainToolBar->addSeparator();
+    mainToolBar->addAction(cutAct);
+    mainToolBar->addAction(copyAct);
+    mainToolBar->addAction(pasteAct);
 }
 
 void MainWindow::createStatusBar() {

@@ -74,6 +74,8 @@ private slots:
     void globalPrefs();
     void toggleTerminal(bool alive = false);
     void textDisplay();
+    void prevDoc();
+    void nextDoc();
     
     /* Internal slots */
     void curDocChanged(int idx);
@@ -122,8 +124,7 @@ private:
     QMenu *editMenu;
     QMenu *viewMenu;
     QMenu *helpMenu;
-    QToolBar *fileToolBar;
-    QToolBar *editToolBar;
+    QToolBar *mainToolBar;
     QAction *newAct;
     QAction *closeAct;
     QAction *openAct;
@@ -144,6 +145,8 @@ private:
     QAction *fontAct;
     QAction *terminalAct;
     QAction *textDisplayAct;
+    QAction *nextAct;
+    QAction *prevAct;
 };
 
 #endif
