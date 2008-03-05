@@ -30,6 +30,7 @@ class QsciScintilla;
 class QTabWidget;
 class QTerminal;
 class TextDisplayPanel;
+class QStringList;
 
 struct FileData {
 
@@ -52,7 +53,7 @@ class MainWindow : public QMainWindow
 	friend class TextDisplayPanel;
 
 public:
-    MainWindow();
+    MainWindow(QStringList & _argv);
 
 protected:
     void closeEvent(QCloseEvent *event);
@@ -108,6 +109,7 @@ private:
     void changeTabs(int index);
     void documentWasModified();
     
+    QStringList argv;
     std::vector<FileData> openFiles;
     QList<QFileInfo> recentFiles;
     QTabWidget * tabWidget;

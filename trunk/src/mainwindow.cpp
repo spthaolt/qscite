@@ -34,12 +34,13 @@
   #include "qterminal_pty.h"
 #endif
 
-MainWindow::MainWindow() :
+MainWindow::MainWindow(QStringList & _argv) :
   termWidget(NULL),
   textSettingsWidget(NULL),
   copyFromTerm(false),
   termInDrawer(QSettings().value("terminalInDrawer", false).toBool()),
-  curDocIdx(0)
+  curDocIdx(0),
+  argv(_argv)
 {
   this->setUnifiedTitleAndToolBarOnMac(true);
   readSettings();
@@ -65,6 +66,13 @@ MainWindow::MainWindow() :
   connect(tabWidget, SIGNAL(currentChanged(int)), this, SLOT(curDocChanged(int)));
   connect(QApplication::instance(), SIGNAL(focusChanged(QWidget *, QWidget *)), this, SLOT(noticeFocusChange(QWidget *, QWidget *)));
   setWindowTitleForFile("");
+  for (int i = 0; i < argv.size(); ++i) {
+    if (!argv.front().isEmpty()) {
+      loadFile(argv.front());
+    }
+    
+    argv.pop_front();
+  }
 }
 
 void MainWindow::createDocument() {
