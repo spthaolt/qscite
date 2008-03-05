@@ -43,8 +43,10 @@ void QTerminal::processFinished() {
 
 void QTerminal::changeDir(const QString & dir) {
 	/* Hope we are talking to a prompt and not a text editor */
+  QString theDir = QString(dir);
+  theDir = theDir.replace(QChar('/'), "\\");
 	shell->write("cd ", 3);
-	shell->write(dir.toAscii().data(), dir.length());
+	shell->write(theDir.toAscii().data(), theDir.length());
 	shell->write("\r\n", 2);
 }
 
