@@ -18,6 +18,7 @@
  ***************************************************************************/
 
 #include <QApplication>
+#include <QStringList>
 
 #include "mainwindow.h"
 
@@ -28,7 +29,14 @@ int main(int argc, char *argv[])
     QApplication app(argc, argv);
     app.setApplicationName("QSciTE");
     app.setOrganizationName("QSciteTeam");
-    MainWindow mainWin;
+    QStringList _argv;
+    
+    for (unsigned int i = 0; i < sizeof(argv); ++i) {
+      _argv.push_back(QString(argv[i]));
+    }
+    
+    _argv.pop_front(); //we really don't care about the executable name, only the args passed to it...
+    MainWindow mainWin(_argv);
     app.installEventFilter(&mainWin);
     mainWin.show();
     return app.exec();
