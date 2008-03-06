@@ -144,10 +144,13 @@ bool MainWindow::saveAs() {
       return false;
     }
     
-	addRecentFile(fileName);
-	openFiles[curDocIdx].setPathName(fileName);
-	setWindowTitleForFile(openFiles[curDocIdx].baseName);
-    return saveFile(fileName);
+    bool success = saveFile(fileName);
+    if (success) {
+      addRecentFile(fileName);
+      openFiles[curDocIdx].setPathName(fileName);
+      setWindowTitleForFile(openFiles[curDocIdx].baseName);
+    }
+    return success;
   }
   
   return false;
