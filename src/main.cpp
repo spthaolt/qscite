@@ -31,11 +31,10 @@ int main(int argc, char *argv[])
     app.setOrganizationName("QSciteTeam");
     QStringList _argv;
     
-    for (unsigned int i = 0; i < sizeof(argv); ++i) {
+    for (int i = 1; i < argc; ++i) {
       _argv.push_back(QString(argv[i]));
     }
     
-    _argv.pop_front(); //we really don't care about the executable name, only the args passed to it...
     MainWindow mainWin(_argv);
     app.installEventFilter(&mainWin);
     mainWin.show();
