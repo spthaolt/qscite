@@ -35,12 +35,12 @@
 #endif
 
 MainWindow::MainWindow(QStringList & _argv) :
+  argv(_argv),
   termWidget(NULL),
   textSettingsWidget(NULL),
   copyFromTerm(false),
   termInDrawer(QSettings().value("terminalInDrawer", false).toBool()),
-  curDocIdx(0),
-  argv(_argv)
+  curDocIdx(0)
 {
   this->setUnifiedTitleAndToolBarOnMac(true);
   readSettings();
