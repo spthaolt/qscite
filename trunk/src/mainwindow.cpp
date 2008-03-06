@@ -176,6 +176,7 @@ void MainWindow::loadFile(const QString &fileName) {
   }
 
   QTextStream in(&file);
+  in.setCodec("UTF-8");
   QApplication::setOverrideCursor(Qt::WaitCursor);
   openFiles[curDocIdx].edWidget->setText(in.readAll());
   QApplication::restoreOverrideCursor();
@@ -239,6 +240,7 @@ bool MainWindow::saveFile(const QString &fileName) {
   }
 
   QTextStream out(&file);
+  out.setCodec("UTF-8");
   QApplication::setOverrideCursor(Qt::WaitCursor);
   out << openFiles[curDocIdx].edWidget->text();
   QApplication::restoreOverrideCursor();

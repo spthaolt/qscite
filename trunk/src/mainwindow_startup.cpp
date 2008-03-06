@@ -128,6 +128,7 @@ void MainWindow::createMenus() {
     
     viewMenu = menuBar()->addMenu(tr("&View"));
     viewMenu->addAction(textDisplayAct);
+	viewMenu->addAction(fontAct);
     viewMenu->addAction(terminalAct);
 
     menuBar()->addSeparator();
@@ -152,21 +153,21 @@ void MainWindow::createToolBars() {
     mainToolBar = addToolBar(tr("Main"));
     mainToolBar->addAction(newAct);
     mainToolBar->addAction(openAct);
-    mainToolBar->addSeparator();
-    mainToolBar->addAction(prevAct);
-    mainToolBar->addAction(nextAct);
-    mainToolBar->addSeparator();
-    mainToolBar->addAction(saveAct);
+	mainToolBar->addAction(saveAct);
     mainToolBar->addAction(saveAsAct);
     mainToolBar->addSeparator();
-    mainToolBar->addAction(terminalAct);
-    mainToolBar->setIconSize(buttonSize);
-    mainToolBar->addAction(undoAct);
+	mainToolBar->addAction(undoAct);
     mainToolBar->addAction(redoAct);
     mainToolBar->addSeparator();
     mainToolBar->addAction(cutAct);
     mainToolBar->addAction(copyAct);
     mainToolBar->addAction(pasteAct);
+    mainToolBar->addSeparator();
+    mainToolBar->addAction(prevAct);
+    mainToolBar->addAction(nextAct);
+    mainToolBar->addSeparator();
+    mainToolBar->addAction(terminalAct);
+    mainToolBar->setIconSize(buttonSize);
 }
 
 void MainWindow::createStatusBar() {
