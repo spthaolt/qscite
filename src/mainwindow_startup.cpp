@@ -39,12 +39,12 @@ void MainWindow::createActions() {
     undoAct = new QAction(QIcon(":/images/undo.png"), tr("Undo"), this);
     undoAct->setShortcut(tr("Ctrl+Z"));
     undoAct->setStatusTip(tr("Undo the last action performed."));
-    connect(undoAct, SIGNAL(triggered()), openFiles[curDocIdx].edWidget, SLOT(undo()));
+    connect(undoAct, SIGNAL(triggered()), this, SLOT(undo()));
     
     redoAct = new QAction(QIcon(":/images/redo.png"), tr("Redo"), this);
     redoAct->setShortcut(tr("Ctrl+Shift+Z"));
     redoAct->setStatusTip(tr("Redo an action previously undone."));
-    connect(redoAct, SIGNAL(triggered()), openFiles[curDocIdx].edWidget, SLOT(redo()));
+    connect(redoAct, SIGNAL(triggered()), this, SLOT(redo()));
 
     cutAct = new QAction(QIcon(":/images/editcut.png"), tr("Cu&t"), this);
     cutAct->setShortcut(tr("Ctrl+X"));
