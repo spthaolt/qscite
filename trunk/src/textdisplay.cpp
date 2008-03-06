@@ -156,6 +156,8 @@ void TextDisplayPanel::on_cbxLexer_currentIndexChanged(int idx) {
 	if (idx > 0) {
 		newLexer = getLexerByName(supportedLexers[idx - 1]);
 		newLexer->setParent(parent->openFiles[parent->curDocIdx].edWidget);
+		QFont curFont = parent->openFiles[parent->curDocIdx].edWidget->font();
+		setLexerFont(newLexer, curFont.family(), curFont.pointSize());
 	}
 	parent->openFiles[parent->curDocIdx].edWidget->setLexer(newLexer);
 }
