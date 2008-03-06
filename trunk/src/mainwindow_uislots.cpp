@@ -187,23 +187,37 @@ void MainWindow::about() {
 
 void MainWindow::editCopy() {
 	if (copyFromTerm) {
+		Q_ASSERT(termWidget != NULL);
 		termWidget->copy();
-	} else {
+	} else if (!openFiles.empty()) {
 		openFiles[curDocIdx].edWidget->copy();
 	}
 }
 
 void MainWindow::editCut() {
-	if (!copyFromTerm) {
+	if (!copyFromTerm && !openFiles.empty()) {
 		openFiles[curDocIdx].edWidget->cut();
 	}
 }
 
 void MainWindow::editPaste() {
-	if (!copyFromTerm) {
-		openFiles[curDocIdx].edWidget->paste();
-	} else {
+	if (copyFromTerm) {
+		Q_ASSERT(termWidget != NULL);
 		termWidget->paste();
+	} else if (!openFiles.empty()) {
+		openFiles[curDocIdx].edWidget->paste();
+	}
+}
+
+void MainWindow::undo() {
+	if (!openFiles.empty()) {
+		openFiles[curDocIdx].edWidget->undo();
+	}
+}
+
+void MainWindow::redo() {
+	if (!openFiles.empty()) {
+		openFiles[curDocIdx].edWidget->redo();
 	}
 }
 

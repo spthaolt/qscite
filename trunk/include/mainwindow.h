@@ -67,6 +67,8 @@ private slots:
     void openRecent(QAction * src);
     bool save();
     bool saveAs();
+	void undo();
+	void redo();
     void editCopy();
     void editCut();
     void editPaste();
