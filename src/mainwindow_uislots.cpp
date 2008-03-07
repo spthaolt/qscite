@@ -240,3 +240,19 @@ void MainWindow::prevDoc() {
   
   changeTabs(newIdx);
 }
+
+void MainWindow::setEolCr () {
+  openFiles[curDocIdx].edWidget->setEolMode(QsciScintilla::EolMac);
+}
+
+void MainWindow::setEolLf () {
+  openFiles[curDocIdx].edWidget->setEolMode(QsciScintilla::EolUnix);
+}
+
+void MainWindow::setEolCrLf () {
+  openFiles[curDocIdx].edWidget->setEolMode(QsciScintilla::EolWindows);
+}
+
+void MainWindow::convertEols () {
+  openFiles[curDocIdx].edWidget->convertEols(openFiles[curDocIdx].edWidget->eolMode());
+}

@@ -100,52 +100,78 @@ void MainWindow::createActions() {
 
     cutAct->setEnabled(false);
     copyAct->setEnabled(false);
+    
+    convertEndings = new QAction(tr("&Convert Line End Characters"), this);
+    connect(convertEndings, SIGNAL(triggered()), this, SLOT(convertEols()));
+    lineEndCr = new QAction(tr("&CR (old Macintosh)"), this);
+    lineEndCr->setCheckable(true);
+    connect(lineEndCr, SIGNAL(triggered()), this, SLOT(setEolCr()));
+    lineEndLf = new QAction(tr("&LF (Unix)"), this);
+    lineEndLf->setCheckable(true);
+    connect(lineEndLf, SIGNAL(triggered()), this, SLOT(setEolLf()));
+    lineEndCrLf = new QAction(tr("CF &+ LF (Windows)"), this);
+    lineEndCrLf->setCheckable(true);
+    connect(lineEndCrLf, SIGNAL(triggered()), this, SLOT(setEolCrLf()));
+    
+    lineEnds = new QActionGroup(this);
+    lineEnds->addAction(lineEndCr);
+    lineEnds->addAction(lineEndLf);
+    lineEnds->addAction(lineEndCrLf);
+    lineEndLf->setChecked(true);
+
 }
 
 void MainWindow::createMenus() {
-    fileMenu = menuBar()->addMenu(tr("&File"));
-    fileMenu->addAction(newAct);
+  fileMenu = menuBar()->addMenu(tr("&File"));
+  fileMenu->addAction(newAct);
  	fileMenu->addSeparator();
-    fileMenu->addAction(openAct);
-    recentMenu = fileMenu->addMenu(tr("Open &Recent"));
-    recentMenu->setIcon(QIcon(":/images/fileopen.png"));
-    fileMenu->addAction(closeAct);
+  fileMenu->addAction(openAct);
+  recentMenu = fileMenu->addMenu(tr("Open &Recent"));
+  recentMenu->setIcon(QIcon(":/images/fileopen.png"));
+  fileMenu->addAction(closeAct);
  	fileMenu->addSeparator();
-    fileMenu->addAction(saveAct);
-    fileMenu->addAction(saveAsAct);
-    fileMenu->addSeparator();
-    fileMenu->addAction(exitAct);
+  fileMenu->addAction(saveAct);
+  fileMenu->addAction(saveAsAct);
+  fileMenu->addSeparator();
+  fileMenu->addAction(exitAct);
 
-    editMenu = menuBar()->addMenu(tr("&Edit"));
-    editMenu->addAction(undoAct);
-    editMenu->addAction(redoAct);
-    editMenu->addSeparator();
-    editMenu->addAction(cutAct);
-    editMenu->addAction(copyAct);
-    editMenu->addAction(pasteAct);
-    editMenu->addSeparator();
-    editMenu->addAction(prefsAct);
-    
-    viewMenu = menuBar()->addMenu(tr("&View"));
-    viewMenu->addAction(textDisplayAct);
+  editMenu = menuBar()->addMenu(tr("&Edit"));
+  editMenu->addAction(undoAct);
+  editMenu->addAction(redoAct);
+  editMenu->addSeparator();
+  editMenu->addAction(cutAct);
+  editMenu->addAction(copyAct);
+  editMenu->addAction(pasteAct);
+  editMenu->addSeparator();
+  editMenu->addAction(prefsAct);
+  
+  viewMenu = menuBar()->addMenu(tr("&View"));
+  viewMenu->addAction(textDisplayAct);
 	viewMenu->addAction(fontAct);
-    viewMenu->addAction(terminalAct);
+  viewMenu->addAction(terminalAct);
+  
+  optionsMenu = menuBar()->addMenu(tr("&Options"));
+  lineEndMenu = optionsMenu->addMenu(tr("&Line End Characters"));
+  lineEndMenu->addAction(lineEndLf);
+  lineEndMenu->addAction(lineEndCrLf);
+  lineEndMenu->addAction(lineEndCr);
+  optionsMenu->addAction(convertEndings);
+  menuBar()->addSeparator();
 
-    menuBar()->addSeparator();
-
-    helpMenu = menuBar()->addMenu(tr("&Help"));
-    helpMenu->addAction(aboutAct);
-    helpMenu->addAction(aboutQtAct);
-    
-    for (int i = 0; i < recentFiles.size(); ++i) {
-		if (recentFiles[i].exists() && recentFiles[i].isFile()) {
-			recentMenu->addAction( recentFiles[i].fileName() )->setStatusTip( recentFiles[i].filePath() );
-		} else {
-			recentFiles.removeAt(i--);
-		}
-    }
-    recentMenu->menuAction()->setEnabled(!recentFiles.empty());
-    connect(recentMenu, SIGNAL(triggered(QAction *)), this, SLOT(openRecent(QAction *)));
+  helpMenu = menuBar()->addMenu(tr("&Help"));
+  helpMenu->addAction(aboutAct);
+  helpMenu->addAction(aboutQtAct);
+  
+  for (int i = 0; i < recentFiles.size(); ++i) {
+  	if (recentFiles[i].exists() && recentFiles[i].isFile()) {
+  		recentMenu->addAction( recentFiles[i].fileName() )->setStatusTip( recentFiles[i].filePath() );
+  	} else {
+  		recentFiles.removeAt(i--);
+  	}
+  }
+  
+  recentMenu->menuAction()->setEnabled(!recentFiles.empty());
+  connect(recentMenu, SIGNAL(triggered(QAction *)), this, SLOT(openRecent(QAction *)));
 }
 
 void MainWindow::createToolBars() {
