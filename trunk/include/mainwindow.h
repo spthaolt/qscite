@@ -31,6 +31,7 @@ class QTabWidget;
 class QTerminal;
 class TextDisplayPanel;
 class QStringList;
+class QActionGroup;
 
 struct FileData {
 
@@ -56,7 +57,7 @@ public:
     MainWindow(QStringList & _argv);
 
 protected:
-    void closeEvent(QCloseEvent *event);
+    void closeEvent(QCloseEvent * event);
     bool eventFilter(QObject * target, QEvent * event);
 
 private slots:
@@ -79,6 +80,10 @@ private slots:
     void textDisplay();
     void prevDoc();
     void nextDoc();
+    void setEolCr();
+    void setEolLf();
+    void setEolCrLf();
+    void convertEols();
     
     /* Internal slots */
     void curDocChanged(int idx);
@@ -123,34 +128,42 @@ private:
 
     unsigned int curDocIdx;
 
-    QMenu *fileMenu;
-    QMenu *recentMenu;
-    QMenu *editMenu;
-    QMenu *viewMenu;
-    QMenu *helpMenu;
-    QToolBar *mainToolBar;
-    QAction *newAct;
-    QAction *closeAct;
-    QAction *openAct;
-    QAction *saveAct;
-    QAction *saveAsAct;
-    QAction *exitAct;
-    QAction *undoAct;
-    QAction *redoAct;
-    QAction *cutAct;
-    QAction *copyAct;
-    QAction *pasteAct;
+    QMenu * fileMenu;
+      QMenu * recentMenu;
+    QMenu * editMenu;
+    QMenu * viewMenu;
+    QMenu * optionsMenu;
+      QMenu * lineEndMenu;
+    QMenu * helpMenu;
+    QToolBar * mainToolBar;
+    QAction * newAct;
+    QAction * closeAct;
+    QAction * openAct;
+    QAction * saveAct;
+    QAction * saveAsAct;
+    QAction * exitAct;
+    QAction * undoAct;
+    QAction * redoAct;
+    QAction * cutAct;
+    QAction * copyAct;
+    QAction * pasteAct;
     
-    QAction *prefsAct;
+    QAction * prefsAct;
     
-    QAction *aboutAct;
-    QAction *aboutQtAct;
+    QAction * aboutAct;
+    QAction * aboutQtAct;
     
-    QAction *fontAct;
-    QAction *terminalAct;
-    QAction *textDisplayAct;
-    QAction *nextAct;
-    QAction *prevAct;
+    QAction * fontAct;
+    QAction * terminalAct;
+    QAction * textDisplayAct;
+    QAction * nextAct;
+    QAction * prevAct;
+    
+    QAction * convertEndings;
+    QAction * lineEndCr;
+    QAction * lineEndLf;
+    QAction * lineEndCrLf;
+    QActionGroup * lineEnds;
 };
 
 #endif
