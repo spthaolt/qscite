@@ -115,6 +115,7 @@ private:
     void setCurrentTabTitle();
     void changeTabs(int index);
     void documentWasModified();
+    void detectEolMode();
     
     QStringList argv;
     std::vector<FileData> openFiles;

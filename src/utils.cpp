@@ -35,12 +35,12 @@ void printHex (QString & thestr) {
     }
     char c = str[j];
     for (int i = 2 * sizeof(char) - 1; i >= 0; --i) {
-        std::cout << "0123456789ABCDEF"[((c >> i*4) & 0xF)];
+        std::cerr << "0123456789ABCDEF"[((c >> i*4) & 0xF)];
     }
-    std::cout << " ";
+    std::cerr << " ";
   }
   
-  std::cout << "-- " << readableStr;
+  std::cerr << "-- " << readableStr;
 }
 
 

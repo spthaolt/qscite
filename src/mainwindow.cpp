@@ -146,6 +146,7 @@ void MainWindow::curDocChanged(int idx) {
       connect(redoAct, SIGNAL(triggered()), doc, SLOT(redo()));
       showLineEndsAct->setChecked(doc->eolVisibility());
       connect(showLineEndsAct, SIGNAL(toggled(bool)), doc, SLOT(setEolVisibility(bool)));
+      detectEolMode();
     }
   }
 }
@@ -209,6 +210,9 @@ void MainWindow::loadFile(const QString &fileName) {
   if (textSettingsWidget != NULL) {
     textSettingsWidget->populate();
   }
+  
+  detectEolMode();
+  
   statusBar()->showMessage(tr("File loaded"), 2000);
 }
 
@@ -329,10 +333,37 @@ bool MainWindow::eventFilter(QObject * target, QEvent * event) {
 	}
 }
 
+void MainWindow::detectEolMode() {
+  QString firstLine = openFiles[curDocIdx].edWidget->text(0);
+  if (firstLine.length()) {    
+    QChar lastChar = firstLine.at(firstLine.length() - 1);
+    
+    if (lastChar == '\r') {
+      setEolCr();
+      lineEndCr->setChecked(true);
+    } else if (lastChar == '\n') {
+      if ((firstLine.length() > 1) && (firstLine.at(firstLine.length() - 2) == '\r')) {
+        setEolCrLf();
+        lineEndCrLf->setChecked(true);
+      } else {
+        setEolLf();
+        lineEndLf->setChecked(true);
+      }
+    } else {
+      // Default to \n line endings
+      setEolLf();
+      lineEndLf->setChecked(true);
+    }
+  } else {
+    // Default to \n line endings
+    setEolLf();
+    lineEndLf->setChecked(true);
+  }
+}
+
 
 FileData::FileData(QsciScintilla * doc) : edWidget(doc) { ; }
-FileData::FileData(const FileData & src) : fullName(src.fullName), baseName(src.baseName), path(src.path), edWidget(src.edWidget) {
-}
+FileData::FileData(const FileData & src) : fullName(src.fullName), baseName(src.baseName), path(src.path), edWidget(src.edWidget) { ; }
 
 void FileData::setPathName(const QString & newPathName) {
 	fullName = newPathName;
