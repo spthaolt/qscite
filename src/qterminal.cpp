@@ -8,22 +8,19 @@ QTerminal::QTerminal(QWidget *parent, Qt::WindowFlags f) : QTextEdit(parent) {
   shell->setProcessChannelMode(QProcess::MergedChannels);
   QObject::connect(shell, SIGNAL(readyReadStandardOutput()), this, SLOT(readStandardOut()));
   QObject::connect(shell, SIGNAL(readyReadStandardError()), this, SLOT(readStandardErr()));
-  //QObject::connect(shell, SIGNAL(finished()), this, SLOT(processFinished()));
   shell->start("cmd.exe", QStringList() << "", QIODevice::ReadWrite);
-  this->insertPlainText("TERMINAL VERY ALPHA QUALITY ON WIN32!\r\n");
+  //this->insertPlainText("TERMINAL VERY ALPHA QUALITY ON WIN32!\r\n");
   // This var protects against mouse interference with the cursor
   curCursorLoc = this->textCursor();
   inputCharCount = 0;
+  histLocation = -1;
+  tempCmd = "";
 }
 
 QTerminal::~QTerminal() {
   shell->kill();
   shell->waitForFinished();
   delete shell;
-}
-
-void QTerminal::printPrompt () {
-  this->insertPlainText(QApplication::applicationDirPath() + ">");
 }
 
 void QTerminal::readStandardOut() {
@@ -35,10 +32,6 @@ void QTerminal::readStandardErr() {
   // TODO: format stderr output differently than stdout
   this->insertPlainText(shell->readAllStandardError());
   this->moveCursor(QTextCursor::End, QTextCursor::KeepAnchor);
-}
-
-void QTerminal::processFinished() {
-  printPrompt();
 }
 
 void QTerminal::changeDir(const QString & dir) {
@@ -59,8 +52,51 @@ void QTerminal::keyPressEvent(QKeyEvent * event) {
   if (key != Qt::Key_Backspace) {
     if (key == Qt::Key_Return || key == Qt::Key_Enter) {
       inputCharCount = 0;
-    } else if (key == Qt::Key_Up || key == Qt::Key_Down) {
-      // TODO: see if there's a way to hack the bash history in here...
+    } else if (key == Qt::Key_Up) {
+      if (cmdHistory.size()) {
+        if (histLocation == -1) {
+          histLocation = cmdHistory.size() - 1;
+          tempCmd = cmdStr;
+        } else if (histLocation == 0) {
+          QApplication::beep();
+          event->ignore();
+          return;
+        } else {
+          --histLocation;
+        }
+        
+        for (int i = 0; i < inputCharCount; ++i) {
+          QTextEdit::keyPressEvent(new QKeyEvent(QEvent::KeyPress, Qt::Key_Backspace, Qt::NoModifier));
+        }
+        
+        inputCharCount = cmdHistory.at(histLocation).length();
+        this->insertPlainText(cmdHistory.at(histLocation));
+        cmdStr = cmdHistory.at(histLocation);
+      }
+      
+      event->ignore();
+      return;
+    } else if (key == Qt::Key_Down) {
+      QString str = "";
+      if (histLocation == -1) {
+        QApplication::beep();
+        event->ignore();
+        return;
+      } else if (histLocation == cmdHistory.size() - 1) {
+        histLocation = -1;
+        str = tempCmd;
+      } else {
+        ++histLocation;
+        str = cmdHistory.at(histLocation);
+      }
+      
+      for (int i = 0; i < inputCharCount; ++i) {
+        QTextEdit::keyPressEvent(new QKeyEvent(QEvent::KeyPress, Qt::Key_Backspace, Qt::NoModifier));
+      }
+      
+      inputCharCount = str.length();
+      this->insertPlainText(str);
+      cmdStr = str;
     } else if (key == Qt::Key_Left) {
       if (inputCharCount) {
         --inputCharCount;
@@ -78,12 +114,7 @@ void QTerminal::keyPressEvent(QKeyEvent * event) {
         QApplication::beep();
       }
     } else if (key == Qt::Key_Tab) {
-      // TODO: see if we can hack in tab completion.  See below for current status....
-      //
-      // do nothing on tabs.  Tab completion is actually being activated in the process
-      // but it's apparently not being spat out using stdout.  For now, we don't output
-      // anything in the QTextEdit when tab is pressed, but we do pass the character to
-      // the bash process.
+      // TODO: see if we can hack in tab completion.  Currently we don't do anything.
     } else {
       QString text = event->text();
       for (int i = 0; i < text.length(); ++i) {
@@ -110,7 +141,10 @@ void QTerminal::keyPressEvent(QKeyEvent * event) {
     shell->write(cmdStr.toAscii().data(), cmdStr.length());
     shell->write("\r\n", 2);
     QTextEdit::keyPressEvent(event);
+    cmdHistory.push_back(cmdStr);
+    histLocation = -1;
     cmdStr = "";
+    tempCmd = "";
   } else {
     QString input = event->text();
     for (int i = 0; i < input.length(); ++i) {
