@@ -1,6 +1,7 @@
 #ifndef QTERMINAL_H_
 #define QTERMINAL_H_
 #include <QTextEdit>
+#include <QStringList>
 class QProcess;
 
 class QTerminal : public QTextEdit {
@@ -14,13 +15,15 @@ public:
 private slots:
     void readStandardOut();
     void readStandardErr();
-    void processFinished();
 private:
     QProcess * shell;
     int inputCharCount;
     QTextCursor curCursorLoc;
     QString cmdStr;
     void printPrompt();
+    QStringList cmdHistory;
+    int histLocation;
+    QString tempCmd;
 };
 
 #endif /*QTERMINAL_H_*/
