@@ -119,6 +119,9 @@ void MainWindow::createActions() {
     lineEnds->addAction(lineEndCrLf);
     lineEndLf->setChecked(true);
 
+    showLineEndsAct = new QAction(tr("&End of Line"), this);
+    showLineEndsAct->setCheckable(true);
+    connect(showLineEndsAct, SIGNAL(toggled(bool)), openFiles[curDocIdx].edWidget, SLOT(setEolVisibility(bool)));
 }
 
 void MainWindow::createMenus() {
@@ -149,6 +152,8 @@ void MainWindow::createMenus() {
   viewMenu->addAction(textDisplayAct);
 	viewMenu->addAction(fontAct);
   viewMenu->addAction(terminalAct);
+  viewMenu->addSeparator();
+  viewMenu->addAction(showLineEndsAct);
   
   optionsMenu = menuBar()->addMenu(tr("&Options"));
   lineEndMenu = optionsMenu->addMenu(tr("&Line End Characters"));
