@@ -125,23 +125,27 @@ void MainWindow::curDocChanged(int idx) {
   qDebug() << "curDocChanged(" << idx << ')';
   
   curDocIdx = idx;
+  QsciScintilla * doc = openFiles[curDocIdx].edWidget;
   
   if (openFiles.size() > 1) {
     undoAct->disconnect(SIGNAL(triggered()));
     redoAct->disconnect(SIGNAL(triggered()));
+    showLineEndsAct->disconnect(SIGNAL(toggled(bool)));
   }
   
   if (openFiles.size() > curDocIdx) { 
     setWindowTitleForFile(openFiles[curDocIdx].baseName);
-    setWindowModified(openFiles[curDocIdx].edWidget->isModified());
+    setWindowModified(doc->isModified());
     
     if (termWidget != NULL && !openFiles[curDocIdx].fullName.isEmpty()) {
       termWidget->changeDir(openFiles[curDocIdx].path);
     }
     
     if (openFiles.size() > 1) {
-      connect(undoAct, SIGNAL(triggered()), openFiles[curDocIdx].edWidget, SLOT(undo()));
-      connect(redoAct, SIGNAL(triggered()), openFiles[curDocIdx].edWidget, SLOT(redo()));
+      connect(undoAct, SIGNAL(triggered()), doc, SLOT(undo()));
+      connect(redoAct, SIGNAL(triggered()), doc, SLOT(redo()));
+      showLineEndsAct->setChecked(doc->eolVisibility());
+      connect(showLineEndsAct, SIGNAL(toggled(bool)), doc, SLOT(setEolVisibility(bool)));
     }
   }
 }
@@ -281,6 +285,8 @@ void MainWindow::updateCopyAvailable(bool yes) {
 }
 
 void MainWindow::noticeFocusChange(QWidget * prev, QWidget * current) {
+  if (prev == current) { }; // make the compiler shut up.
+  
 	if (termWidget != NULL && current == termWidget) {
 		copyFromTerm = true;
 	} else if (openFiles.size() > curDocIdx && current == openFiles[curDocIdx].edWidget) {

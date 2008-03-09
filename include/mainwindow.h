@@ -164,6 +164,8 @@ private:
     QAction * lineEndLf;
     QAction * lineEndCrLf;
     QActionGroup * lineEnds;
+    
+    QAction * showLineEndsAct;
 };
 
 #endif
