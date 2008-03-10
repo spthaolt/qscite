@@ -54,8 +54,8 @@ MainWindow::MainWindow(QStringList & _argv) :
   
   setCentralWidget(tabWidget);
   this->setWindowIcon(QIcon(":images/appIcon.png"));
-  createDocument();
   createActions();
+  createDocument();
   createMenus();
   createToolBars();
   createStatusBar();
@@ -87,7 +87,6 @@ MainWindow::MainWindow(QStringList & _argv) :
 void MainWindow::createDocument() {
   QsciScintilla * curDoc = new QsciScintilla();
   curDoc->setUtf8(true);
-  curDoc->SendScintilla(QsciScintillaBase::SCI_SETLAYOUTCACHE, QsciScintillaBase::SC_CACHE_PAGE);
   applySettingsToDoc(curDoc);
 
   openFiles.push_back(FileData(curDoc));
@@ -135,30 +134,18 @@ void MainWindow::curDocChanged(int idx) {
   qDebug() << "curDocChanged(" << idx << ')';
   
   curDocIdx = idx;
-  QsciScintilla * doc = openFiles[curDocIdx].edWidget;
-  /*
-  if (openFiles.size() > 1) {
-    undoAct->disconnect(SIGNAL(triggered()));
-    redoAct->disconnect(SIGNAL(triggered()));
-    showLineEndsAct->disconnect(SIGNAL(toggled(bool)));
-  }
-  */
-  if (openFiles.size() > curDocIdx) { 
+
+  if (openFiles.size() > curDocIdx) {
+    QsciScintilla * doc = openFiles[curDocIdx].edWidget;
+    
     setWindowTitleForFile(openFiles[curDocIdx].baseName);
     setWindowModified(doc->isModified());
+    
+    setUIForDocumentEolMode();
     
     if (termWidget != NULL && !openFiles[curDocIdx].fullName.isEmpty()) {
       termWidget->changeDir(openFiles[curDocIdx].path);
     }
-    /*
-    if (openFiles.size() > 1) {
-      connect(undoAct, SIGNAL(triggered()), doc, SLOT(undo()));
-      connect(redoAct, SIGNAL(triggered()), doc, SLOT(redo()));
-      showLineEndsAct->setChecked(doc->eolVisibility());
-      connect(showLineEndsAct, SIGNAL(toggled(bool)), doc, SLOT(setEolVisibility(bool)));
-      detectEolMode();
-    }
-	*/
   }
 }
 
@@ -207,23 +194,25 @@ void MainWindow::loadFile(const QString &fileName) {
   
   redoSetMargin();
   
-  QFont currentFont = openFiles[curDocIdx].edWidget->font();
-  QsciLexer * newLexer = getLexerForDocument(fileName, openFiles[curDocIdx].edWidget->text());
+  QsciScintilla * curDoc = openFiles[curDocIdx].edWidget;
+  
+  QFont currentFont = curDoc->font();
+  QsciLexer * newLexer = getLexerForDocument(fileName, curDoc->text());
   
   if (newLexer != NULL) {
     qDebug() << "Using lexer " << newLexer->lexer();
-  	newLexer->setParent(openFiles[curDocIdx].edWidget);
-    openFiles[curDocIdx].edWidget->setLexer(newLexer);
+  	newLexer->setParent(curDoc);
+    curDoc->setLexer(newLexer);
     setLexerFont(newLexer, currentFont.family(), currentFont.pointSize());
-    openFiles[curDocIdx].edWidget->setCaretForegroundColor(QColor(0,0,0));
+    curDoc->setCaretForegroundColor(QColor(0,0,0));
   }
+  
+  curDoc->setEolMode(detectEolMode(curDoc));
   
   if (textSettingsWidget != NULL) {
     textSettingsWidget->populate();
   }
-  
-  detectEolMode();
-  
+    
   statusBar()->showMessage(tr("File loaded"), 2000);
 }
 
@@ -344,32 +333,19 @@ bool MainWindow::eventFilter(QObject * target, QEvent * event) {
 	}
 }
 
-void MainWindow::detectEolMode() {
-  QString firstLine = openFiles[curDocIdx].edWidget->text(0);
-  if (firstLine.length()) {    
-    QChar lastChar = firstLine.at(firstLine.length() - 1);
-    
-    if (lastChar == '\r') {
-      setEolCr();
-      lineEndCr->setChecked(true);
-    } else if (lastChar == '\n') {
-      if ((firstLine.length() > 1) && (firstLine.at(firstLine.length() - 2) == '\r')) {
-        setEolCrLf();
-        lineEndCrLf->setChecked(true);
-      } else {
-        setEolLf();
-        lineEndLf->setChecked(true);
-      }
-    } else {
-      // Default to \n line endings
-      setEolLf();
-      lineEndLf->setChecked(true);
-    }
-  } else {
-    // Default to \n line endings
-    setEolLf();
-    lineEndLf->setChecked(true);
-  }
+void MainWindow::setUIForDocumentEolMode() {
+	switch (openFiles[curDocIdx].edWidget->eolMode()) {
+		case QsciScintilla::EolWindows:
+			lineEndCrLf->setChecked(true);
+		break;
+		case QsciScintilla::EolUnix:
+			lineEndLf->setChecked(true);
+		break;
+		case QsciScintilla::EolMac:
+			lineEndCr->setChecked(true);
+		break;
+	}
+  showLineEndsAct->setChecked(openFiles[curDocIdx].edWidget->eolVisibility());
 }
 
 

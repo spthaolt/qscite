@@ -43,4 +43,16 @@ void printHex (QString & thestr) {
   std::cerr << "-- " << readableStr;
 }
 
-
+QsciScintilla::EolMode detectEolMode(QsciScintilla * doc) {
+	QString firstLine = doc->text(0);
+	if (firstLine.endsWith("\r\n")) {
+		return QsciScintilla::EolWindows;
+	}
+	if (firstLine.endsWith('\n')) {
+		return QsciScintilla::EolUnix;
+	}
+	if (firstLine.endsWith('\r')) {
+		return QsciScintilla::EolMac;
+	}
+	return doc->eolMode();
+}
