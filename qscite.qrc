@@ -16,5 +16,6 @@
     <file>images/redo.png</file>
     <file>images/nextTab.png</file>
     <file>images/prevTab.png</file>
+    <file>images/appIcon.png</file>
 </qresource>
 </RCC>

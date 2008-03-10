@@ -18,6 +18,7 @@
  ***************************************************************************/
  
 #include <QtGui>
+#include <QSystemTrayIcon>
 #include <QtDebug>
 #include <Qsci/qsciscintilla.h>
 #include <Qsci/qscilexer.h>
@@ -52,12 +53,18 @@ MainWindow::MainWindow(QStringList & _argv) :
   tabWidget->setElideMode(Qt::ElideNone);
   
   setCentralWidget(tabWidget);
-  
+  this->setWindowIcon(QIcon(":images/appIcon.png"));
   createDocument();
   createActions();
   createMenus();
   createToolBars();
   createStatusBar();
+  if(QSystemTrayIcon::isSystemTrayAvailable()) {
+    qDebug() << "Creating the system tray icon";
+    createTrayIcon();
+    trayIcon->setIcon(QIcon(":images/appIcon.png"));
+    trayIcon->show();
+  }
 
   QToolButton * closeTabButton = new QToolButton(tabWidget);
   closeTabButton->setDefaultAction(closeAct);
@@ -328,7 +335,14 @@ bool MainWindow::eventFilter(QObject * target, QEvent * event) {
 		setCurrentTabTitle();
 		event->accept();
 		return true;
-	} else {
+	} else if (target == trayIcon) {
+	  qDebug() << "received event for trayIcon";
+	  if (event->type() == QEvent::MouseButtonPress) {
+	    qDebug() << "tray icon clicked";
+	    event->accept();
+	    return true;
+	  }
+  }else {
 		return QMainWindow::eventFilter(target, event);
 	}
 }

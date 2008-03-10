@@ -32,6 +32,7 @@ class QTerminal;
 class TextDisplayPanel;
 class QStringList;
 class QActionGroup;
+class QSystemTrayIcon;
 
 struct FileData {
 
@@ -100,7 +101,7 @@ private:
     void createMenus();
     void createToolBars();
     void createStatusBar();
-    
+    void createTrayIcon();
     void createDocument();
     
     void readSettings();
@@ -123,6 +124,9 @@ private:
     QTabWidget * tabWidget;
     QTerminal * termWidget;
     TextDisplayPanel * textSettingsWidget;
+    QSystemTrayIcon * trayIcon;
+    QMenu * trayIconMenu;
+
     
     bool copyFromTerm;
     bool termInDrawer;
@@ -137,6 +141,11 @@ private:
       QMenu * lineEndMenu;
     QMenu * helpMenu;
     QToolBar * mainToolBar;
+    
+    QAction * minimizeAction;
+    QAction * maximizeAction;
+    QAction * restoreAction;
+    QAction * quitAction;
     QAction * newAct;
     QAction * closeAct;
     QAction * openAct;
