@@ -243,19 +243,33 @@ void MainWindow::prevDoc() {
 }
 
 void MainWindow::setEolCr () {
-  openFiles[curDocIdx].edWidget->setEolMode(QsciScintilla::EolMac);
+  if (openFiles.size() > curDocIdx) {
+    openFiles[curDocIdx].edWidget->setEolMode(QsciScintilla::EolMac);
+  }
 }
 
 void MainWindow::setEolLf () {
-  openFiles[curDocIdx].edWidget->setEolMode(QsciScintilla::EolUnix);
+  if (openFiles.size() > curDocIdx) {
+    openFiles[curDocIdx].edWidget->setEolMode(QsciScintilla::EolUnix);
+  }
 }
 
 void MainWindow::setEolCrLf () {
-  openFiles[curDocIdx].edWidget->setEolMode(QsciScintilla::EolWindows);
+  if (openFiles.size() > curDocIdx) {
+    openFiles[curDocIdx].edWidget->setEolMode(QsciScintilla::EolWindows);
+  }
 }
 
 void MainWindow::convertEols () {
-  openFiles[curDocIdx].edWidget->convertEols(openFiles[curDocIdx].edWidget->eolMode());
+  if (openFiles.size() > curDocIdx) {
+    openFiles[curDocIdx].edWidget->convertEols(openFiles[curDocIdx].edWidget->eolMode());
+  }
+}
+
+void MainWindow::setEolVisibility(bool vis) {
+  if (openFiles.size() > curDocIdx) {
+    openFiles[curDocIdx].edWidget->setEolVisibility(vis);
+  }
 }
 
 void MainWindow::trayClicked(QSystemTrayIcon::ActivationReason reason) {
