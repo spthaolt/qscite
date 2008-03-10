@@ -59,7 +59,9 @@ MainWindow::MainWindow(QStringList & _argv) :
   createMenus();
   createToolBars();
   createStatusBar();
+  
   if(QSystemTrayIcon::isSystemTrayAvailable()) {
+    // TODO: add an option to enable/disable the system tray functionality
     qDebug() << "Creating the system tray icon";
     createTrayIcon();
     trayIcon->setIcon(QIcon(":images/appIcon.png"));
@@ -107,6 +109,7 @@ void MainWindow::changeTabs(int index) {
 }
 
 void MainWindow::closeEvent(QCloseEvent *event) {
+  this->setVisible(true);
   if (termWidget != NULL) {
     toggleTerminal();
   }
@@ -335,14 +338,7 @@ bool MainWindow::eventFilter(QObject * target, QEvent * event) {
 		setCurrentTabTitle();
 		event->accept();
 		return true;
-	} else if (target == trayIcon) {
-	  qDebug() << "received event for trayIcon";
-	  if (event->type() == QEvent::MouseButtonPress) {
-	    qDebug() << "tray icon clicked";
-	    event->accept();
-	    return true;
-	  }
-  }else {
+	} else {
 		return QMainWindow::eventFilter(target, event);
 	}
 }

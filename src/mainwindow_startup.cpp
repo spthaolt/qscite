@@ -13,7 +13,7 @@ void MainWindow::createActions() {
   connect(restoreAction, SIGNAL(triggered()), this, SLOT(showNormal()));
 
   quitAction = new QAction(tr("&Quit"), this);
-  connect(quitAction, SIGNAL(triggered()), qApp, SLOT(quit()));
+  connect(quitAction, SIGNAL(triggered()), this, SLOT(close()));
 
   newAct = new QAction(QIcon(":/images/filenew.png"), tr("&New"), this);
   newAct->setShortcut(tr("Ctrl+N"));
@@ -218,13 +218,14 @@ void MainWindow::createStatusBar() {
 }
 
 void MainWindow::createTrayIcon() {
-    trayIconMenu = new QMenu(this);
-    trayIconMenu->addAction(minimizeAction);
-    trayIconMenu->addAction(maximizeAction);
-    trayIconMenu->addAction(restoreAction);
-    trayIconMenu->addSeparator();
-    trayIconMenu->addAction(quitAction);
+  trayIconMenu = new QMenu(this);
+  trayIconMenu->addAction(minimizeAction);
+  trayIconMenu->addAction(maximizeAction);
+  trayIconMenu->addAction(restoreAction);
+  trayIconMenu->addSeparator();
+  trayIconMenu->addAction(quitAction);
 
-    trayIcon = new QSystemTrayIcon(this);
-    trayIcon->setContextMenu(trayIconMenu);
+  trayIcon = new QSystemTrayIcon(this);
+  trayIcon->setContextMenu(trayIconMenu);
+  connect(trayIcon, SIGNAL(activated(QSystemTrayIcon::ActivationReason)), this, SLOT(trayClicked(QSystemTrayIcon::ActivationReason)));
 }
