@@ -118,7 +118,7 @@ private:
     void setCurrentTabTitle();
     void changeTabs(int index);
     void documentWasModified();
-    void detectEolMode();
+    void setUIForDocumentEolMode();
     
     QStringList argv;
     std::vector<FileData> openFiles;
@@ -136,11 +136,11 @@ private:
     unsigned int curDocIdx;
 
     QMenu * fileMenu;
-      QMenu * recentMenu;
+	QMenu * recentMenu;
     QMenu * editMenu;
     QMenu * viewMenu;
     QMenu * optionsMenu;
-      QMenu * lineEndMenu;
+	QMenu * lineEndMenu;
     QMenu * helpMenu;
     QToolBar * mainToolBar;
     

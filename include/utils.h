@@ -18,5 +18,8 @@
  ***************************************************************************/
  
 #include <QString>
+#include <qsci/qsciscintilla.h>
 
 void printHex (QString & str);
+
+QsciScintilla::EolMode detectEolMode(QsciScintilla * doc);
