@@ -23,6 +23,7 @@
 #include <QMainWindow>
 #include <QList>
 #include <QFileInfo>
+#include <QSystemTrayIcon>
 
 class QAction;
 class QMenu;
@@ -32,7 +33,6 @@ class QTerminal;
 class TextDisplayPanel;
 class QStringList;
 class QActionGroup;
-class QSystemTrayIcon;
 
 struct FileData {
 
@@ -85,6 +85,7 @@ private slots:
     void setEolLf();
     void setEolCrLf();
     void convertEols();
+    void trayClicked(QSystemTrayIcon::ActivationReason reason);
     
     /* Internal slots */
     void curDocChanged(int idx);

@@ -1,4 +1,5 @@
 #include <QtGui>
+#include <QSystemTrayIcon>
 #include <QtDebug>
 #include <Qsci/qsciscintilla.h>
 #include <Qsci/qscilexer.h>
@@ -255,4 +256,10 @@ void MainWindow::setEolCrLf () {
 
 void MainWindow::convertEols () {
   openFiles[curDocIdx].edWidget->convertEols(openFiles[curDocIdx].edWidget->eolMode());
+}
+
+void MainWindow::trayClicked(QSystemTrayIcon::ActivationReason reason) {
+  if (reason == QSystemTrayIcon::Trigger) { // the icon was clicked
+    this->setVisible(!this->isVisible());
+  }
 }
