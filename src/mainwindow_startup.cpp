@@ -133,7 +133,7 @@ void MainWindow::createActions() {
 
   showLineEndsAct = new QAction(tr("&End of Line"), this);
   showLineEndsAct->setCheckable(true);
-  connect(showLineEndsAct, SIGNAL(toggled(bool)), openFiles[curDocIdx].edWidget, SLOT(setEolVisibility(bool)));
+  connect(showLineEndsAct, SIGNAL(toggled(bool)), this, SLOT(setEolVisibility(bool)));
 }
 
 void MainWindow::createMenus() {

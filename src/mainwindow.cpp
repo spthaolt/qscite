@@ -136,13 +136,13 @@ void MainWindow::curDocChanged(int idx) {
   
   curDocIdx = idx;
   QsciScintilla * doc = openFiles[curDocIdx].edWidget;
-  
+  /*
   if (openFiles.size() > 1) {
     undoAct->disconnect(SIGNAL(triggered()));
     redoAct->disconnect(SIGNAL(triggered()));
     showLineEndsAct->disconnect(SIGNAL(toggled(bool)));
   }
-  
+  */
   if (openFiles.size() > curDocIdx) { 
     setWindowTitleForFile(openFiles[curDocIdx].baseName);
     setWindowModified(doc->isModified());
@@ -150,7 +150,7 @@ void MainWindow::curDocChanged(int idx) {
     if (termWidget != NULL && !openFiles[curDocIdx].fullName.isEmpty()) {
       termWidget->changeDir(openFiles[curDocIdx].path);
     }
-    
+    /*
     if (openFiles.size() > 1) {
       connect(undoAct, SIGNAL(triggered()), doc, SLOT(undo()));
       connect(redoAct, SIGNAL(triggered()), doc, SLOT(redo()));
@@ -158,6 +158,7 @@ void MainWindow::curDocChanged(int idx) {
       connect(showLineEndsAct, SIGNAL(toggled(bool)), doc, SLOT(setEolVisibility(bool)));
       detectEolMode();
     }
+	*/
   }
 }
 

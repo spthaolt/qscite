@@ -85,6 +85,7 @@ private slots:
     void setEolLf();
     void setEolCrLf();
     void convertEols();
+	void setEolVisibility(bool vis);
     void trayClicked(QSystemTrayIcon::ActivationReason reason);
     
     /* Internal slots */
