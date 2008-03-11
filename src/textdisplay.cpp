@@ -28,6 +28,8 @@ TextDisplayPanel::TextDisplayPanel(QWidget * _parent, Qt::WindowFlags f) :
 	connect(sbBgR, SIGNAL(valueChanged(int)), this, SLOT(applyColor()));
 	connect(sbBgG, SIGNAL(valueChanged(int)), this, SLOT(applyColor()));
 	connect(sbBgB, SIGNAL(valueChanged(int)), this, SLOT(applyColor()));
+	
+	connect(btnNormalize, SIGNAL(clicked()), parent, SLOT(convertEols()));
 }
 
 namespace {

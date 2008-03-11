@@ -77,6 +77,9 @@ void MainPrefsDialog::populate() {
 	cbAutoIndent->setChecked(settings.value("autoIndent").toBool());
 	cbxEOLMode->setCurrentIndex(settings.value("EOLMode").toInt());
 	
+	cbTrayIcon->setChecked(settings.value("trayIcon").toBool());
+	sbOpacity->setValue(settings.value("wndOpacity").toDouble());
+	
 	/*
 	 * "File types" tab
 	 */
@@ -242,6 +245,9 @@ void MainPrefsDialog::writeValues() {
 	settings.setValue("autoIndent", cbAutoIndent->isChecked());
 	settings.setValue("EOLMode", cbxEOLMode->currentIndex());
 	
+	settings.setValue("trayIcon", cbTrayIcon->isChecked());
+	settings.setValue("wndOpacity", sbOpacity->value());
+	
 	/*
 	 * "File types" tab
 	 */
@@ -301,6 +307,9 @@ void writeDefaultSettings(QSettings & settings) {
 
     settings.setValue("recentFileCount", 0);
 	settings.setValue("saveWindowGeometry", true);
+	
+	settings.setValue("trayIcon", true);
+	settings.setValue("wndOpacity", 1.0);
 
 	settings.setValue("EOLMode", QsciScintilla::EolUnix);
 	settings.setValue("wrapMode", QsciScintilla::WrapWord);

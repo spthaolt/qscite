@@ -40,8 +40,11 @@ void MainWindow::readSettings() {
 		}
 	}
 	
-	lastDir = settings.value("lastDir", QDir::homePath()).toString();
 	settings.endArray();
+	lastDir = settings.value("lastDir", QDir::homePath()).toString();
+	
+	setWindowOpacity(QSettings().value("wndOpacity", 1.0).toDouble());
+
 }
 
 void MainWindow::writeSettings() {
@@ -93,6 +96,7 @@ void MainWindow::prefsWereChanged() {
 			textSettingsWidget->populate();
 		}
 	}
+	setWindowOpacity(QSettings().value("wndOpacity", 1.0).toDouble());
 }
 
 void MainWindow::reapPrefs() {
