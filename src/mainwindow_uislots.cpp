@@ -153,6 +153,14 @@ bool MainWindow::saveAs() {
       setCurrentTabTitle();
       setWindowTitleForFile(openFiles[curDocIdx].baseName);
       lastDir = openFiles[curDocIdx].path;
+      QsciScintilla * curDoc = openFiles[curDocIdx].edWidget;
+      QsciLexer * newLexer = getLexerForDocument(fileName, curDoc->text());
+      if (newLexer != NULL) {
+        QFont curFont = curDoc->font();
+        setLexerFont(newLexer, curFont.family(), curFont.pointSize());
+        newLexer->setParent(curDoc);
+        curDoc->setLexer(newLexer);
+      }
     }
     return success;
   }
