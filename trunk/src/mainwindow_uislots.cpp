@@ -150,6 +150,7 @@ bool MainWindow::saveAs() {
     if (success) {
       addRecentFile(fileName);
       openFiles[curDocIdx].setPathName(fileName);
+      setCurrentTabTitle();
       setWindowTitleForFile(openFiles[curDocIdx].baseName);
       lastDir = openFiles[curDocIdx].path;
     }
