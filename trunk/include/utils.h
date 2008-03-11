@@ -18,7 +18,7 @@
  ***************************************************************************/
  
 #include <QString>
-#include <qsci/qsciscintilla.h>
+#include <Qsci/qsciscintilla.h>
 
 void printHex (QString & str);
 
