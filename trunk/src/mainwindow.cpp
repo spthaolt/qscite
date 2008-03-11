@@ -54,19 +54,20 @@ MainWindow::MainWindow(QStringList & _argv) :
   
   setCentralWidget(tabWidget);
   this->setWindowIcon(QIcon(":images/appIcon.png"));
+  
   createActions();
-  createDocument();
   createMenus();
+  createDocument();
   createToolBars();
   createStatusBar();
   
-  if(QSystemTrayIcon::isSystemTrayAvailable()) {
-    // TODO: add an option to enable/disable the system tray functionality
+  if(QSystemTrayIcon::isSystemTrayAvailable() && QSettings().value("trayIcon", true).toBool()) {
     qDebug() << "Creating the system tray icon";
     createTrayIcon();
     trayIcon->setIcon(QIcon(":images/appIcon.png"));
     trayIcon->show();
   }
+  
 
   QToolButton * closeTabButton = new QToolButton(tabWidget);
   closeTabButton->setDefaultAction(closeAct);
@@ -349,12 +350,12 @@ void MainWindow::setUIForDocumentEolMode() {
 }
 
 
-FileData::FileData(QsciScintilla * doc) : edWidget(doc) { ; }
+FileData::FileData(QsciScintilla * doc) : path(QDir::homePath()), edWidget(doc) { ; }
 FileData::FileData(const FileData & src) : fullName(src.fullName), baseName(src.baseName), path(src.path), edWidget(src.edWidget) { ; }
 
 void FileData::setPathName(const QString & newPathName) {
 	fullName = newPathName;
 	QFileInfo info(newPathName);
 	baseName = info.fileName();
-	path = info.absolutePath();
+	path = newPathName.isEmpty() ? QDir::homePath() : info.absolutePath();
 }

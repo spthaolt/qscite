@@ -39,6 +39,8 @@ void MainWindow::readSettings() {
 			recentFiles.push_back(curFile);
 		}
 	}
+	
+	lastDir = settings.value("lastDir", QDir::homePath()).toString();
 	settings.endArray();
 }
 
@@ -67,6 +69,8 @@ void MainWindow::writeSettings() {
     }
     settings.endArray();
   }
+  
+  settings.setValue("lastDir", lastDir);
 }
 
 void MainWindow::globalPrefs() {
