@@ -128,7 +128,7 @@ private:
     TextDisplayPanel * textSettingsWidget;
     QSystemTrayIcon * trayIcon;
     QMenu * trayIconMenu;
-
+	QString lastDir;
     
     bool copyFromTerm;
     bool termInDrawer;

@@ -227,5 +227,7 @@ void MainWindow::createTrayIcon() {
 
   trayIcon = new QSystemTrayIcon(this);
   trayIcon->setContextMenu(trayIconMenu);
+#ifndef Q_WS_MAC
   connect(trayIcon, SIGNAL(activated(QSystemTrayIcon::ActivationReason)), this, SLOT(trayClicked(QSystemTrayIcon::ActivationReason)));
+#endif
 }

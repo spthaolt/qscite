@@ -38,7 +38,7 @@ void MainWindow::toggleTerminal(bool alive) {
     
     copyFromTerm = false;
   } else {
-  	qDebug() << "Opening terminal";
+    qDebug() << "Opening terminal";
     termWidget = new QTerminal(this);
     applyPrefsToTerminal(termWidget);
     if (openFiles.size() > curDocIdx && !openFiles[curDocIdx].fullName.isEmpty()) {
@@ -92,7 +92,7 @@ bool MainWindow::closeFile() {
 }
 
 void MainWindow::open() {
-  QStringList fileNames = QFileDialog::getOpenFileNames(this, "Select one or more files to open");
+  QStringList fileNames = QFileDialog::getOpenFileNames(this, "Select one or more files to open", (curDocIdx < openFiles.size()) ? openFiles[curDocIdx].path : lastDir);
   
   while (fileNames.count()) {
     if (!fileNames.back().isEmpty()) {
@@ -111,6 +111,7 @@ void MainWindow::open() {
   
   if (!openFiles.empty()) {
     openFiles[curDocIdx].edWidget->setFocus();
+    lastDir = openFiles[curDocIdx].path;
   }
 }
 
@@ -139,7 +140,7 @@ bool MainWindow::save() {
 
 bool MainWindow::saveAs() {
   if (tabWidget->count()) {
-    QString fileName = QFileDialog::getSaveFileName(this);
+    QString fileName = QFileDialog::getSaveFileName(this, "Save - QSciTE", (curDocIdx < openFiles.size()) ? openFiles[curDocIdx].path : lastDir);
     
     if (fileName.isEmpty()) {
       return false;
@@ -150,6 +151,7 @@ bool MainWindow::saveAs() {
       addRecentFile(fileName);
       openFiles[curDocIdx].setPathName(fileName);
       setWindowTitleForFile(openFiles[curDocIdx].baseName);
+      lastDir = openFiles[curDocIdx].path;
     }
     return success;
   }
