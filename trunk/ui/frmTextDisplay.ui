@@ -18,7 +18,7 @@
      <x>10</x>
      <y>10</y>
      <width>372</width>
-     <height>405</height>
+     <height>409</height>
     </rect>
    </property>
    <layout class="QVBoxLayout" >
@@ -186,6 +186,13 @@
           <string>LF (Unix)</string>
          </property>
         </item>
+       </widget>
+      </item>
+      <item>
+       <widget class="QToolButton" name="btnNormalize" >
+        <property name="text" >
+         <string>Normalize</string>
+        </property>
        </widget>
       </item>
      </layout>

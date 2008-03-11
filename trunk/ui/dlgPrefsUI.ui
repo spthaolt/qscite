@@ -15,7 +15,7 @@
   <property name="windowTitle" >
    <string>Preferences - QSciTE</string>
   </property>
-  <widget class="QWidget" name="" >
+  <widget class="QWidget" name="layoutWidget" >
    <property name="geometry" >
     <rect>
      <x>10</x>
@@ -89,6 +89,50 @@
               <string>recently opened file(s)</string>
              </property>
             </widget>
+           </item>
+          </layout>
+         </item>
+         <item>
+          <widget class="QCheckBox" name="cbTrayIcon" >
+           <property name="text" >
+            <string>Tray icon (requires restart)</string>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <layout class="QHBoxLayout" >
+           <item>
+            <widget class="QLabel" name="lblOpacity" >
+             <property name="text" >
+              <string>Window opacity</string>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <widget class="QDoubleSpinBox" name="sbOpacity" >
+             <property name="maximum" >
+              <double>1.000000000000000</double>
+             </property>
+             <property name="singleStep" >
+              <double>0.010000000000000</double>
+             </property>
+             <property name="value" >
+              <double>1.000000000000000</double>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <spacer>
+             <property name="orientation" >
+              <enum>Qt::Horizontal</enum>
+             </property>
+             <property name="sizeHint" >
+              <size>
+               <width>40</width>
+               <height>20</height>
+              </size>
+             </property>
+            </spacer>
            </item>
           </layout>
          </item>
