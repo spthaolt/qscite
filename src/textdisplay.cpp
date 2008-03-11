@@ -120,7 +120,12 @@ void TextDisplayPanel::on_cbWrapMode_clicked(bool checked) {
 }
 
 void TextDisplayPanel::on_cbxWrapMarkers_currentIndexChanged(int idx) {
-	parent->openFiles[parent->curDocIdx].edWidget->setWrapVisualFlags(static_cast<QsciScintilla::WrapVisualFlag>(idx));
+	QsciScintilla * curDoc = parent->openFiles[parent->curDocIdx].edWidget;
+	curDoc->setWrapVisualFlags(
+		static_cast<QsciScintilla::WrapVisualFlag>(idx),
+		QsciScintilla::WrapFlagNone,
+		curDoc->indentationWidth()
+	);
 }
 
 void TextDisplayPanel::on_cbLineNos_clicked(bool checked) {
