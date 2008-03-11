@@ -56,6 +56,8 @@ QTerminal::~QTerminal() {
   kill(shellPid, SIGHUP);
   watcher->wait();
   ::close(fdMaster);
+  int kidstatus;
+  wait(&kidstatus);
 }
 
 void QTerminal::readOutput() {
