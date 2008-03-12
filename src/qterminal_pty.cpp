@@ -10,6 +10,8 @@
 #include <util.h>
 #else
 #include <pty.h>
+#include <sys/types.h>
+#include <sys/wait.h>
 #endif
 #include <QtGui>
 #include <QtDebug>
