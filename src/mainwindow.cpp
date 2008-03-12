@@ -76,6 +76,7 @@ MainWindow::MainWindow(QStringList & _argv) :
   connect(tabWidget, SIGNAL(currentChanged(int)), this, SLOT(curDocChanged(int)));
   connect(QApplication::instance(), SIGNAL(focusChanged(QWidget *, QWidget *)), this, SLOT(noticeFocusChange(QWidget *, QWidget *)));
   setWindowTitleForFile("");
+  
   for (int i = 0; i < argv.size(); ++i) {
     if (!argv.front().isEmpty()) {
       loadFile(argv.front());
@@ -93,11 +94,13 @@ void MainWindow::createDocument() {
   openFiles.push_back(FileData(curDoc));
   
   tabWidget->addTab(curDoc, "Untitled");
+  
   if (tabWidget->count() > 1) {
     changeTabs(tabWidget->count() - 1);
   } else {
     curDocChanged(0);
   }
+  
   connect(curDoc, SIGNAL(copyAvailable(bool)), this, SLOT(updateCopyAvailable(bool)));
   connect(curDoc, SIGNAL(modificationChanged(bool)), this, SLOT(setDocumentModified(bool)));
   connect(curDoc, SIGNAL(linesChanged()), this, SLOT(redoSetMargin()));
@@ -110,9 +113,11 @@ void MainWindow::changeTabs(int index) {
 
 void MainWindow::closeEvent(QCloseEvent *event) {
   this->setVisible(true);
+  
   if (termWidget != NULL) {
     toggleTerminal();
   }
+  
   while(tabWidget->count()) {
     changeTabs(0);
     if (!closeFile()) {
@@ -189,6 +194,7 @@ void MainWindow::loadFile(const QString &fileName) {
 
   setWindowTitleForFile(openFiles[curDocIdx].baseName);
   openFiles[curDocIdx].edWidget->setModified(false);
+  
   if (termWidget != NULL) {
     termWidget->changeDir(openFiles[curDocIdx].path);
   }
@@ -221,12 +227,14 @@ void MainWindow::loadFile(const QString &fileName) {
 void MainWindow::redoSetMargin() {
   QsciScintilla * curDoc = openFiles[curDocIdx].edWidget;
   int numLines = curDoc->lines();
+  
   if (numLines < 1000) {
     return;
   }
+  
   if (curDoc->marginWidth(1) > 0) {
     QString exLength = "9999";
-	numLines /= 1000;
+    numLines /= 1000;
   
     while (numLines >= 1) {
       exLength += "9";
@@ -307,15 +315,19 @@ void MainWindow::addRecentFile(const QString & fileName) {
 		if (recentFiles[i].canonicalFilePath() == recentFiles.back().canonicalFilePath() || !(recentFiles[i].exists() && recentFiles[i].isFile())) {
 			recentFiles.removeAt(i--);
 		}
+		
 		while (recentFiles.size() > maxRecentFiles) {
 			recentFiles.pop_front();
 		}
 	}
+	
 	recentMenu->clear();
-    for (int i = 0; i < recentFiles.size(); ++i) {
-    	recentMenu->addAction( recentFiles[i].fileName() )->setStatusTip( recentFiles[i].filePath() );
-    }
-    recentMenu->menuAction()->setEnabled(!recentFiles.empty());
+	
+  for (int i = 0; i < recentFiles.size(); ++i) {
+  	recentMenu->addAction( recentFiles[i].fileName() )->setStatusTip( recentFiles[i].filePath() );
+  }
+  
+  recentMenu->menuAction()->setEnabled(!recentFiles.empty());
 }
 
 bool MainWindow::eventFilter(QObject * target, QEvent * event) {
@@ -323,6 +335,7 @@ bool MainWindow::eventFilter(QObject * target, QEvent * event) {
 		if ((!tabWidget->count()) || (!openFiles[curDocIdx].baseName.isEmpty()) || openFiles[curDocIdx].edWidget->isModified()) {
 			createDocument();
 		}
+		
 		QString fileName = dynamic_cast<QFileOpenEvent *>(event)->file();
 		loadFile(fileName);
 		addRecentFile(fileName);
@@ -339,9 +352,11 @@ void MainWindow::setUIForDocumentEolMode() {
 		case QsciScintilla::EolWindows:
 			lineEndCrLf->setChecked(true);
 		break;
+		
 		case QsciScintilla::EolUnix:
 			lineEndLf->setChecked(true);
 		break;
+		
 		case QsciScintilla::EolMac:
 			lineEndCr->setChecked(true);
 		break;
