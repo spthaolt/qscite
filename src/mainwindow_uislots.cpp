@@ -92,7 +92,7 @@ bool MainWindow::closeFile() {
 }
 
 void MainWindow::open() {
-  QStringList fileNames = QFileDialog::getOpenFileNames(this, "Select one or more files to open", (curDocIdx < openFiles.size()) ? openFiles[curDocIdx].path : lastDir);
+  QStringList fileNames = QFileDialog::getOpenFileNames(this, "Select one or more files to open", (curDocIdx < openFiles.size() && !openFiles[curDocIdx].path.isEmpty()) ? openFiles[curDocIdx].path : lastDir);
   
   while (fileNames.count()) {
     if (!fileNames.back().isEmpty()) {
@@ -140,7 +140,7 @@ bool MainWindow::save() {
 
 bool MainWindow::saveAs() {
   if (tabWidget->count()) {
-    QString fileName = QFileDialog::getSaveFileName(this, "Save - QSciTE", (curDocIdx < openFiles.size()) ? openFiles[curDocIdx].path : lastDir);
+    QString fileName = QFileDialog::getSaveFileName(this, "Save - QSciTE", (curDocIdx < openFiles.size() && !openFiles[curDocIdx].path.isEmpty()) ? openFiles[curDocIdx].path : lastDir);
     
     if (fileName.isEmpty()) {
       return false;

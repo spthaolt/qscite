@@ -372,5 +372,5 @@ void FileData::setPathName(const QString & newPathName) {
 	fullName = newPathName;
 	QFileInfo info(newPathName);
 	baseName = info.fileName();
-	path = newPathName.isEmpty() ? QDir::homePath() : info.absolutePath();
+	path = newPathName.isEmpty() ? "": info.absolutePath();
 }
