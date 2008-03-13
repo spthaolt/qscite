@@ -28,10 +28,12 @@ SOURCES       = main.cpp \
                 utils.cpp \
                 lexer_utils.cpp \
                 prefs.cpp \
-                textdisplay.cpp
+                textdisplay.cpp \
+                reindent.cpp
 
 FORMS         = dlgPrefsUI.ui \
-                frmTextDisplay.ui
+                frmTextDisplay.ui \
+                dlgConvertIndent.ui
 
 RESOURCES     = qscite.qrc
 

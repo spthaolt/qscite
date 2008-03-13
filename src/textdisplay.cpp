@@ -167,6 +167,7 @@ void TextDisplayPanel::on_cbxLexer_currentIndexChanged(int idx) {
 		setLexerFont(newLexer, curFont.family(), curFont.pointSize());
 	}
 	parent->openFiles[parent->curDocIdx].edWidget->setLexer(newLexer);
+	parent->openFiles[parent->curDocIdx].edWidget->recolor();
 }
 
 void TextDisplayPanel::applyColor() {

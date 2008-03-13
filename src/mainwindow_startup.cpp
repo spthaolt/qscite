@@ -121,7 +121,7 @@ void MainWindow::createActions() {
   lineEndLf = new QAction(tr("&LF (Unix)"), this);
   lineEndLf->setCheckable(true);
   connect(lineEndLf, SIGNAL(triggered()), this, SLOT(setEolLf()));
-  lineEndCrLf = new QAction(tr("CF &+ LF (Windows)"), this);
+  lineEndCrLf = new QAction(tr("CR &+ LF (Windows)"), this);
   lineEndCrLf->setCheckable(true);
   connect(lineEndCrLf, SIGNAL(triggered()), this, SLOT(setEolCrLf()));
   
@@ -134,6 +134,9 @@ void MainWindow::createActions() {
   showLineEndsAct = new QAction(tr("&End of Line"), this);
   showLineEndsAct->setCheckable(true);
   connect(showLineEndsAct, SIGNAL(toggled(bool)), this, SLOT(setEolVisibility(bool)));
+  
+  convertIndentAct = new QAction(tr("Convert &indentation..."), this);
+  connect(convertIndentAct, SIGNAL(triggered()), this, SLOT(convertIndentation()));
 }
 
 void MainWindow::createMenus() {
@@ -168,11 +171,13 @@ void MainWindow::createMenus() {
   viewMenu->addAction(showLineEndsAct);
   
   optionsMenu = menuBar()->addMenu(tr("&Options"));
-  lineEndMenu = optionsMenu->addMenu(tr("&Line End Characters"));
+  lineEndMenu = optionsMenu->addMenu(tr("&Line Endings"));
   lineEndMenu->addAction(lineEndLf);
   lineEndMenu->addAction(lineEndCrLf);
   lineEndMenu->addAction(lineEndCr);
-  optionsMenu->addAction(convertEndings);
+  lineEndMenu->addSeparator();
+  lineEndMenu->addAction(convertEndings);
+  optionsMenu->addAction(convertIndentAct);
   menuBar()->addSeparator();
 
   helpMenu = menuBar()->addMenu(tr("&Help"));
@@ -196,10 +201,10 @@ void MainWindow::createToolBars() {
     mainToolBar = addToolBar(tr("Main"));
     mainToolBar->addAction(newAct);
     mainToolBar->addAction(openAct);
-	mainToolBar->addAction(saveAct);
+    mainToolBar->addAction(saveAct);
     mainToolBar->addAction(saveAsAct);
     mainToolBar->addSeparator();
-	mainToolBar->addAction(undoAct);
+    mainToolBar->addAction(undoAct);
     mainToolBar->addAction(redoAct);
     mainToolBar->addSeparator();
     mainToolBar->addAction(cutAct);
