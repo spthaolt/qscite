@@ -77,8 +77,8 @@ void MainPrefsDialog::populate() {
 	cbAutoIndent->setChecked(settings.value("autoIndent").toBool());
 	cbxEOLMode->setCurrentIndex(settings.value("EOLMode").toInt());
 	
-	cbTrayIcon->setChecked(settings.value("trayIcon").toBool());
-	sbOpacity->setValue(settings.value("wndOpacity").toDouble());
+	cbTrayIcon->setChecked(settings.value("trayIcon", true).toBool());
+	sbOpacity->setValue(settings.value("wndOpacity", 1.0).toDouble());
 	
 	/*
 	 * "File types" tab
