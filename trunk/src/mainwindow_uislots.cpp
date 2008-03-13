@@ -160,6 +160,7 @@ bool MainWindow::saveAs() {
         setLexerFont(newLexer, curFont.family(), curFont.pointSize());
         newLexer->setParent(curDoc);
         curDoc->setLexer(newLexer);
+        curDoc->recolor();
       }
     }
     return success;

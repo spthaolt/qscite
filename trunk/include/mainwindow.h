@@ -69,8 +69,8 @@ private slots:
     void openRecent(QAction * src);
     bool save();
     bool saveAs();
-	void undo();
-	void redo();
+    void undo();
+    void redo();
     void editCopy();
     void editCut();
     void editPaste();
@@ -85,8 +85,9 @@ private slots:
     void setEolLf();
     void setEolCrLf();
     void convertEols();
-	void setEolVisibility(bool vis);
+    void setEolVisibility(bool vis);
     void trayClicked(QSystemTrayIcon::ActivationReason reason);
+    void convertIndentation();
     
     /* Internal slots */
     void curDocChanged(int idx);
@@ -128,7 +129,7 @@ private:
     TextDisplayPanel * textSettingsWidget;
     QSystemTrayIcon * trayIcon;
     QMenu * trayIconMenu;
-	QString lastDir;
+    QString lastDir;
     
     bool copyFromTerm;
     bool termInDrawer;
@@ -136,11 +137,11 @@ private:
     unsigned int curDocIdx;
 
     QMenu * fileMenu;
-	QMenu * recentMenu;
+    QMenu * recentMenu;
     QMenu * editMenu;
     QMenu * viewMenu;
     QMenu * optionsMenu;
-	QMenu * lineEndMenu;
+    QMenu * lineEndMenu;
     QMenu * helpMenu;
     QToolBar * mainToolBar;
     
@@ -178,6 +179,8 @@ private:
     QActionGroup * lineEnds;
     
     QAction * showLineEndsAct;
+	
+    QAction * convertIndentAct;
 };
 
 #endif
