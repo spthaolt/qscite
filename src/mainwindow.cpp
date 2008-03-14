@@ -149,6 +149,10 @@ void MainWindow::curDocChanged(int idx) {
     
     setUIForDocumentEolMode();
     
+    if (openFiles.size()) {
+      codeFoldingAct->setChecked(openFiles[curDocIdx].edWidget->folding());
+    }
+    
     if (termWidget != NULL && !openFiles[curDocIdx].fullName.isEmpty()) {
       termWidget->changeDir(openFiles[curDocIdx].path);
     }
