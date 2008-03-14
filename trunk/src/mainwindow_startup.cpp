@@ -137,6 +137,10 @@ void MainWindow::createActions() {
   
   convertIndentAct = new QAction(tr("Convert &indentation..."), this);
   connect(convertIndentAct, SIGNAL(triggered()), this, SLOT(convertIndentation()));
+  
+  codeFoldingAct = new QAction(tr("Use Code Folding"), this);
+  codeFoldingAct->setCheckable(true);
+  connect(codeFoldingAct, SIGNAL(triggered()), this, SLOT(toggleFolding()));
 }
 
 void MainWindow::createMenus() {
@@ -169,6 +173,7 @@ void MainWindow::createMenus() {
   viewMenu->addAction(terminalAct);
   viewMenu->addSeparator();
   viewMenu->addAction(showLineEndsAct);
+  viewMenu->addAction(codeFoldingAct);
   
   optionsMenu = menuBar()->addMenu(tr("&Options"));
   lineEndMenu = optionsMenu->addMenu(tr("&Line Endings"));

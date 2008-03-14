@@ -88,6 +88,7 @@ private slots:
     void setEolVisibility(bool vis);
     void trayClicked(QSystemTrayIcon::ActivationReason reason);
     void convertIndentation();
+    void toggleFolding();
     
     /* Internal slots */
     void curDocChanged(int idx);
@@ -181,6 +182,7 @@ private:
     QAction * showLineEndsAct;
 	
     QAction * convertIndentAct;
+    QAction * codeFoldingAct;
 };
 
 #endif
