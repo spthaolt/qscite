@@ -291,7 +291,7 @@ void MainWindow::trayClicked(QSystemTrayIcon::ActivationReason reason) {
 }
 
 void MainWindow::toggleFolding() {
-  QsciScintilla::FoldStyle state = static_cast<QsciScintilla::FoldStyle>((!openFiles[curDocIdx].edWidget->folding()) * 3);
+  QsciScintilla::FoldStyle state = static_cast<QsciScintilla::FoldStyle>((!openFiles[curDocIdx].edWidget->folding()) * 5);
   openFiles[curDocIdx].edWidget->setFolding(state);
 }
 
