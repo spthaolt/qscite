@@ -131,11 +131,11 @@ void MainWindow::createActions() {
   lineEnds->addAction(lineEndCrLf);
   lineEndLf->setChecked(true);
 
-  showLineEndsAct = new QAction(tr("&End of Line"), this);
+  showLineEndsAct = new QAction(tr("&Show End of Line"), this);
   showLineEndsAct->setCheckable(true);
   connect(showLineEndsAct, SIGNAL(toggled(bool)), this, SLOT(setEolVisibility(bool)));
   
-  convertIndentAct = new QAction(tr("Convert &indentation..."), this);
+  convertIndentAct = new QAction(tr("Convert &Indentation..."), this);
   connect(convertIndentAct, SIGNAL(triggered()), this, SLOT(convertIndentation()));
   
   codeFoldingAct = new QAction(tr("Use Code Folding"), this);
