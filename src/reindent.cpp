@@ -25,6 +25,7 @@ namespace {
 
 void MainWindow::convertIndentation() {
   QsciScintilla * curDoc;
+  
   if (curDocIdx < openFiles.size()) {
     curDoc = openFiles[curDocIdx].edWidget;
   } else {
@@ -32,18 +33,24 @@ void MainWindow::convertIndentation() {
   }
   
   DlgConvertIndent * dlg = new DlgConvertIndent(curDoc, this, Qt::Sheet);
+  
   if (dlg->exec()) {
     QString theText = curDoc->text();
+    
     if (dlg->cbExpandTabs->isChecked()) {
       theText.replace('\t', QString().fill(' ', dlg->sbOldWidth->value()));
     }
+    
     theText.replace(QString().fill(' ', dlg->sbOldWidth->value()), "\t");
+    
     if (!dlg->cbLeaveTabs->isChecked()) {
       theText.replace('\t', QString().fill(' ', dlg->sbNewWidth->value()));
     }
+    
     curDoc->setText(theText);
     curDoc->setTabWidth(dlg->sbNewWidth->value());
     curDoc->setIndentationWidth(dlg->sbNewWidth->value());
+    
     if (textSettingsWidget != NULL) {
       textSettingsWidget->populate();
     }

@@ -56,6 +56,7 @@ class MainWindow : public QMainWindow
 
 public:
     MainWindow(QStringList & _argv);
+    QsciScintilla * getCurDoc();
 
 protected:
     void closeEvent(QCloseEvent * event);
@@ -89,6 +90,7 @@ private slots:
     void trayClicked(QSystemTrayIcon::ActivationReason reason);
     void convertIndentation();
     void toggleFolding();
+    void showFindDialog();
     
     /* Internal slots */
     void curDocChanged(int idx);
@@ -183,6 +185,7 @@ private:
 	
     QAction * convertIndentAct;
     QAction * codeFoldingAct;
+    QAction * findTextAct;
 };
 
 #endif

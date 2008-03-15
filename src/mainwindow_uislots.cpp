@@ -9,6 +9,7 @@
 #include "lexer_utils.h"
 #include "prefs.h"
 #include "textdisplay.h"
+#include "findtext.h"
 
 #ifdef _WIN32
   #include "qterminal.h"
@@ -295,3 +296,6 @@ void MainWindow::toggleFolding() {
   openFiles[curDocIdx].edWidget->setFolding(state);
 }
 
+void MainWindow::showFindDialog() {
+  dlgFindText * dlgFind = new dlgFindText(this, getCurDoc());
+}
