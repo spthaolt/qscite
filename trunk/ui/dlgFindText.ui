@@ -1,0 +1,171 @@
+<ui version="4.0" >
+ <class>dlgFindText</class>
+ <widget class="QDialog" name="dlgFindText" >
+  <property name="geometry" >
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>331</width>
+    <height>278</height>
+   </rect>
+  </property>
+  <property name="windowTitle" >
+   <string>Find Text - QSciTE</string>
+  </property>
+  <widget class="QWidget" name="verticalLayout_2" >
+   <property name="geometry" >
+    <rect>
+     <x>10</x>
+     <y>10</y>
+     <width>313</width>
+     <height>261</height>
+    </rect>
+   </property>
+   <layout class="QVBoxLayout" >
+    <item>
+     <layout class="QVBoxLayout" >
+      <item>
+       <widget class="QGroupBox" name="groupBox_2" >
+        <property name="title" >
+         <string>Find</string>
+        </property>
+        <widget class="QWidget" name="verticalLayout_3" >
+         <property name="geometry" >
+          <rect>
+           <x>10</x>
+           <y>20</y>
+           <width>291</width>
+           <height>82</height>
+          </rect>
+         </property>
+         <layout class="QVBoxLayout" >
+          <property name="leftMargin" >
+           <number>0</number>
+          </property>
+          <property name="rightMargin" >
+           <number>0</number>
+          </property>
+          <item>
+           <widget class="QLabel" name="label" >
+            <property name="text" >
+             <string>Text to find:</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QComboBox" name="comboBox" >
+            <property name="editable" >
+             <bool>true</bool>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QCheckBox" name="chkRegEx" >
+            <property name="text" >
+             <string>Regular expression</string>
+            </property>
+           </widget>
+          </item>
+         </layout>
+        </widget>
+       </widget>
+      </item>
+      <item>
+       <widget class="QGroupBox" name="groupBox" >
+        <property name="title" >
+         <string>Options</string>
+        </property>
+        <widget class="QWidget" name="gridLayout" >
+         <property name="geometry" >
+          <rect>
+           <x>10</x>
+           <y>20</y>
+           <width>291</width>
+           <height>86</height>
+          </rect>
+         </property>
+         <layout class="QGridLayout" >
+          <item row="0" column="0" >
+           <widget class="QCheckBox" name="chkCase" >
+            <property name="text" >
+             <string>Case sensitive</string>
+            </property>
+           </widget>
+          </item>
+          <item row="1" column="0" >
+           <widget class="QCheckBox" name="chkWhole" >
+            <property name="text" >
+             <string>Whole words only</string>
+            </property>
+           </widget>
+          </item>
+          <item row="2" column="0" >
+           <widget class="QCheckBox" name="chkBeginHere" >
+            <property name="text" >
+             <string>From cursor</string>
+            </property>
+           </widget>
+          </item>
+          <item row="0" column="1" >
+           <widget class="QCheckBox" name="chkBackwards" >
+            <property name="text" >
+             <string>Find backwards</string>
+            </property>
+           </widget>
+          </item>
+         </layout>
+        </widget>
+       </widget>
+      </item>
+     </layout>
+    </item>
+    <item>
+     <layout class="QHBoxLayout" >
+      <property name="spacing" >
+       <number>-1</number>
+      </property>
+      <property name="leftMargin" >
+       <number>150</number>
+      </property>
+      <property name="rightMargin" >
+       <number>0</number>
+      </property>
+      <item>
+       <widget class="QPushButton" name="btnFind" >
+        <property name="text" >
+         <string>&amp;Find</string>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QPushButton" name="btnClose" >
+        <property name="text" >
+         <string>&amp;Close</string>
+        </property>
+       </widget>
+      </item>
+     </layout>
+    </item>
+   </layout>
+  </widget>
+ </widget>
+ <resources/>
+ <connections>
+  <connection>
+   <sender>btnClose</sender>
+   <signal>clicked()</signal>
+   <receiver>dlgFindText</receiver>
+   <slot>close()</slot>
+   <hints>
+    <hint type="sourcelabel" >
+     <x>283</x>
+     <y>254</y>
+    </hint>
+    <hint type="destinationlabel" >
+     <x>165</x>
+     <y>138</y>
+    </hint>
+   </hints>
+  </connection>
+ </connections>
+</ui>

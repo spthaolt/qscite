@@ -378,3 +378,11 @@ void FileData::setPathName(const QString & newPathName) {
 	baseName = info.fileName();
 	path = newPathName.isEmpty() ? "": info.absolutePath();
 }
+
+QsciScintilla * MainWindow::getCurDoc() {
+  if (openFiles.size()) {
+    return openFiles[curDocIdx].edWidget;
+  } else {
+    return NULL;
+  }
+}

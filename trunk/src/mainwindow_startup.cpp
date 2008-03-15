@@ -141,6 +141,9 @@ void MainWindow::createActions() {
   codeFoldingAct = new QAction(tr("Use Code Folding"), this);
   codeFoldingAct->setCheckable(true);
   connect(codeFoldingAct, SIGNAL(triggered()), this, SLOT(toggleFolding()));
+  
+  findTextAct = new QAction(tr("&Find..."), this);
+  connect(findTextAct, SIGNAL(triggered()), this, SLOT(showFindDialog()));
 }
 
 void MainWindow::createMenus() {
@@ -164,6 +167,8 @@ void MainWindow::createMenus() {
   editMenu->addAction(cutAct);
   editMenu->addAction(copyAct);
   editMenu->addAction(pasteAct);
+  editMenu->addSeparator();
+  editMenu->addAction(findTextAct);
   editMenu->addSeparator();
   editMenu->addAction(prefsAct);
   
