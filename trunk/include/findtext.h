@@ -16,9 +16,11 @@ public:
   dlgFindText(QWidget * parent, QsciScintilla * _doc);
   QsciScintilla * curDoc;
 signals:
-  
+  void closed(dlgFindText * me);
 private slots:
   void doSearch();
+  void onTextChange(QString text);
+  void closeMe();
 };
   
 #endif /*FINDTEXT_H_*/
