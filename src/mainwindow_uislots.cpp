@@ -297,5 +297,12 @@ void MainWindow::toggleFolding() {
 }
 
 void MainWindow::showFindDialog() {
-  dlgFindText * dlgFind = new dlgFindText(this, getCurDoc());
+  qDebug() << "creating find dialog";
+  dlgFindText * findTextDlg = new dlgFindText(this, getCurDoc());
+  connect(findTextDlg, SIGNAL(closed(dlgFindText *)), this, SLOT(deleteFindDialog(dlgFindText *)));
+}
+
+void MainWindow::deleteFindDialog(dlgFindText * dlg) {
+  qDebug() << "deleting find dialog";
+  delete dlg;
 }

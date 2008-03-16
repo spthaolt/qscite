@@ -33,6 +33,7 @@ class QTerminal;
 class TextDisplayPanel;
 class QStringList;
 class QActionGroup;
+class dlgFindText;
 
 struct FileData {
 
@@ -91,6 +92,7 @@ private slots:
     void convertIndentation();
     void toggleFolding();
     void showFindDialog();
+    void deleteFindDialog(dlgFindText * dlg);
     
     /* Internal slots */
     void curDocChanged(int idx);
