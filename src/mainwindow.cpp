@@ -142,7 +142,7 @@ void MainWindow::curDocChanged(int idx) {
   curDocIdx = idx;
 
   if (openFiles.size() > curDocIdx) {
-    QsciScintilla * doc = openFiles[curDocIdx].edWidget;
+    QsciScintilla * doc = getCurDoc();
     
     setWindowTitleForFile(openFiles[curDocIdx].baseName);
     setWindowModified(doc->isModified());
@@ -150,7 +150,7 @@ void MainWindow::curDocChanged(int idx) {
     setUIForDocumentEolMode();
     
     if (openFiles.size()) {
-      codeFoldingAct->setChecked(openFiles[curDocIdx].edWidget->folding());
+      codeFoldingAct->setChecked(getCurDoc()->folding());
     }
     
     if (termWidget != NULL && !openFiles[curDocIdx].fullName.isEmpty()) {
@@ -160,7 +160,7 @@ void MainWindow::curDocChanged(int idx) {
 }
 
 bool MainWindow::maybeSave() {
-  if (openFiles[curDocIdx].edWidget->isModified()) {
+  if (getCurDoc()->isModified()) {
     int ret = QMessageBox::warning(this, tr("QSciTE"),
                  tr("%1 has been modified.\nDo you want to save your changes?").arg(openFiles[curDocIdx].baseName.isEmpty() ? tr("<Untitled document>") : openFiles[curDocIdx].baseName),
                  QMessageBox::Yes | QMessageBox::Default,
@@ -191,13 +191,13 @@ void MainWindow::loadFile(const QString &fileName) {
   QTextStream in(&file);
   in.setCodec("UTF-8");
   QApplication::setOverrideCursor(Qt::WaitCursor);
-  openFiles[curDocIdx].edWidget->setText(in.readAll());
+  getCurDoc()->setText(in.readAll());
   QApplication::restoreOverrideCursor();
   
   openFiles[curDocIdx].setPathName(fileName);
 
   setWindowTitleForFile(openFiles[curDocIdx].baseName);
-  openFiles[curDocIdx].edWidget->setModified(false);
+  getCurDoc()->setModified(false);
   
   if (termWidget != NULL) {
     termWidget->changeDir(openFiles[curDocIdx].path);
@@ -205,7 +205,7 @@ void MainWindow::loadFile(const QString &fileName) {
   
   redoSetMargin();
   
-  QsciScintilla * curDoc = openFiles[curDocIdx].edWidget;
+  QsciScintilla * curDoc = getCurDoc();
   
   QFont currentFont = curDoc->font();
   QsciLexer * newLexer = getLexerForDocument(fileName, curDoc->text());
@@ -229,7 +229,7 @@ void MainWindow::loadFile(const QString &fileName) {
 
 
 void MainWindow::redoSetMargin() {
-  QsciScintilla * curDoc = openFiles[curDocIdx].edWidget;
+  QsciScintilla * curDoc = getCurDoc();
   int numLines = curDoc->lines();
   
   if (numLines < 1000) {
@@ -263,10 +263,10 @@ bool MainWindow::saveFile(const QString &fileName) {
   QTextStream out(&file);
   out.setCodec("UTF-8");
   QApplication::setOverrideCursor(Qt::WaitCursor);
-  out << openFiles[curDocIdx].edWidget->text();
+  out << getCurDoc()->text();
   QApplication::restoreOverrideCursor();
   statusBar()->showMessage(tr("File saved"), 2000);
-  openFiles[curDocIdx].edWidget->setModified(false);
+  getCurDoc()->setModified(false);
 
   return true;
 }
@@ -287,7 +287,7 @@ void MainWindow::setWindowTitleForFile(const QString & fileName) {
 void MainWindow::setCurrentTabTitle() {
 	QString displayName = openFiles[curDocIdx].baseName.isEmpty() ? "Untitled" : openFiles[curDocIdx].baseName;
 	
-	if (openFiles[curDocIdx].edWidget->isModified()) {
+	if (getCurDoc()->isModified()) {
 		displayName += "*";
 	}
 	
@@ -306,7 +306,7 @@ void MainWindow::noticeFocusChange(QWidget * prev, QWidget * current) {
   
 	if (termWidget != NULL && current == termWidget) {
 		copyFromTerm = true;
-	} else if (openFiles.size() > curDocIdx && current == openFiles[curDocIdx].edWidget) {
+	} else if (openFiles.size() > curDocIdx && current == getCurDoc()) {
 		copyFromTerm = false;
 	}
 }
@@ -336,7 +336,7 @@ void MainWindow::addRecentFile(const QString & fileName) {
 
 bool MainWindow::eventFilter(QObject * target, QEvent * event) {
 	if (target == qApp && event->type() == QEvent::FileOpen) {
-		if ((!tabWidget->count()) || (!openFiles[curDocIdx].baseName.isEmpty()) || openFiles[curDocIdx].edWidget->isModified()) {
+		if ((!tabWidget->count()) || (!openFiles[curDocIdx].baseName.isEmpty()) || getCurDoc()->isModified()) {
 			createDocument();
 		}
 		
@@ -352,7 +352,7 @@ bool MainWindow::eventFilter(QObject * target, QEvent * event) {
 }
 
 void MainWindow::setUIForDocumentEolMode() {
-	switch (openFiles[curDocIdx].edWidget->eolMode()) {
+	switch (getCurDoc()->eolMode()) {
 		case QsciScintilla::EolWindows:
 			lineEndCrLf->setChecked(true);
 		break;
@@ -365,7 +365,8 @@ void MainWindow::setUIForDocumentEolMode() {
 			lineEndCr->setChecked(true);
 		break;
 	}
-  showLineEndsAct->setChecked(openFiles[curDocIdx].edWidget->eolVisibility());
+	
+  showLineEndsAct->setChecked(getCurDoc()->eolVisibility());
 }
 
 
@@ -379,10 +380,6 @@ void FileData::setPathName(const QString & newPathName) {
 	path = newPathName.isEmpty() ? "": info.absolutePath();
 }
 
-QsciScintilla * MainWindow::getCurDoc() {
-  if (openFiles.size()) {
-    return openFiles[curDocIdx].edWidget;
-  } else {
-    return NULL;
-  }
+inline QsciScintilla * MainWindow::getCurDoc() {
+  return (openFiles.size() ? openFiles[curDocIdx].edWidget : NULL);
 }

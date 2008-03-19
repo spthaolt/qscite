@@ -4,14 +4,15 @@
 #include <Qsci/qsciscintilla.h>
 
 #include "findtext.h"
+#include "mainwindow.h"
 
-dlgFindText::dlgFindText(QWidget * parent, QsciScintilla * _doc) {
+dlgFindText::dlgFindText(MainWindow * _parent) {
+  parent = _parent;
   setupUi(this);
   this->show();
   connect(btnFind, SIGNAL(clicked()), this, SLOT(doSearch()));
-  connect(comboBox, SIGNAL(textChanged(QString)), this, SLOT(onTextChange(QString)));
-  connect(btnClose, SIGNAL(clicked()), this, SLOT(closeMe()));
-  curDoc = _doc;
+  connect(comboBox, SIGNAL(editTextChanged(QString)), this, SLOT(onTextChange(QString)));
+  this->setAttribute(Qt::WA_DeleteOnClose);
 }
 
 void dlgFindText::doSearch() {
@@ -21,12 +22,14 @@ void dlgFindText::doSearch() {
     bool caseSens = chkCase->isChecked();
     bool wholeWord = chkWhole->isChecked();
     bool forward = !chkBackwards->isChecked();
-    bool result = curDoc->findFirst(expr, regex, caseSens, wholeWord, false, forward);
+    bool result = parent->getCurDoc()->findFirst(expr, regex, caseSens, wholeWord, false, forward);
+    
     if (result) {
       btnFind->setText("&Find Next");
     }
   } else {
-    bool result = curDoc->findNext();
+    bool result = parent->getCurDoc()->findNext();
+    
     if (!result) {
       btnFind->setText("&Find");
     }
@@ -36,8 +39,4 @@ void dlgFindText::doSearch() {
 void dlgFindText::onTextChange(QString text) {
   text = ""; //don't care about the string, but making compiler happy
   btnFind->setText("&Find");
-}
-
-void dlgFindText::closeMe() {
-  emit(closed(this));
 }
