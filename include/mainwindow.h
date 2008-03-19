@@ -57,7 +57,12 @@ class MainWindow : public QMainWindow
 
 public:
     MainWindow(QStringList & _argv);
-    inline QsciScintilla * getCurDoc();
+
+    inline QsciScintilla * getCurDoc() {
+      // this implementation is in the header file to avoid excessive warnings...
+      // and to allow QSciTE to compile on Win32.
+      return (openFiles.size() ? openFiles[curDocIdx].edWidget : NULL);
+    }
 
 protected:
     void closeEvent(QCloseEvent * event);
