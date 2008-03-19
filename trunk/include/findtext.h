@@ -6,21 +6,18 @@
 
 #include <QDialog>
 #include <QSettings>
-class QsciScintilla;
 
 class dlgFindText: public QDialog, protected Ui_dlgFindText {
   
   Q_OBJECT
   
 public:
-  dlgFindText(QWidget * parent, QsciScintilla * _doc);
-  QsciScintilla * curDoc;
-signals:
-  void closed(dlgFindText * me);
+  dlgFindText(MainWindow * _parent);
+  MainWindow * parent;
+
 private slots:
   void doSearch();
   void onTextChange(QString text);
-  void closeMe();
 };
   
 #endif /*FINDTEXT_H_*/

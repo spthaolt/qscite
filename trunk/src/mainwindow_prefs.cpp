@@ -91,7 +91,7 @@ void MainWindow::prefsWereChanged() {
 		applyPrefsToTerminal(termWidget);
 	}
 	if (openFiles.size() > curDocIdx) {
-		applySettingsToDoc(openFiles[curDocIdx].edWidget);
+		applySettingsToDoc(getCurDoc());
 		if (textSettingsWidget != NULL) {
 			textSettingsWidget->populate();
 		}

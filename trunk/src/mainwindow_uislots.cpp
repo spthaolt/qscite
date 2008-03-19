@@ -34,7 +34,7 @@ void MainWindow::toggleTerminal(bool alive) {
     termWidget = NULL;
     
     if (openFiles.size() > curDocIdx) {
-      openFiles[curDocIdx].edWidget->setFocus();
+      getCurDoc()->setFocus();
     }
     
     copyFromTerm = false;
@@ -65,13 +65,13 @@ void MainWindow::toggleTerminal(bool alive) {
 
 void MainWindow::newFile() {
   createDocument();
-  openFiles[curDocIdx].edWidget->setFocus();
+  getCurDoc()->setFocus();
 }
 
 bool MainWindow::closeFile() {
   if (tabWidget->count()) {
     if (maybeSave()) {
-      QsciScintilla * theEditor = openFiles[curDocIdx].edWidget;
+      QsciScintilla * theEditor = getCurDoc();
 
       openFiles.erase(openFiles.begin() + curDocIdx);
       tabWidget->removeTab(curDocIdx);      
@@ -97,7 +97,7 @@ void MainWindow::open() {
   
   while (fileNames.count()) {
     if (!fileNames.back().isEmpty()) {
-      if ((!tabWidget->count()) || (!openFiles[curDocIdx].baseName.isEmpty()) || openFiles[curDocIdx].edWidget->isModified()) {
+      if ((!tabWidget->count()) || (!openFiles[curDocIdx].baseName.isEmpty()) || getCurDoc()->isModified()) {
         createDocument();
       }
       
@@ -111,14 +111,14 @@ void MainWindow::open() {
   }
   
   if (!openFiles.empty()) {
-    openFiles[curDocIdx].edWidget->setFocus();
+    getCurDoc()->setFocus();
     lastDir = openFiles[curDocIdx].path;
   }
 }
 
 void MainWindow::openRecent(QAction * src) {
   qDebug() << "openRecent(" << src->statusTip() << ')';
-  if ((!tabWidget->count()) || (!openFiles[curDocIdx].baseName.isEmpty()) || openFiles[curDocIdx].edWidget->isModified()) {
+  if ((!tabWidget->count()) || (!openFiles[curDocIdx].baseName.isEmpty()) || getCurDoc()->isModified()) {
 	createDocument();
   }
   
@@ -154,7 +154,7 @@ bool MainWindow::saveAs() {
       setCurrentTabTitle();
       setWindowTitleForFile(openFiles[curDocIdx].baseName);
       lastDir = openFiles[curDocIdx].path;
-      QsciScintilla * curDoc = openFiles[curDocIdx].edWidget;
+      QsciScintilla * curDoc = getCurDoc();
       QsciLexer * newLexer = getLexerForDocument(fileName, curDoc->text());
       if (newLexer != NULL) {
         QFont curFont = curDoc->font();
@@ -172,21 +172,21 @@ bool MainWindow::saveAs() {
 
 void MainWindow::fontDialog() {
   if (tabWidget->count()) {
-  	QsciLexer * lexer = openFiles[curDocIdx].edWidget->lexer();
+  	QsciLexer * lexer = getCurDoc()->lexer();
   	bool ok;
   	
   	if (lexer) {
   	  QFont baseFont = QFontDialog::getFont(&ok, lexer->font(lexer->defaultStyle()));
   	  
   	  if (ok) {
-		openFiles[curDocIdx].edWidget->setFont(baseFont);
+  	    getCurDoc()->setFont(baseFont);
   	    setLexerFont(lexer, baseFont.family(), baseFont.pointSize());
   	  }
   	} else {
-      QFont font = QFontDialog::getFont(&ok, openFiles[curDocIdx].edWidget->font());
+      QFont font = QFontDialog::getFont(&ok, getCurDoc()->font());
       
       if (ok) {
-        openFiles[curDocIdx].edWidget->setFont(font);
+        getCurDoc()->setFont(font);
       }
   	}
   }
@@ -204,13 +204,13 @@ void MainWindow::editCopy() {
 		Q_ASSERT(termWidget != NULL);
 		termWidget->copy();
 	} else if (!openFiles.empty()) {
-		openFiles[curDocIdx].edWidget->copy();
+	  getCurDoc()->copy();
 	}
 }
 
 void MainWindow::editCut() {
 	if (!copyFromTerm && !openFiles.empty()) {
-		openFiles[curDocIdx].edWidget->cut();
+	  getCurDoc()->cut();
 	}
 }
 
@@ -219,19 +219,19 @@ void MainWindow::editPaste() {
 		Q_ASSERT(termWidget != NULL);
 		termWidget->paste();
 	} else if (!openFiles.empty()) {
-		openFiles[curDocIdx].edWidget->paste();
+	  getCurDoc()->paste();
 	}
 }
 
 void MainWindow::undo() {
 	if (!openFiles.empty()) {
-		openFiles[curDocIdx].edWidget->undo();
+	  getCurDoc()->undo();
 	}
 }
 
 void MainWindow::redo() {
 	if (!openFiles.empty()) {
-		openFiles[curDocIdx].edWidget->redo();
+	  getCurDoc()->redo();
 	}
 }
 
@@ -257,31 +257,31 @@ void MainWindow::prevDoc() {
 
 void MainWindow::setEolCr () {
   if (openFiles.size() > curDocIdx) {
-    openFiles[curDocIdx].edWidget->setEolMode(QsciScintilla::EolMac);
+    getCurDoc()->setEolMode(QsciScintilla::EolMac);
   }
 }
 
 void MainWindow::setEolLf () {
   if (openFiles.size() > curDocIdx) {
-    openFiles[curDocIdx].edWidget->setEolMode(QsciScintilla::EolUnix);
+    getCurDoc()->setEolMode(QsciScintilla::EolUnix);
   }
 }
 
 void MainWindow::setEolCrLf () {
   if (openFiles.size() > curDocIdx) {
-    openFiles[curDocIdx].edWidget->setEolMode(QsciScintilla::EolWindows);
+    getCurDoc()->setEolMode(QsciScintilla::EolWindows);
   }
 }
 
 void MainWindow::convertEols () {
   if (openFiles.size() > curDocIdx) {
-    openFiles[curDocIdx].edWidget->convertEols(openFiles[curDocIdx].edWidget->eolMode());
+    getCurDoc()->convertEols(getCurDoc()->eolMode());
   }
 }
 
 void MainWindow::setEolVisibility(bool vis) {
   if (openFiles.size() > curDocIdx) {
-    openFiles[curDocIdx].edWidget->setEolVisibility(vis);
+    getCurDoc()->setEolVisibility(vis);
   }
 }
 
@@ -292,17 +292,11 @@ void MainWindow::trayClicked(QSystemTrayIcon::ActivationReason reason) {
 }
 
 void MainWindow::toggleFolding() {
-  QsciScintilla::FoldStyle state = static_cast<QsciScintilla::FoldStyle>((!openFiles[curDocIdx].edWidget->folding()) * 5);
-  openFiles[curDocIdx].edWidget->setFolding(state);
+  QsciScintilla::FoldStyle state = static_cast<QsciScintilla::FoldStyle>((!getCurDoc()->folding()) * 5);
+  getCurDoc()->setFolding(state);
 }
 
 void MainWindow::showFindDialog() {
   qDebug() << "creating find dialog";
-  dlgFindText * findTextDlg = new dlgFindText(this, getCurDoc());
-  connect(findTextDlg, SIGNAL(closed(dlgFindText *)), this, SLOT(deleteFindDialog(dlgFindText *)));
-}
-
-void MainWindow::deleteFindDialog(dlgFindText * dlg) {
-  qDebug() << "deleting find dialog";
-  delete dlg;
+  dlgFindText * findTextDlg = new dlgFindText(this);
 }

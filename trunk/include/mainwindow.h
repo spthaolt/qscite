@@ -57,7 +57,7 @@ class MainWindow : public QMainWindow
 
 public:
     MainWindow(QStringList & _argv);
-    QsciScintilla * getCurDoc();
+    inline QsciScintilla * getCurDoc();
 
 protected:
     void closeEvent(QCloseEvent * event);
@@ -92,7 +92,6 @@ private slots:
     void convertIndentation();
     void toggleFolding();
     void showFindDialog();
-    void deleteFindDialog(dlgFindText * dlg);
     
     /* Internal slots */
     void curDocChanged(int idx);
