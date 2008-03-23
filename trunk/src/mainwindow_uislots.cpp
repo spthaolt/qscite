@@ -293,6 +293,12 @@ void MainWindow::trayClicked(QSystemTrayIcon::ActivationReason reason) {
 
 void MainWindow::toggleFolding() {
   QsciScintilla::FoldStyle state = static_cast<QsciScintilla::FoldStyle>((!getCurDoc()->folding()) * 5);
+  
+  if (!state) {
+    // unfold all code before turning off folding
+    getCurDoc()->foldAll(false);
+  }
+  
   getCurDoc()->setFolding(state);
 }
 
