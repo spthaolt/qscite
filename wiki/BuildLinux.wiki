@@ -36,7 +36,7 @@ The following instructions assume that you have a working copy of GCC 4.x instal
   # Run "make" to start the compilation.
   # The executable is called "qscite-release" and is in the "build" directory.
 
-Currently there are no installation rules generated for the Makefile by QMake (we just haven't gotten around to that yet :) ).  You'll have to copy the executable to your favorite installation path to install the application (or just run it where it is
+Currently there are no installation rules generated for the Makefile by QMake (we just haven't gotten around to that yet :) ).  You'll have to copy the executable to your favorite installation path to install the application (or just run it where it is).
 
 = Configuration Files =
 
