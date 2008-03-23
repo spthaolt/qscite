@@ -229,24 +229,7 @@ void MainWindow::loadFile(const QString &fileName) {
 
 
 void MainWindow::redoSetMargin() {
-  QsciScintilla * curDoc = getCurDoc();
-  int numLines = curDoc->lines();
-  
-  if (numLines < 1000) {
-    return;
-  }
-  
-  if (curDoc->marginWidth(1) > 0) {
-    QString exLength = "9999";
-    numLines /= 1000;
-  
-    while (numLines >= 1) {
-      exLength += "9";
-      numLines /= 10;
-    }
-
-	  curDoc->setMarginWidth(1, exLength);
-  }
+  getCurDoc()->setMarginWidth(1, QString::number(getCurDoc()->lines()) + "9");
 }
 
 bool MainWindow::saveFile(const QString &fileName) {
