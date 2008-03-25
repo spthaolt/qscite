@@ -15,4 +15,4 @@ The QSciTE project file assumes that QScintilla has been built as a framework on
 
 = Idiosyncrasies =
 
-On my installation of Qt, building with '-spec macx-g++' adds 'debug' to the project configuration several times. To build a release version, use 'CONFIG-=debug' on the command line or just before the debug{} block in the project file.
+If QSciTE fails to open dropped files after updating the app bundle (`cp -R macx-bundle-contents/* QSciTE.app/Contents/`), drag QSciTE.app to another folder or the desktop to cause the system to re-read the bundle properties. It can safely be moved back to the original location once the change has taken effect.
