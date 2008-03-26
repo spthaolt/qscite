@@ -144,6 +144,9 @@ void MainWindow::createActions() {
   
   findTextAct = new QAction(tr("&Find..."), this);
   connect(findTextAct, SIGNAL(triggered()), this, SLOT(showFindDialog()));
+  
+  newWindowAct = new QAction(QIcon(":/images/newwindow.png"), tr("&New Window"), this);
+  connect(newWindowAct, SIGNAL(triggered()), this, SLOT(newWindow()));
 }
 
 void MainWindow::createMenus() {
@@ -190,6 +193,9 @@ void MainWindow::createMenus() {
   optionsMenu->addAction(convertIndentAct);
   menuBar()->addSeparator();
 
+  windowMenu = menuBar()->addMenu(tr("&Window"));
+  windowMenu->addAction(newWindowAct);
+  
   helpMenu = menuBar()->addMenu(tr("&Help"));
   helpMenu->addAction(aboutAct);
   helpMenu->addAction(aboutQtAct);

@@ -17,5 +17,6 @@
     <file>images/nextTab.png</file>
     <file>images/prevTab.png</file>
     <file>images/appIcon.png</file>
+    <file>images/newwindow.png</file>
 </qresource>
 </RCC>
