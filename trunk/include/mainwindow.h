@@ -25,6 +25,8 @@
 #include <QFileInfo>
 #include <QSystemTrayIcon>
 
+#include "launcher.h"
+
 class QAction;
 class QMenu;
 class QsciScintilla;
@@ -56,7 +58,7 @@ class MainWindow : public QMainWindow
 	friend class TextDisplayPanel;
 
 public:
-    MainWindow(QStringList & _argv);
+    MainWindow(QStringList & _argv, Launcher * _launcher);
 
     inline QsciScintilla * getCurDoc() {
       // this implementation is in the header file to avoid excessive warnings...
@@ -97,6 +99,7 @@ private slots:
     void convertIndentation();
     void toggleFolding();
     void showFindDialog();
+    void newWindow();
     
     /* Internal slots */
     void curDocChanged(int idx);
@@ -131,6 +134,7 @@ private:
     void setUIForDocumentEolMode();
     
     QStringList argv;
+    Launcher * launcher;
     std::vector<FileData> openFiles;
     QList<QFileInfo> recentFiles;
     QTabWidget * tabWidget;
@@ -151,6 +155,7 @@ private:
     QMenu * viewMenu;
     QMenu * optionsMenu;
     QMenu * lineEndMenu;
+    QMenu * windowMenu;
     QMenu * helpMenu;
     QToolBar * mainToolBar;
     
@@ -192,6 +197,7 @@ private:
     QAction * convertIndentAct;
     QAction * codeFoldingAct;
     QAction * findTextAct;
+    QAction * newWindowAct;
 };
 
 #endif

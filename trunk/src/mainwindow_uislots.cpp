@@ -306,3 +306,7 @@ void MainWindow::showFindDialog() {
   qDebug() << "creating find dialog";
   dlgFindText * findTextDlg = new dlgFindText(this);
 }
+
+void MainWindow::newWindow() {
+  launcher->createNewWindow();
+}

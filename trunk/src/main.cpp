@@ -19,11 +19,11 @@
 
 #include <QApplication>
 #include <QStringList>
-
+#include <QVector>
 #include "mainwindow.h"
+#include "launcher.h"
 
-int main(int argc, char *argv[])
-{
+int main(int argc, char *argv[]) {
     Q_INIT_RESOURCE(qscite);
 
     QApplication app(argc, argv);
@@ -35,8 +35,8 @@ int main(int argc, char *argv[])
       _argv.push_back(QString(argv[i]));
     }
     
-    MainWindow mainWin(_argv);
-    app.installEventFilter(&mainWin);
-    mainWin.show();
+    Launcher launcher(_argv, &app);
     return app.exec();
 }
+
+

@@ -19,7 +19,8 @@ HEADERS       = mainwindow.h \
                 lexer_utils.h \
                 prefs.h \
                 textdisplay.h \
-                findtext.h
+                findtext.h \
+                launcher.h
 
 SOURCES       = main.cpp \
                 mainwindow.cpp \
@@ -31,7 +32,8 @@ SOURCES       = main.cpp \
                 prefs.cpp \
                 textdisplay.cpp \
                 reindent.cpp \
-                findtext.cpp
+                findtext.cpp \
+                launcher.cpp
 
 FORMS         = dlgPrefsUI.ui \
                 frmTextDisplay.ui \

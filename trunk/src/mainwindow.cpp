@@ -35,13 +35,14 @@
   #include "qterminal_pty.h"
 #endif
 
-MainWindow::MainWindow(QStringList & _argv) :
+MainWindow::MainWindow(QStringList & _argv, Launcher * _launcher) :
   argv(_argv),
   termWidget(NULL),
   textSettingsWidget(NULL),
   copyFromTerm(false),
   termInDrawer(QSettings().value("terminalInDrawer", false).toBool()),
-  curDocIdx(0)
+  curDocIdx(0),
+  launcher(_launcher)
 {
   this->setUnifiedTitleAndToolBarOnMac(true);
   readSettings();
