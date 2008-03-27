@@ -21,13 +21,16 @@ Launcher::Launcher (QStringList argv, QApplication * _app) {
   }
 }
 
-Launcher::~Launcher() { }
+Launcher::~Launcher() {
+  // this really should be implemented properly.
+}
 
 void Launcher::createFirstWindow(QStringList _argv) {
   MainWindow * window = new MainWindow(_argv, this);
   app->installEventFilter(window);
   window->show();
   windows.push_back(window);
+  connect(window, SIGNAL(closed()), this, SLOT(windowClosed()));
 }
 
 void Launcher::createNewWindow() {
@@ -36,6 +39,7 @@ void Launcher::createNewWindow() {
   app->installEventFilter(window);
   window->show();
   windows.push_back(window);
+  connect(window, SIGNAL(closed()), this, SLOT(windowClosed()));
 }
 
 void Launcher::createTrayIcon() {
@@ -77,16 +81,16 @@ void Launcher::trayClicked(QSystemTrayIcon::ActivationReason reason) {
 void Launcher::quitApplication() {
   qDebug() << "quit clicked";
   
-  while (windows.size()) {
-    bool closed = windows.front()->closeWindow();
-    
-    if (!closed) {
+  while (windows.size()) {    
+    if (!windows.front()->closeWindow()) {
       return;
-    } else {
-      delete windows.front();
-      windows.pop_front();
     }
   }
   
   app->quit();
+}
+
+void Launcher::windowClosed() {
+  qDebug() << "Launcher::windowClosed() called";
+  windows.remove(windows.indexOf(static_cast<MainWindow *>(sender())));
 }
