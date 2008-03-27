@@ -36,9 +36,11 @@ class Launcher : public QObject {
     void createNewWindow();
     
   private slots:
-    void quitApplication();
     void trayClicked(QSystemTrayIcon::ActivationReason reason);
-    void windowClosed(); 
+    void windowClosed();
+    
+  public slots:
+    void quitApplication();
     
 };
 

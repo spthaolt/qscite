@@ -34,7 +34,7 @@ void MainWindow::createActions() {
   exitAct = new QAction(QIcon(":/images/fileexit.png"), tr("E&xit"), this);
   exitAct->setShortcut(tr("Ctrl+Q"));
   exitAct->setStatusTip(tr("Exit QSciTE"));
-  connect(exitAct, SIGNAL(triggered()), this, SLOT(close()));
+  connect(exitAct, SIGNAL(triggered()), launcher, SLOT(quitApplication()));
   
   undoAct = new QAction(QIcon(":/images/undo.png"), tr("Undo"), this);
   undoAct->setShortcut(tr("Ctrl+Z"));
