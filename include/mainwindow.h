@@ -66,6 +66,9 @@ public:
     }
     
     bool closeWindow();
+    
+signals:
+    void closed();
 
 protected:
     void closeEvent(QCloseEvent * event);
@@ -116,7 +119,6 @@ private:
     void createMenus();
     void createToolBars();
     void createStatusBar();
-    void createTrayIcon();
     void createDocument();
     
     void readSettings();
@@ -157,11 +159,7 @@ private:
     QMenu * windowMenu;
     QMenu * helpMenu;
     QToolBar * mainToolBar;
-    
-    QAction * minimizeAction;
-    QAction * maximizeAction;
-    QAction * restoreAction;
-    QAction * quitAction;
+
     QAction * newAct;
     QAction * closeAct;
     QAction * openAct;

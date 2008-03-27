@@ -45,6 +45,7 @@ MainWindow::MainWindow(QStringList & _argv, Launcher * _launcher) :
   launcher(_launcher)
 {
   this->setUnifiedTitleAndToolBarOnMac(true);
+  this->setAttribute(Qt::WA_DeleteOnClose);
   readSettings();
   
   tabWidget = new QTabWidget(this);
@@ -123,6 +124,7 @@ bool MainWindow::closeWindow () {
   }
   
   writeSettings();
+  emit closed();
   return true;
 }
 
@@ -347,7 +349,6 @@ void MainWindow::setUIForDocumentEolMode() {
 	
   showLineEndsAct->setChecked(getCurDoc()->eolVisibility());
 }
-
 
 FileData::FileData(QsciScintilla * doc) : path(QDir::homePath()), edWidget(doc) { ; }
 FileData::FileData(const FileData & src) : fullName(src.fullName), baseName(src.baseName), path(src.path), edWidget(src.edWidget) { ; }

@@ -3,18 +3,6 @@
 #include "mainwindow.h"
 
 void MainWindow::createActions() {
-  minimizeAction = new QAction(tr("Mi&nimize"), this);
-  connect(minimizeAction, SIGNAL(triggered()), this, SLOT(hide()));
-
-  maximizeAction = new QAction(tr("Ma&ximize"), this);
-  connect(maximizeAction, SIGNAL(triggered()), this, SLOT(showMaximized()));
-
-  restoreAction = new QAction(tr("&Restore"), this);
-  connect(restoreAction, SIGNAL(triggered()), this, SLOT(showNormal()));
-
-  quitAction = new QAction(tr("&Quit"), this);
-  connect(quitAction, SIGNAL(triggered()), this, SLOT(close()));
-
   newAct = new QAction(QIcon(":/images/filenew.png"), tr("&New"), this);
   newAct->setShortcut(tr("Ctrl+N"));
   newAct->setStatusTip(tr("Create a new file"));
