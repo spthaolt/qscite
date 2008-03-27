@@ -285,12 +285,6 @@ void MainWindow::setEolVisibility(bool vis) {
   }
 }
 
-void MainWindow::trayClicked(QSystemTrayIcon::ActivationReason reason) {
-  if (reason == QSystemTrayIcon::Trigger) { // the icon was clicked
-    this->setVisible(!this->isVisible());
-  }
-}
-
 void MainWindow::toggleFolding() {
   QsciScintilla::FoldStyle state = static_cast<QsciScintilla::FoldStyle>((!getCurDoc()->folding()) * 5);
   

@@ -60,15 +60,7 @@ MainWindow::MainWindow(QStringList & _argv, Launcher * _launcher) :
   createMenus();
   createDocument();
   createToolBars();
-  createStatusBar();
-  
-  if(QSystemTrayIcon::isSystemTrayAvailable() && QSettings().value("trayIcon", true).toBool()) {
-    qDebug() << "Creating the system tray icon";
-    createTrayIcon();
-    trayIcon->setIcon(QIcon(":images/appIcon.png"));
-    trayIcon->show();
-  }
-  
+  createStatusBar();  
 
   QToolButton * closeTabButton = new QToolButton(tabWidget);
   closeTabButton->setDefaultAction(closeAct);
@@ -113,6 +105,10 @@ void MainWindow::changeTabs(int index) {
 }
 
 void MainWindow::closeEvent(QCloseEvent *event) {
+  closeWindow() ? event->accept() : event->ignore();
+}
+
+bool MainWindow::closeWindow () {
   this->setVisible(true);
   
   if (termWidget != NULL) {
@@ -122,13 +118,12 @@ void MainWindow::closeEvent(QCloseEvent *event) {
   while(tabWidget->count()) {
     changeTabs(0);
     if (!closeFile()) {
-      event->ignore();
-      return;
+      return false;
     }
   }
   
   writeSettings();
-  event->accept();
+  return true;
 }
 
 void MainWindow::setDocumentModified(bool wasModified) {
