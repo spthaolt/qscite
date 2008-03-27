@@ -17,7 +17,6 @@ class Launcher : public QObject {
   private:
     QApplication * app;
     QVector<MainWindow *> windows;
-    void createFirstWindow(QStringList _argv);
     void createTrayIcon();
     void createActions();
     QSystemTrayIcon * trayIcon;
@@ -33,7 +32,7 @@ class Launcher : public QObject {
   public:
     Launcher (QStringList argv, QApplication * _app);
     ~Launcher ();
-    void createNewWindow();
+    void createNewWindow(QStringList _argv = QStringList());
     
   private slots:
     void trayClicked(QSystemTrayIcon::ActivationReason reason);

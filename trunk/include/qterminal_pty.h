@@ -12,7 +12,6 @@ class QTerminal : public QTextEdit {
 public:
 	QTerminal(QWidget * parent = 0, Qt::WindowFlags f = 0);
 	~QTerminal();
-	void keyPressEvent(QKeyEvent * event);
 
 public slots:
 	void changeDir(const QString & dir);
@@ -22,6 +21,8 @@ signals:
 
 protected:
 	void insertFromMimeData(const QMimeData * data);
+	void keyPressEvent(QKeyEvent * event);
+	void keyReleaseEvent(QKeyEvent * event);
 
 private slots:
 	void readOutput();
