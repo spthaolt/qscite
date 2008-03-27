@@ -124,7 +124,7 @@ bool MainWindow::closeWindow () {
   }
   
   writeSettings();
-  emit closed();
+  //emit closed();
   return true;
 }
 

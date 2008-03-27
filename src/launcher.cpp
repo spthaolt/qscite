@@ -9,9 +9,9 @@
 #include "launcher.h"
 #include "mainwindow.h"
 
-Launcher::Launcher (QStringList argv, QApplication * _app) {
+Launcher::Launcher (QStringList argv, QApplication * _app) : trayIcon(NULL) {
   app = _app;
-  createFirstWindow(argv);
+  createNewWindow(argv);
   
   if(QSystemTrayIcon::isSystemTrayAvailable() && QSettings().value("trayIcon", true).toBool()) {
     qDebug() << "Creating the system tray icon";
@@ -22,20 +22,17 @@ Launcher::Launcher (QStringList argv, QApplication * _app) {
 }
 
 Launcher::~Launcher() {
-  trayIcon->setVisible(false);
+  if (trayIcon != NULL) {
+    trayIcon->setVisible(false);
+  }
 }
 
-void Launcher::createFirstWindow(QStringList _argv) {
+void Launcher::createNewWindow(QStringList _argv) {
   MainWindow * window = new MainWindow(_argv, this);
   app->installEventFilter(window);
   window->show();
   windows.push_back(window);
-  connect(window, SIGNAL(closed()), this, SLOT(windowClosed()));
-}
-
-void Launcher::createNewWindow() {
-  QStringList _argv;
-  createFirstWindow(_argv);
+  connect(window, SIGNAL(destroyed()), this, SLOT(windowClosed()));
 }
 
 void Launcher::createTrayIcon() {
@@ -78,13 +75,13 @@ void Launcher::trayClicked(QSystemTrayIcon::ActivationReason reason) {
 void Launcher::quitApplication() {
   qDebug() << "Launcher::quitApplication() called";
   
-  while (windows.size()) {    
-    if (!windows.front()->closeWindow()) {
+  for (int i = 0; i < windows.size(); ++i) {
+    if (!(windows[i]->close())) {
       return;
     }
   }
   
-  app->quit();
+  //app->quit();
 }
 
 void Launcher::windowClosed() {

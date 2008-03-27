@@ -22,6 +22,9 @@ QTerminal::QTerminal(QWidget *parent, Qt::WindowFlags f) : QTextEdit(parent) {
   setWindowFlags(f);
   qDebug() << "Constructing QTerminal";
   savedCursor = this->textCursor();
+  setTextInteractionFlags(Qt::TextSelectableByMouse | Qt::TextSelectableByKeyboard);
+  setTabChangesFocus(false);
+  setFocusPolicy(Qt::ClickFocus);
 
   /*
    * Launch a shell connected to the current process by a PTY
@@ -229,6 +232,10 @@ void QTerminal::keyPressEvent(QKeyEvent * event) {
     write(fdMaster, event->text().toAscii().data(), event->text().length());
     event->accept();
   }
+}
+
+void QTerminal::keyReleaseEvent(QKeyEvent * evt) {
+  evt->accept();
 }
 
 void QTerminal::eraseDisplay(int arg) {
