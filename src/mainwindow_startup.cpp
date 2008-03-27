@@ -237,18 +237,3 @@ void MainWindow::createToolBars() {
 void MainWindow::createStatusBar() {
     statusBar()->showMessage(tr("Ready"));
 }
-
-void MainWindow::createTrayIcon() {
-  trayIconMenu = new QMenu(this);
-  trayIconMenu->addAction(minimizeAction);
-  trayIconMenu->addAction(maximizeAction);
-  trayIconMenu->addAction(restoreAction);
-  trayIconMenu->addSeparator();
-  trayIconMenu->addAction(quitAction);
-
-  trayIcon = new QSystemTrayIcon(this);
-  trayIcon->setContextMenu(trayIconMenu);
-#ifndef Q_WS_MAC
-  connect(trayIcon, SIGNAL(activated(QSystemTrayIcon::ActivationReason)), this, SLOT(trayClicked(QSystemTrayIcon::ActivationReason)));
-#endif
-}

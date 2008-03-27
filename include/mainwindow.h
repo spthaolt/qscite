@@ -51,8 +51,7 @@ struct FileData {
 	void setPathName(const QString & newPathName);
 };
 
-class MainWindow : public QMainWindow
-{
+class MainWindow : public QMainWindow {
     Q_OBJECT
 
 	friend class TextDisplayPanel;
@@ -65,6 +64,8 @@ public:
       // and to allow QSciTE to compile on Win32.
       return (openFiles.size() ? openFiles[curDocIdx].edWidget : NULL);
     }
+    
+    bool closeWindow();
 
 protected:
     void closeEvent(QCloseEvent * event);
@@ -95,7 +96,6 @@ private slots:
     void setEolCrLf();
     void convertEols();
     void setEolVisibility(bool vis);
-    void trayClicked(QSystemTrayIcon::ActivationReason reason);
     void convertIndentation();
     void toggleFolding();
     void showFindDialog();
@@ -140,7 +140,6 @@ private:
     QTabWidget * tabWidget;
     QTerminal * termWidget;
     TextDisplayPanel * textSettingsWidget;
-    QSystemTrayIcon * trayIcon;
     QMenu * trayIconMenu;
     QString lastDir;
     
