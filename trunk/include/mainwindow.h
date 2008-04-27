@@ -114,6 +114,8 @@ private slots:
     void prefsWereChanged();
     void updateCopyAvailable(bool);
     void noticeFocusChange(QWidget *, QWidget *);
+    void dropEvent(QDropEvent *event);
+    void dragEnterEvent(QDragEnterEvent *event);
 
 private:
     void createActions();
@@ -135,7 +137,9 @@ private:
     void changeTabs(int index);
     void documentWasModified();
     void setUIForDocumentEolMode();
-    
+
+    void setupDocument(QString &fileName);
+
     QStringList argv;
     Launcher * launcher;
     std::vector<FileData> openFiles;

@@ -20,6 +20,10 @@
 #include <QtGui>
 #include <QSystemTrayIcon>
 #include <QtDebug>
+#include <QDropEvent>
+#include <QUrl>
+#include <QList>
+#include <QFileInfo>
 #include <Qsci/qsciscintilla.h>
 #include <Qsci/qscilexer.h>
 
@@ -70,6 +74,9 @@ MainWindow::MainWindow(QStringList & _argv, Launcher * _launcher) :
   connect(tabWidget, SIGNAL(currentChanged(int)), this, SLOT(curDocChanged(int)));
   connect(QApplication::instance(), SIGNAL(focusChanged(QWidget *, QWidget *)), this, SLOT(noticeFocusChange(QWidget *, QWidget *)));
   setWindowTitleForFile("");
+
+  //accept drag and drop events, handled in dropEvent()
+  setAcceptDrops(true);
   
   for (int i = 0; i < argv.size(); ++i) {
     if (!argv.front().isEmpty()) {
@@ -317,19 +324,26 @@ void MainWindow::addRecentFile(const QString & fileName) {
 
 bool MainWindow::eventFilter(QObject * target, QEvent * event) {
 	if (target == qApp && event->type() == QEvent::FileOpen) {
-		if ((!tabWidget->count()) || (!openFiles[curDocIdx].baseName.isEmpty()) || getCurDoc()->isModified()) {
-			createDocument();
-		}
-		
 		QString fileName = dynamic_cast<QFileOpenEvent *>(event)->file();
-		loadFile(fileName);
-		addRecentFile(fileName);
-		setCurrentTabTitle();
+		setupDocument(fileName);
 		event->accept();
 		return true;
 	} else {
 		return QMainWindow::eventFilter(target, event);
 	}
+}
+
+//load a new document and set up its tab and the associated application metadata
+void MainWindow::setupDocument(QString &fileName) {
+	//create a new tab, if necessary
+	if ((!tabWidget->count()) || (!openFiles[curDocIdx].baseName.isEmpty()) || getCurDoc()->isModified()) {
+		createDocument();
+	}
+
+	//load the file and set up other metadata
+	loadFile(fileName);
+	addRecentFile(fileName);
+	setCurrentTabTitle();
 }
 
 void MainWindow::setUIForDocumentEolMode() {
@@ -350,6 +364,32 @@ void MainWindow::setUIForDocumentEolMode() {
   showLineEndsAct->setChecked(getCurDoc()->eolVisibility());
 }
 
+//triggered when a dragged object enters the window
+void MainWindow::dragEnterEvent(QDragEnterEvent *event)
+{
+	qDebug() << "Drag enter event triggered.\n";
+	//only accept the drop if the dropped item has a URL
+	if (event->mimeData()->hasFormat("text/uri-list")) 
+	{
+		qDebug() << event->proposedAction() << "\n";
+		event->acceptProposedAction();
+	}
+}
+
+//triggers when a dragged object is dropped into the window
+void MainWindow::dropEvent(QDropEvent *event) {
+	QFileInfo fileInfo;
+	//get the first URL in the list and open it if it refers to a file
+	QString fileName = event->mimeData()->urls().first().toLocalFile();
+	fileInfo.setFile(fileName);
+	if (fileInfo.isFile()) {
+		qDebug() << "Got drop event. Filename is: " << fileName << "\n";
+		setupDocument(fileName);
+	}
+
+	event->acceptProposedAction();
+}
+
 FileData::FileData(QsciScintilla * doc) : path(QDir::homePath()), edWidget(doc) { ; }
 FileData::FileData(const FileData & src) : fullName(src.fullName), baseName(src.baseName), path(src.path), edWidget(src.edWidget) { ; }
 
@@ -359,4 +399,3 @@ void FileData::setPathName(const QString & newPathName) {
 	baseName = info.fileName();
 	path = newPathName.isEmpty() ? "": info.absolutePath();
 }
-
