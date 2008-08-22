@@ -38,14 +38,14 @@ QTerminal::QTerminal(QWidget *parent, Qt::WindowFlags f) : QTextEdit(parent) {
     /* hand off to the shell of choice */
     execl(getenv("SHELL"), getenv("SHELL"), (char *)0);
   }
-  
+
   /*
    * We will use non-blocking I/O to read from the shell
    */
-  fcntl(fdMaster, F_SETFL, fcntl(fdMaster, F_GETFL, 0) | O_NONBLOCK);  
+  fcntl(fdMaster, F_SETFL, fcntl(fdMaster, F_GETFL, 0) | O_NONBLOCK);
   qDebug() << "Shell PID " << shellPid << " on file descriptor " << fdMaster;
 
-  
+
   /*
    * Arrange to be notified when the shell emits output
    */
@@ -84,7 +84,14 @@ void QTerminal::readOutput() {
   	  if (!textCursor().atEnd()) {
   	    textCursor().deleteChar();
   	  }
+
   	  this->insertPlainText(QChar(c));
+
+      // keep the GUI responsive during large terminal outputs
+      if (c == '\n') {
+        qApp->processEvents();
+      }
+
   	}
     count = read(fdMaster, &c, 1);
   }
@@ -103,7 +110,7 @@ void QTerminal::handleEscape() {
     case '[': //control sequence introducer
       handleControlSeq();
     break;
-    
+
     case ']': //operating system command
       handleOSCommand();
     break;
@@ -114,7 +121,7 @@ void QTerminal::handleControlSeq() {
   char nextChar = 0;
   QString seq = "";
   read(fdMaster, &nextChar, 1);
-  
+
   while (!isCsiTerminator(nextChar)) {
     seq += nextChar;
     read(fdMaster, &nextChar, 1);
@@ -126,11 +133,11 @@ void QTerminal::handleControlSeq() {
     case 'J':
       eraseDisplay(seq.toInt());
     break;
-    
+
     case 'K':
       eraseInLine(seq.toInt());
     break;
-    
+
     case 'P':
       deleteChars(seq.toInt());
   }
@@ -153,10 +160,10 @@ void QTerminal::handleOSCommand() {
   char otherChar = 0;
   QString cmd = "";
   read(fdMaster, &nextChar, 1);
-  
+
   while (!isOscTerminator(nextChar, otherChar)) {
     cmd += nextChar;
-    
+
     if (otherChar == 0) {
       read(fdMaster, &nextChar, 1);
     } else {
@@ -164,9 +171,9 @@ void QTerminal::handleOSCommand() {
       otherChar = 0;
     }
   }
-  
+
   cmd += nextChar;
-  
+
   switch(nextChar) {
     case '\x07': //ascii BEL character
       if (cmd.at(0) == '1') {
@@ -174,7 +181,7 @@ void QTerminal::handleOSCommand() {
         QString colorStr = cmd;
         colorStr.remove(0,3);
         colorStr.remove(colorStr.length() - 1, 1);
-        
+
         if (cmd.at(1) == '0') {
           qDebug() << "setting terminal text color to " << colorStr;
 
@@ -183,12 +190,12 @@ void QTerminal::handleOSCommand() {
           } else {
             palette.setColor(QPalette::Text, QColor(colorStr));
           }
-          
+
         } else if (cmd.at(1) == '1') {
           qDebug() << "setting terminal background color to " << colorStr;
           palette.setColor(QPalette::Base, QColor(colorStr));
         }
-        
+
         this->setPalette(palette);
       }
     break;
@@ -206,11 +213,11 @@ bool QTerminal::isOscTerminator(char c, char & d) {
   } else if (c == '\x07'){
     return true;
   }
-  
+
   return false;
 }
 
-void QTerminal::keyPressEvent(QKeyEvent * event) {  
+void QTerminal::keyPressEvent(QKeyEvent * event) {
   // pass a char* copy of the input to the shell process
   //shell->write(event->text().toAscii().data(), event->text().length());
   if (event->key() == Qt::Key_Up) {
@@ -308,10 +315,10 @@ void FileDescriptorMonitor::run() {
 			//qDebug() << "select() timeout";
 		}
 	}
-	
+
 	qDebug() << "FileDescriptorMonitor exiting";
 }
-	
+
 void FileDescriptorMonitor::stop() {
 	shouldStop = true;
 }
