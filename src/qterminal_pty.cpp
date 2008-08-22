@@ -16,7 +16,7 @@
 #include <QtGui>
 #include <QtDebug>
 #include "qterminal_pty.h"
-#include "utils.h"
+// #include "utils.h"
 
 QTerminal::QTerminal(QWidget *parent, Qt::WindowFlags f) : QTextEdit(parent) {
   setWindowFlags(f);
