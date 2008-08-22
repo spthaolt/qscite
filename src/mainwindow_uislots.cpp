@@ -22,21 +22,21 @@ void MainWindow::toggleTerminal(bool alive) {
     return;
   }
   QSettings settings;
-  
+
   if (termWidget != NULL) {
     if (!termInDrawer) {
       termWidget->parent()->deleteLater();
     }
-    
+
     qDebug() << "Closing terminal";
     termWidget->disconnect();
     termWidget->deleteLater();
     termWidget = NULL;
-    
+
     if (openFiles.size() > curDocIdx) {
       getCurDoc()->setFocus();
     }
-    
+
     copyFromTerm = false;
   } else {
     qDebug() << "Opening terminal";
@@ -45,7 +45,7 @@ void MainWindow::toggleTerminal(bool alive) {
     if (openFiles.size() > curDocIdx && !openFiles[curDocIdx].fullName.isEmpty()) {
     	termWidget->changeDir(openFiles[curDocIdx].path);
     }
-    
+
     if (termInDrawer) {
       termWidget->setWindowFlags(Qt::Drawer);
       termWidget->show();
@@ -55,7 +55,7 @@ void MainWindow::toggleTerminal(bool alive) {
       termDock->setFeatures(QDockWidget::DockWidgetMovable | QDockWidget::DockWidgetFloatable);
       this->addDockWidget(Qt::BottomDockWidgetArea, termDock);
     }
-    
+
     connect(termWidget, SIGNAL(shellExited()), this, SLOT(toggleTerminal()));
     connect(termWidget, SIGNAL(copyAvailable(bool)), this, SLOT(updateCopyAvailable(bool)));
     termWidget->setFocus();
@@ -74,10 +74,10 @@ bool MainWindow::closeFile() {
       QsciScintilla * theEditor = getCurDoc();
 
       openFiles.erase(openFiles.begin() + curDocIdx);
-      tabWidget->removeTab(curDocIdx);      
+      tabWidget->removeTab(curDocIdx);
 
       delete theEditor;
-      
+
       if (tabWidget->count() == 0) { // out of tabs
         setWindowTitle(tr("QSciTE"));
         setWindowModified(false);
@@ -88,28 +88,28 @@ bool MainWindow::closeFile() {
       return true;
     }
   }
-  
+
   return false;
 }
 
 void MainWindow::open() {
   QStringList fileNames = QFileDialog::getOpenFileNames(this, "Select one or more files to open", (curDocIdx < openFiles.size() && !openFiles[curDocIdx].path.isEmpty()) ? openFiles[curDocIdx].path : lastDir);
-  
+
   while (fileNames.count()) {
     if (!fileNames.back().isEmpty()) {
       if ((!tabWidget->count()) || (!openFiles[curDocIdx].baseName.isEmpty()) || getCurDoc()->isModified()) {
         createDocument();
       }
-      
+
       loadFile(fileNames.back());
       setCurrentTabTitle();
-      
+
       addRecentFile(fileNames.back());
     }
-    
+
     fileNames.pop_back();
   }
-  
+
   if (!openFiles.empty()) {
     getCurDoc()->setFocus();
     lastDir = openFiles[curDocIdx].path;
@@ -121,9 +121,9 @@ void MainWindow::openRecent(QAction * src) {
   if ((!tabWidget->count()) || (!openFiles[curDocIdx].baseName.isEmpty()) || getCurDoc()->isModified()) {
 	createDocument();
   }
-  
+
   loadFile(src->statusTip());
-  setCurrentTabTitle();	
+  setCurrentTabTitle();
 }
 
 bool MainWindow::save() {
@@ -134,7 +134,7 @@ bool MainWindow::save() {
       return saveFile(openFiles[curDocIdx].fullName);
     }
   }
-  
+
   // make the compiler happy :)
   return false;
 }
@@ -142,11 +142,11 @@ bool MainWindow::save() {
 bool MainWindow::saveAs() {
   if (tabWidget->count()) {
     QString fileName = QFileDialog::getSaveFileName(this, "Save - QSciTE", (curDocIdx < openFiles.size() && !openFiles[curDocIdx].path.isEmpty()) ? openFiles[curDocIdx].path : lastDir);
-    
+
     if (fileName.isEmpty()) {
       return false;
     }
-    
+
     bool success = saveFile(fileName);
     if (success) {
       addRecentFile(fileName);
@@ -166,7 +166,7 @@ bool MainWindow::saveAs() {
     }
     return success;
   }
-  
+
   return false;
 }
 
@@ -174,17 +174,17 @@ void MainWindow::fontDialog() {
   if (tabWidget->count()) {
   	QsciLexer * lexer = getCurDoc()->lexer();
   	bool ok;
-  	
+
   	if (lexer) {
   	  QFont baseFont = QFontDialog::getFont(&ok, lexer->font(lexer->defaultStyle()));
-  	  
+
   	  if (ok) {
   	    getCurDoc()->setFont(baseFont);
   	    setLexerFont(lexer, baseFont.family(), baseFont.pointSize());
   	  }
   	} else {
       QFont font = QFontDialog::getFont(&ok, getCurDoc()->font());
-      
+
       if (ok) {
         getCurDoc()->setFont(font);
       }
@@ -195,8 +195,9 @@ void MainWindow::fontDialog() {
 void MainWindow::about() {
    QMessageBox::about(this, tr("About QSciTE"),
        tr("<b>QSciTE</b> is a clone of SciTE, based on the Scintilla library"
-          " and Qt4. It is heavily based on the example code included with"
-          " Qscintilla2, and is licensed under the GNU GPL version 2."));
+          " and Qt4. It was originally based on the example code included with"
+          " Qscintilla2, however it has grown significantly beyond that codebase."
+    	  " QSciTE is licensed under the GNU GPL version 2."));
 }
 
 void MainWindow::editCopy() {
@@ -237,21 +238,21 @@ void MainWindow::redo() {
 
 void MainWindow::nextDoc() {
   int newIdx = curDocIdx + 1;
-  
+
   if (newIdx >= tabWidget->count()) {
     newIdx = 0;
   }
-  
+
   changeTabs(newIdx);
 }
 
 void MainWindow::prevDoc() {
   int newIdx = curDocIdx - 1;
-  
+
   if (newIdx < 0) {
     newIdx = tabWidget->count() - 1 ;
   }
-  
+
   changeTabs(newIdx);
 }
 
@@ -287,12 +288,12 @@ void MainWindow::setEolVisibility(bool vis) {
 
 void MainWindow::toggleFolding() {
   QsciScintilla::FoldStyle state = static_cast<QsciScintilla::FoldStyle>((!getCurDoc()->folding()) * 5);
-  
+
   if (!state) {
     // unfold all code before turning off folding
     getCurDoc()->foldAll(false);
   }
-  
+
   getCurDoc()->setFolding(state);
 }
 

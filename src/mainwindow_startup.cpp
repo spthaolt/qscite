@@ -7,7 +7,7 @@ void MainWindow::createActions() {
   newAct->setShortcut(tr("Ctrl+N"));
   newAct->setStatusTip(tr("Create a new file"));
   connect(newAct, SIGNAL(triggered()), this, SLOT(newFile()));
-  
+
   closeAct = new QAction(QIcon(":/images/fileclose.png"), tr("&Close"), this);
 #ifndef Q_WS_MAC
   closeAct->setShortcut(tr("Ctrl+F4"));
@@ -35,12 +35,12 @@ void MainWindow::createActions() {
   exitAct->setShortcut(tr("Ctrl+Q"));
   exitAct->setStatusTip(tr("Exit QSciTE"));
   connect(exitAct, SIGNAL(triggered()), launcher, SLOT(quitApplication()));
-  
+
   undoAct = new QAction(QIcon(":/images/undo.png"), tr("Undo"), this);
   undoAct->setShortcut(tr("Ctrl+Z"));
   undoAct->setStatusTip(tr("Undo the last action performed."));
   connect(undoAct, SIGNAL(triggered()), this, SLOT(undo()));
-  
+
   redoAct = new QAction(QIcon(":/images/redo.png"), tr("Redo"), this);
   redoAct->setShortcut(tr("Ctrl+Shift+Z"));
   redoAct->setStatusTip(tr("Redo an action previously undone."));
@@ -63,36 +63,36 @@ void MainWindow::createActions() {
   pasteAct->setStatusTip(tr("Paste the clipboard's contents into the current "
                             "selection"));
   connect(pasteAct, SIGNAL(triggered()), this, SLOT(editPaste()));
-  
+
   prefsAct = new QAction(QIcon(":/images/configure.png"), tr("P&references"), this);
   // TODO: set shortcut, tip, etc.
   connect(prefsAct, SIGNAL(triggered()), this, SLOT(globalPrefs()));
-  
+
   fontAct = new QAction(QIcon(":/images/font.png"), tr("&Font"), this);
   //fontAct->setShortcut(tr(""))
   fontAct->setStatusTip(tr("Set the display font."));
-  
+
   connect(fontAct, SIGNAL(triggered()), this, SLOT(fontDialog()));
-  
+
   terminalAct = new QAction(QIcon(":/images/terminal.png"), tr("Terminal"), this);
   connect(terminalAct, SIGNAL(triggered()), this, SLOT(toggleTerminal()));
-  
+
   textDisplayAct = new QAction(QIcon(":/images/font.png"), tr("Text &Display..."), this);
   connect(textDisplayAct, SIGNAL(triggered()), this, SLOT(textDisplay()));
 
-  aboutAct = new QAction(tr("&About"), this);
+  aboutAct = new QAction(tr("&About QSciTE"), this);
   aboutAct->setStatusTip(tr("Show QSciTE's About box"));
   connect(aboutAct, SIGNAL(triggered()), this, SLOT(about()));
 
   aboutQtAct = new QAction(tr("About &Qt"), this);
   aboutQtAct->setStatusTip(tr("Show the Qt library's About box"));
   connect(aboutQtAct, SIGNAL(triggered()), qApp, SLOT(aboutQt()));
-  
+
   nextAct = new QAction(QIcon(":/images/nextTab.png"), tr("Forward"), this);
   nextAct->setStatusTip(tr("Change to the next open document"));
   nextAct->setShortcut(tr("Alt+Right"));
   connect(nextAct, SIGNAL(triggered()), this, SLOT(nextDoc()));
-  
+
   prevAct = new QAction(QIcon(":/images/prevTab.png"), tr("Back"), this);
   prevAct->setStatusTip(tr("Change to the previous open document"));
   prevAct->setShortcut(tr("Alt+Left"));
@@ -100,7 +100,7 @@ void MainWindow::createActions() {
 
   cutAct->setEnabled(false);
   copyAct->setEnabled(false);
-  
+
   convertEndings = new QAction(tr("&Convert Line End Characters"), this);
   connect(convertEndings, SIGNAL(triggered()), this, SLOT(convertEols()));
   lineEndCr = new QAction(tr("&CR (old Macintosh)"), this);
@@ -112,7 +112,7 @@ void MainWindow::createActions() {
   lineEndCrLf = new QAction(tr("CR &+ LF (Windows)"), this);
   lineEndCrLf->setCheckable(true);
   connect(lineEndCrLf, SIGNAL(triggered()), this, SLOT(setEolCrLf()));
-  
+
   lineEnds = new QActionGroup(this);
   lineEnds->addAction(lineEndCr);
   lineEnds->addAction(lineEndLf);
@@ -122,17 +122,17 @@ void MainWindow::createActions() {
   showLineEndsAct = new QAction(tr("&Show End of Line"), this);
   showLineEndsAct->setCheckable(true);
   connect(showLineEndsAct, SIGNAL(toggled(bool)), this, SLOT(setEolVisibility(bool)));
-  
+
   convertIndentAct = new QAction(tr("Convert &Indentation..."), this);
   connect(convertIndentAct, SIGNAL(triggered()), this, SLOT(convertIndentation()));
-  
+
   codeFoldingAct = new QAction(tr("Use Code Folding"), this);
   codeFoldingAct->setCheckable(true);
   connect(codeFoldingAct, SIGNAL(triggered()), this, SLOT(toggleFolding()));
-  
+
   findTextAct = new QAction(tr("&Find..."), this);
   connect(findTextAct, SIGNAL(triggered()), this, SLOT(showFindDialog()));
-  
+
   newWindowAct = new QAction(QIcon(":/images/newwindow.png"), tr("&New Window"), this);
   connect(newWindowAct, SIGNAL(triggered()), this, SLOT(newWindow()));
 }
@@ -162,7 +162,7 @@ void MainWindow::createMenus() {
   editMenu->addAction(findTextAct);
   editMenu->addSeparator();
   editMenu->addAction(prefsAct);
-  
+
   viewMenu = menuBar()->addMenu(tr("&View"));
   viewMenu->addAction(textDisplayAct);
 	viewMenu->addAction(fontAct);
@@ -170,7 +170,7 @@ void MainWindow::createMenus() {
   viewMenu->addSeparator();
   viewMenu->addAction(showLineEndsAct);
   viewMenu->addAction(codeFoldingAct);
-  
+
   optionsMenu = menuBar()->addMenu(tr("&Options"));
   lineEndMenu = optionsMenu->addMenu(tr("&Line Endings"));
   lineEndMenu->addAction(lineEndLf);
@@ -183,11 +183,11 @@ void MainWindow::createMenus() {
 
   windowMenu = menuBar()->addMenu(tr("&Window"));
   windowMenu->addAction(newWindowAct);
-  
+
   helpMenu = menuBar()->addMenu(tr("&Help"));
   helpMenu->addAction(aboutAct);
   helpMenu->addAction(aboutQtAct);
-  
+
   for (int i = 0; i < recentFiles.size(); ++i) {
   	if (recentFiles[i].exists() && recentFiles[i].isFile()) {
   		recentMenu->addAction( recentFiles[i].fileName() )->setStatusTip( recentFiles[i].filePath() );
@@ -195,7 +195,7 @@ void MainWindow::createMenus() {
   		recentFiles.removeAt(i--);
   	}
   }
-  
+
   recentMenu->menuAction()->setEnabled(!recentFiles.empty());
   connect(recentMenu, SIGNAL(triggered(QAction *)), this, SLOT(openRecent(QAction *)));
 }
