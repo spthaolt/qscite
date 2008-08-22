@@ -222,27 +222,24 @@ void QTerminal::keyPressEvent(QKeyEvent * event) {
   //shell->write(event->text().toAscii().data(), event->text().length());
   if (event->key() == Qt::Key_Up) {
     write(fdMaster, "\x1b\x5b\x41", 3);
-    event->accept();
   } else if (event->key() == Qt::Key_Down) {
     write(fdMaster, "\x1b\x5b\x42", 3);
-    event->accept();
     // FIXME: make sure left and right arrows work
   } else if (event->key() == Qt::Key_Right) {
     write(fdMaster, "\x1b\x5b\x43", 3);
     //this->moveCursor(QTextCursor::Right, QTextCursor::KeepAnchor);
-    event->accept();
   } else if (event->key() == Qt::Key_Left) {
     write(fdMaster, "\x1b\x5b\x44", 3);
     //this->moveCursor(QTextCursor::Left, QTextCursor::KeepAnchor);
-    event->accept();
   } else {
     write(fdMaster, event->text().toAscii().data(), event->text().length());
-    event->accept();
   }
+
+  event->accept();
 }
 
-void QTerminal::keyReleaseEvent(QKeyEvent * evt) {
-  evt->accept();
+void QTerminal::keyReleaseEvent(QKeyEvent * event) {
+  event->accept();
 }
 
 void QTerminal::eraseDisplay(int arg) {
@@ -286,7 +283,16 @@ void QTerminal::insertFromMimeData(const QMimeData* data) {
 }
 
 void QTerminal::changeDir(const QString & dir) {
-	/* Hope we are talking to a prompt and not a text editor */
+	/* Ben: Hope we are talking to a prompt and not a text editor */
+	/* Jared: Well, since our terminal probably can't support much more
+	 *        than a simple line editor anyway... */
+	/* FIXME: When we start the terminal, we need to make sure to record the PID...
+	 *        then when we get to the current section of code, we need to check
+	 *        the process table to see if there are any processes running with the
+	 *        PPID matching our recorded PPID.   Or at least that should prove
+	 *        effective in most cases (i.e., the user hasn't backgrounded a child
+	 *        process).
+	 */
 	write(fdMaster, "cd ", 3);
 	write(fdMaster, dir.toAscii().data(), dir.length());
 	write(fdMaster, "\n", 1);
