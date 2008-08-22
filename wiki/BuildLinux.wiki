@@ -23,7 +23,7 @@ http://www.trolltech.com/download?target=ftp://ftp.trolltech.com/qt/source/qt-x1
 
 We've been developing QSciTE on various snapshot releases of QScintilla2.  We've verified that you can build successfully using the latest stable version, available here:
 
-http://www.riverbankcomputing.com/Downloads/QScintilla2/QScintilla-gpl-2.2.tar.gz
+http://www.riverbankcomputing.com/static/Downloads/QScintilla2/QScintilla-gpl-2.2.tar.gz
 
 = Compile Procedure =
 
