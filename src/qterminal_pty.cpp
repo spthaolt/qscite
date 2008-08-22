@@ -22,7 +22,11 @@ QTerminal::QTerminal(QWidget *parent, Qt::WindowFlags f) : QTextEdit(parent) {
   setWindowFlags(f);
   qDebug() << "Constructing QTerminal";
   savedCursor = this->textCursor();
-  setTextInteractionFlags(Qt::TextSelectableByMouse | Qt::TextSelectableByKeyboard);
+
+  // The Following line causes the tab key to change focus...
+  //setTextInteractionFlags(Qt::TextSelectableByMouse | Qt::TextSelectableByKeyboard);
+  //
+
   setTabChangesFocus(false);
   setFocusPolicy(Qt::ClickFocus);
 
