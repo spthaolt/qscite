@@ -8,54 +8,64 @@ class QMimeData;
 class FileDescriptorMonitor;
 
 class QTerminal : public QTextEdit {
-	Q_OBJECT
-public:
-	QTerminal(QWidget * parent = 0, Qt::WindowFlags f = 0);
-	~QTerminal();
 
-public slots:
-	void changeDir(const QString & dir);
+    Q_OBJECT
+  
+  public:
+    QTerminal(QWidget * parent = 0, Qt::WindowFlags f = 0);
+    ~QTerminal();
 
-signals:
-	void shellExited();
+  public slots:
+    void changeDir(const QString & dir);
 
-protected:
-	void insertFromMimeData(const QMimeData * data);
-	void keyPressEvent(QKeyEvent * event);
-	void keyReleaseEvent(QKeyEvent * event);
+  signals:
+    void shellExited();
 
-private slots:
-	void readOutput();
-private:
-	int shellPid;
-	int fdMaster;
-	FileDescriptorMonitor * watcher;
-	// We need to know where our original
-	QTextCursor savedCursor;
-	bool isCsiTerminator(char c);
-	bool isOscTerminator(char c, char & d);
-	void handleEscape();
-	void handleControlSeq();
-	void handleOSCommand();
-	void eraseDisplay(int arg);
-	void eraseInLine(int arg = 0);
-	void deleteChars(int arg = 1);
+  protected:
+    void insertFromMimeData(const QMimeData * data);
+    void keyPressEvent(QKeyEvent * event);
+    void keyReleaseEvent(QKeyEvent * event);
+
+  private slots:
+    void readOutput();
+
+  private:
+    int shellPid;
+    int fdMaster;
+    FileDescriptorMonitor * watcher;
+    // We need to know where our original
+    QTextCursor savedCursor;
+    bool isCsiTerminator(char c);
+    bool isOscTerminator(char c, char & d);
+    void handleEscape();
+    void handleControlSeq();
+    void handleOSCommand();
+    void eraseDisplay(int arg);
+    void eraseInLine(int arg = 0);
+    void deleteChars(int arg = 1);
 };
 
 class FileDescriptorMonitor: public QThread {
-	Q_OBJECT
-public:
-	FileDescriptorMonitor(int fd, QObject * parent = 0);
-public slots:
-	void stop();
-signals:
-	void readyForRead(int fd);
-protected:
-	void run();
-private:
-	int watchedFd;
-	fd_set watchedFdSet;
-	bool shouldStop;
+
+  Q_OBJECT
+
+  public:
+    FileDescriptorMonitor(int fd, QObject * parent = 0);
+
+  public slots:
+    void stop();
+
+  signals:
+    void readyForRead(int fd);
+
+  protected:
+    void run();
+
+  private:
+    int watchedFd;
+    fd_set watchedFdSet;
+    bool shouldStop;
 };
 
 #endif /*QTERMINAL_H_*/
+/* vim: set softtabstop=2 shiftwidth=2 expandtab : */
