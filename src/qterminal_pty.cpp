@@ -22,6 +22,7 @@ QTerminal::QTerminal(QWidget *parent, Qt::WindowFlags f) : QTextEdit(parent) {
   setWindowFlags(f);
   qDebug() << "Constructing QTerminal";
   savedCursor = this->textCursor();
+  sequenceState = NoSequence;
 
   // The Following line causes the tab key to change focus...
   //setTextInteractionFlags(Qt::TextSelectableByMouse | Qt::TextSelectableByKeyboard);
@@ -41,184 +42,229 @@ QTerminal::QTerminal(QWidget *parent, Qt::WindowFlags f) : QTextEdit(parent) {
     setenv("TERM", "xterm", 1);
     /* hand off to the shell of choice */
     execl(getenv("SHELL"), getenv("SHELL"), (char *)0);
+    /* If this exec returns, we should take some action.
+     * Window systems do ugly things if two processes try
+     * to use the same resources. */
+    if (errno == ENOENT) {
+      execl("/bin/sh", "/bin/sh", (char*)0);
+    }
+    perror("QTerminal: exec");
+     // exit hard in case exit handlers mess with the window system
+     _exit(127);
+  } else if (-1 == shellPid) { // didn't fork
+    this->setText(QString("QTerminal: fork: %1\n").arg(strerror(errno)));
+  } else {
+
+    /*
+     * We will use non-blocking I/O to read from the shell
+     */
+    fcntl(fdMaster, F_SETFL, fcntl(fdMaster, F_GETFL, 0) | O_NONBLOCK);
+    qDebug() << "Shell PID " << shellPid << " on file descriptor " << fdMaster;
+
+    /*
+     * Arrange to be notified when the shell emits output
+     */
+    watcher = new FileDescriptorMonitor(fdMaster, this);
+    connect(watcher, SIGNAL(readyForRead(int)), this, SLOT(readOutput()), Qt::BlockingQueuedConnection);
+    connect(this, SIGNAL(shellExited()), watcher, SLOT(stop()));
+    watcher->start();
   }
-
-  /*
-   * We will use non-blocking I/O to read from the shell
-   */
-  fcntl(fdMaster, F_SETFL, fcntl(fdMaster, F_GETFL, 0) | O_NONBLOCK);
-  qDebug() << "Shell PID " << shellPid << " on file descriptor " << fdMaster;
-
-
-  /*
-   * Arrange to be notified when the shell emits output
-   */
-  watcher = new FileDescriptorMonitor(fdMaster, this);
-  connect(watcher, SIGNAL(readyForRead(int)), this, SLOT(readOutput()), Qt::BlockingQueuedConnection);
-  connect(this, SIGNAL(shellExited()), watcher, SLOT(stop()));
-  watcher->start();
 }
 
 QTerminal::~QTerminal() {
   watcher->stop();
   watcher->disconnect();
-  kill(shellPid, SIGHUP);
+  if (shellPid > 0) {
+    kill(shellPid, SIGHUP);
+  }
   watcher->wait();
   ::close(fdMaster);
   int kidstatus;
-  wait(&kidstatus);
+  if (shellPid > 0) {
+    waitpid(shellPid, &kidstatus, 0);
+  }
 }
 
 void QTerminal::readOutput() {
   this->setTextCursor(savedCursor);
-  char c;
-  int count = read(fdMaster, &c, 1);
-  while(count == 1) {
-    // ensure that the QTextEdit cursor keeps up with the terminal
-    this->moveCursor(QTextCursor::NoMove);
-    if (c == '\x1b') { /* escape character */
-      handleEscape();
-    } else if (c == '\r') {
-      /* ignore */
-  	} else if (c == '\x08') { /* ^H (backspace) */
-  	  this->moveCursor(QTextCursor::PreviousCharacter);
-  	} else if (c == '\a') {
-  	  QApplication::beep();
-  	} else {
-  	  if (!textCursor().atEnd()) {
-  	    textCursor().deleteChar();
-  	  }
-
-  	  this->insertPlainText(QChar(c));
-
-      // keep the GUI responsive during large terminal outputs
-      if (c == '\n') {
-        qApp->processEvents();
+  
+  char rdBuf[256];
+  ssize_t count = read(fdMaster, rdBuf, sizeof(rdBuf)/sizeof(char));
+  
+  if (0 == count || (-1 == count && errno == EIO)) { // EOF, child closed
+    watcher->stop();
+    watcher->disconnect();
+    int childStatus;
+    pid_t waitedPid = waitpid(shellPid, &childStatus, 0);
+    if (waitedPid == shellPid) {
+      shellPid = 0;
+      if (WIFEXITED(childStatus)) {
+        if(WEXITSTATUS(childStatus) == 0) {
+          emit shellExited();
+        } else {
+          this->insertPlainText(QString("%1 exited with status %2.\n").arg(waitedPid).arg(WEXITSTATUS(childStatus)));
+        }
+      } else if (WIFSIGNALED(childStatus)) {
+        this->insertPlainText(QString("%1 exited with signal %2.\n").arg(waitedPid).arg(WTERMSIG(childStatus)));
+      } else {
+        this->insertPlainText("QTerminal: Why are WIFEXITED and WIFSIGNALED both false?\n");
       }
-
-  	}
-    count = read(fdMaster, &c, 1);
+      return;
+    } else {
+      perror("QTerminal: waitpid");
+    }
   }
-  if (count == -1 && errno == EAGAIN) {
-    /* no data ready; no action necessary */
-  } else {
-    emit shellExited();
+  if ((-1 == count) && (errno != EAGAIN)) {
+    perror("QTerminal: read");
+    return;
+  }
+
+  for (char * c = rdBuf; c < rdBuf + count; ++c) {
+    switch (sequenceState) {
+      case GotEsc:
+        if (*c == '[') {
+          sequenceState = InCS;
+        } else if (*c == ']') {
+          sequenceState = InOSC;
+        } else {
+          qWarning("No Can Do ESC %c", *c);
+          sequenceState = NoSequence;
+        }
+        break;
+      case InCS:
+        if (*c >= '\x20' && *c <= '\x7e') {
+          savedSequence += *c;
+          if (*c >= '\x40') {
+            doControlSeq(savedSequence);
+            savedSequence.clear();
+            sequenceState = NoSequence;
+          }
+        } else {
+          /* ANSI says control or high-half bytes shouldn't happen
+           * inside a control sequence. ANSI didn't write every program
+           * in existence.
+           */
+          qWarning("No Can Do Esc [ %s", savedSequence.toHex().constData());
+          savedSequence.clear();
+          sequenceState = NoSequence;
+        }
+        break;
+      case InOSC:
+        savedSequence += *c;
+        if (*c  == '\x07') {
+          doOSCommand(savedSequence);
+          savedSequence.clear();
+          sequenceState = NoSequence;
+        } else if (*c == '\x1b') {
+          sequenceState = OSCHalfClosed;
+        }
+        break;
+      case OSCHalfClosed:
+        savedSequence += *c;
+        if (*c == '\\') {
+          doOSCommand(savedSequence);
+        } else {
+          qWarning("No Can Do Esc ] %s", savedSequence.toHex().constData());
+        }
+        savedSequence.clear();
+        sequenceState = NoSequence;
+        break;
+      default:
+        qWarning("QTerminal::sequenceState got set to %d", sequenceState);
+        sequenceState = NoSequence;
+        // FALL THROUGH
+      case NoSequence:
+        switch (*c) {
+          case '\x1b':
+            /* ASCII ESC. */
+            sequenceState = GotEsc;
+            break;
+          case '\r':
+            /* Ignore CR.
+             * We assume that CR will only be sent as part of a CR/LF pair,
+             * and in that case processing the LF does all we need.
+             */
+            break;
+          case '\x08':
+            /* Backspace. We assume non-destructive. */
+            this->moveCursor(QTextCursor::PreviousCharacter);
+            break;
+          case '\a':
+            /* ASCII BEL. */
+            QApplication::beep();
+            break;
+          case '\n':
+            /* Each insertPlainText() we do causes a paint event.
+             * We processEvents() at the end of each line so those
+             * paint events can be processed and the user can see
+             * something happen.
+             */
+            qApp->processEvents();
+            // FALL THROUGH
+          default:
+            if (!(this->textCursor().atEnd())) {
+              this->textCursor().deleteChar();
+            }
+            this->insertPlainText(QChar(*c));
+            break;
+        }
+        break;
+    }
   }
   savedCursor = this->textCursor();
 }
 
-void QTerminal::handleEscape() {
-  char nextChar = 0;
-  read(fdMaster, &nextChar, 1);
-  switch (nextChar) {
-    case '[': //control sequence introducer
-      handleControlSeq();
-    break;
-
-    case ']': //operating system command
-      handleOSCommand();
-    break;
-  }
-}
-
-void QTerminal::handleControlSeq() {
-  char nextChar = 0;
-  QString seq = "";
-  read(fdMaster, &nextChar, 1);
-
-  while (!isCsiTerminator(nextChar)) {
-    seq += nextChar;
-    read(fdMaster, &nextChar, 1);
-  }
-
-  switch (nextChar) {
-    case 'C': //move cursor forward one character
-      this->moveCursor(QTextCursor::Right, QTextCursor::MoveAnchor);
-    case 'J':
-      eraseDisplay(seq.toInt());
-    break;
-
-    case 'K':
-      eraseInLine(seq.toInt());
-    break;
-
-    case 'P':
-      deleteChars(seq.toInt());
-  }
-}
-
-bool QTerminal::isCsiTerminator(char c) {
-  QString chars = "@ABCDEFGHIJKLMPSTXZ`bcdfghilmnpqrstuvwxz{|";
-  QChar theChar = QChar(c);
-  // make the compiler happy
-  for (int i = 0; i < chars.length(); ++i) {
-    if (chars.at(i) == theChar) {
-      return true;
-    }
-  }
-  return false;
-}
-
-void QTerminal::handleOSCommand() {
-  char nextChar = 0;
-  char otherChar = 0;
-  QString cmd = "";
-  read(fdMaster, &nextChar, 1);
-
-  while (!isOscTerminator(nextChar, otherChar)) {
-    cmd += nextChar;
-
-    if (otherChar == 0) {
-      read(fdMaster, &nextChar, 1);
-    } else {
-      nextChar = otherChar;
-      otherChar = 0;
-    }
-  }
-
-  cmd += nextChar;
-
-  switch(nextChar) {
-    case '\x07': //ascii BEL character
-      if (cmd.at(0) == '1') {
-        QPalette palette = this->palette();
-        QString colorStr = cmd;
-        colorStr.remove(0,3);
-        colorStr.remove(colorStr.length() - 1, 1);
-
-        if (cmd.at(1) == '0') {
-          qDebug() << "setting terminal text color to " << colorStr;
-
-          if (colorStr.toLower() == "green") {
-            palette.setColor(QPalette::Text, QColor((QRgb)0x00FF00));
-          } else {
-            palette.setColor(QPalette::Text, QColor(colorStr));
-          }
-
-        } else if (cmd.at(1) == '1') {
-          qDebug() << "setting terminal background color to " << colorStr;
-          palette.setColor(QPalette::Base, QColor(colorStr));
-        }
-
-        this->setPalette(palette);
+void QTerminal::doControlSeq(const QByteArray & seq) {
+  switch (seq.right(1).at(0)) {
+    case 'C':
+      if (this->textCursor().atEnd()) {
+        this->insertPlainText(" ");
+      } else {
+        this->moveCursor(QTextCursor::Right, QTextCursor::MoveAnchor);
       }
-    break;
+      break;
+    case 'J':
+      eraseDisplay(seq.left(seq.length() - 1).toInt());
+      /* Perl would parse the number at the beginning of the string :-P */
+      break;
+    case 'K':
+      eraseInLine(seq.left(seq.length() - 1).toInt());
+      break;
+    case 'P':
+      deleteChars(seq.left(seq.length() - 1).toInt());
+      break;
+    default:
+      qDebug("No Can Do ESC [ %s", seq.constData());
+      break;
   }
 }
 
-bool QTerminal::isOscTerminator(char c, char & d) {
-  if (c == '\x1b') {
-    read(fdMaster, &d, 1);
-    if (d == '\\') {
-      return true;
-    } else {
-      return false;
-    }
-  } else if (c == '\x07'){
-    return true;
+void QTerminal::doOSCommand(const QByteArray & cmd) {
+  int termLength = (cmd.endsWith("\x1b\\") ? 2 : 1);
+  int firstParam = cmd.left(cmd.indexOf(';')).toInt();
+  QByteArray textParam = cmd.left(cmd.length() - termLength).mid(cmd.indexOf(';') + 1);
+  QPalette activePalette = this->palette();
+  /* TODO: XTerm technically allows a series of ;-separated color specifications,
+   * with subsequent colors being assigned to subsequent slots.
+   * The old code didn't try, and this doesn't try yet.
+   */
+  switch (firstParam) {
+    case 10:
+      /* Qt displays "green" as #008000. Anyone using it as a text color
+       * probably has a dark background and wants the traditional X11 #00FF00.
+       */
+      activePalette.setColor(QPalette::Text,
+          (textParam.toLower() == "green") ? QColor(0x00FF00) : QColor(textParam.constData()));
+      this->setPalette(activePalette);
+      break;
+    case 11:
+      activePalette.setColor(QPalette::Text, QColor(textParam.constData()));
+      this->setPalette(activePalette);
+      break;
+    default:
+      qDebug("No Can Do ESC ] %s", cmd.toHex().constData());
+      break;
   }
-
-  return false;
 }
 
 void QTerminal::keyPressEvent(QKeyEvent * event) {
@@ -282,53 +328,55 @@ void QTerminal::deleteChars(int arg) {
 }
 
 void QTerminal::insertFromMimeData(const QMimeData* data) {
-	QString s = data->text();
-	write(fdMaster, s.toAscii().data(), s.length());
+  QString s = data->text();
+  write(fdMaster, s.toAscii().data(), s.length());
 }
 
 void QTerminal::changeDir(const QString & dir) {
-	/* Ben: Hope we are talking to a prompt and not a text editor */
-	/* Jared: Well, since our terminal probably can't support much more
-	 *        than a simple line editor anyway... */
-	/* FIXME: When we start the terminal, we need to make sure to record the PID...
-	 *        then when we get to the current section of code, we need to check
-	 *        the process table to see if there are any processes running with the
-	 *        PPID matching our recorded PPID.   Or at least that should prove
-	 *        effective in most cases (i.e., the user hasn't backgrounded a child
-	 *        process).
-	 */
-	write(fdMaster, "cd ", 3);
-	write(fdMaster, dir.toAscii().data(), dir.length());
-	write(fdMaster, "\n", 1);
+  /* Ben: Hope we are talking to a prompt and not a text editor */
+  /* Jared: Well, since our terminal probably can't support much more
+   *        than a simple line editor anyway... */
+  /* FIXME: When we start the terminal, we need to make sure to record the PID...
+   *        then when we get to the current section of code, we need to check
+   *        the process table to see if there are any processes running with the
+   *        PPID matching our recorded PPID.   Or at least that should prove
+   *        effective in most cases (i.e., the user hasn't backgrounded a child
+   *        process).
+   */
+  write(fdMaster, "cd ", 3);
+  write(fdMaster, dir.toAscii().data(), dir.length());
+  write(fdMaster, "\n", 1);
 }
 
 FileDescriptorMonitor::FileDescriptorMonitor(int fd, QObject * parent) :
-	QThread(parent), watchedFd(fd)
+  QThread(parent), watchedFd(fd)
 {
-	FD_ZERO(&watchedFdSet);
-	FD_SET(watchedFd, &watchedFdSet);
+  FD_ZERO(&watchedFdSet);
+  FD_SET(watchedFd, &watchedFdSet);
 }
 
 void FileDescriptorMonitor::run() {
-	shouldStop = false;
-	fd_set workingFdSet;
-	timeval pollInterval = {1, 0}; // 1 sec
-	timeval workingPollInterval = pollInterval;
-	while (!shouldStop) {
-		workingFdSet = watchedFdSet;
-		int rval = select(watchedFd + 1, &workingFdSet, NULL, NULL, &workingPollInterval);
-		workingPollInterval = pollInterval;
-		if (rval != -1 && FD_ISSET(watchedFd, &workingFdSet)) {
-		 	//qDebug() << "readyForRead()";
-			emit readyForRead(watchedFd);
-		} else {
-			//qDebug() << "select() timeout";
-		}
-	}
+  shouldStop = false;
+  fd_set workingFdSet;
+  timeval pollInterval = {1, 0}; // 1 sec
+  timeval workingPollInterval = pollInterval;
+  while (!shouldStop) {
+    workingFdSet = watchedFdSet;
+    int rval = select(watchedFd + 1, &workingFdSet, NULL, NULL, &workingPollInterval);
+    workingPollInterval = pollInterval;
+    if (rval != -1 && FD_ISSET(watchedFd, &workingFdSet)) {
+       //qDebug() << "readyForRead()";
+      emit readyForRead(watchedFd);
+    } else {
+      //qDebug() << "select() timeout";
+    }
+  }
 
-	qDebug() << "FileDescriptorMonitor exiting";
+  qDebug() << "FileDescriptorMonitor exiting";
 }
 
 void FileDescriptorMonitor::stop() {
-	shouldStop = true;
+  shouldStop = true;
 }
+
+/* vim: set softtabstop=2 shiftwidth=2 expandtab : */

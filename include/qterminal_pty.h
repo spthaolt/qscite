@@ -30,16 +30,16 @@ class QTerminal : public QTextEdit {
     void readOutput();
 
   private:
+    enum { NoSequence, GotEsc, InCS, InOSC, OSCHalfClosed } sequenceState;
+    QByteArray savedSequence;
     int shellPid;
     int fdMaster;
     FileDescriptorMonitor * watcher;
-    // We need to know where our original
+    // We need to keep track of the "official" cursor
+    // if the user moves the QTextEdit cursor.
     QTextCursor savedCursor;
-    bool isCsiTerminator(char c);
-    bool isOscTerminator(char c, char & d);
-    void handleEscape();
-    void handleControlSeq();
-    void handleOSCommand();
+    void doControlSeq(const QByteArray & seq);
+    void doOSCommand(const QByteArray & cmd);
     void eraseDisplay(int arg);
     void eraseInLine(int arg = 0);
     void deleteChars(int arg = 1);
