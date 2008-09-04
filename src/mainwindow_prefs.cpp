@@ -27,11 +27,11 @@ void MainWindow::readSettings() {
 	QSize size = settings.value("size", QSize(400, 400)).toSize();
 	resize(size);
 	move(pos);
-	
+
 	if (settings.value("maximized", false).toBool()) {
 		setWindowState(windowState() | Qt::WindowMaximized);
 	}
-	
+
 	for (int i = 0, j = settings.beginReadArray("recentFiles"); i < j; ++i) {
 		settings.setArrayIndex(i);
 		QFileInfo curFile(settings.value("info").toString());
@@ -39,17 +39,17 @@ void MainWindow::readSettings() {
 			recentFiles.push_back(curFile);
 		}
 	}
-	
+
 	settings.endArray();
 	lastDir = settings.value("lastDir", QDir::homePath()).toString();
-	
+
 	setWindowOpacity(QSettings().value("wndOpacity", 1.0).toDouble());
 
 }
 
 void MainWindow::writeSettings() {
   QSettings settings;
-  
+
   if (settings.value("saveWindowGeometry", false).toBool()) {
     if (isMaximized()) {
       settings.setValue("maximized", true);
@@ -59,7 +59,7 @@ void MainWindow::writeSettings() {
 	  settings.setValue("maximized", false);
     }
   }
-  
+
   if (settings.value("recentFileCount", 0).toInt() > 0) {
     settings.beginWriteArray("recentFiles");
     for (int i = 0; i < recentFiles.size(); ++i) {
@@ -72,7 +72,7 @@ void MainWindow::writeSettings() {
     }
     settings.endArray();
   }
-  
+
   settings.setValue("lastDir", lastDir);
 }
 
@@ -82,7 +82,7 @@ void MainWindow::globalPrefs() {
 	connect(dlgPrefs, SIGNAL(accepted()), this, SLOT(prefsWereChanged()), Qt::QueuedConnection);
 	connect(dlgPrefs, SIGNAL(prefsWereReset()), this, SLOT(prefsWereChanged()));
 	connect(dlgPrefs, SIGNAL(finished(int)), this, SLOT(reapPrefs()));
-	
+
 	dlgPrefs->show();
 }
 
@@ -112,10 +112,14 @@ void MainWindow::textDisplay() {
 			Qt::Tool
 #endif
 		);
-		
+
 		connect(textSettingsWidget, SIGNAL(destroyed()), this, SLOT(textDisplayDeleted()));
 		connect(tabWidget, SIGNAL(currentChanged(int)), textSettingsWidget, SLOT(populate()));
-		
+
+		// move the dialog to the center of the window before making it visible
+		int x = this->pos().x() + (this->width() / 2) - (textSettingsWidget->width() / 2);
+		int y = this->pos().y() + (this->height() / 2) - (textSettingsWidget->height() / 2);
+    textSettingsWidget->move(x, y);
 		textSettingsWidget->show();
 	} else {
 		textSettingsWidget->close();
