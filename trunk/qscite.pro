@@ -43,19 +43,18 @@ FORMS         = dlgPrefsUI.ui \
 RESOURCES     = qscite.qrc
 
 unix {
+  HEADERS += qterminal_pty.h
+  SOURCES += qterminal_pty.cpp
+  
   !macx {
     LIBS    += -lqscintilla2 \
                -lutil
     DEFINES += QSCITE_MONO_FAMILY='\\"Monospace\\"'
+  } else {
+    TARGET   = QSciTE
+    LIBS    += -framework qscintilla2
+    DEFINES += QSCITE_MONO_FAMILY='\\"Monaco\\"'
   }
-  HEADERS += qterminal_pty.h
-  SOURCES += qterminal_pty.cpp
-}
-
-macx {
-  TARGET   = QSciTE
-  LIBS    += -framework qscintilla2
-  DEFINES += QSCITE_MONO_FAMILY='\\"Monaco\\"'
 }
 
 win32 {
