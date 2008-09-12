@@ -216,6 +216,9 @@ void QTerminal::readOutput() {
 
 void QTerminal::doControlSeq(const QByteArray & seq) {
   switch (seq.right(1).at(0)) {
+    case '@':
+      this->insertPlainText(QString().fill(' ', seq.left(seq.length() - 1).toInt()));
+      break;
     case 'C':
       if (this->textCursor().atEnd()) {
         this->insertPlainText(" ");
