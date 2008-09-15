@@ -30,6 +30,7 @@ class QTerminal : public QTextEdit {
     void readOutput();
 
   private:
+    bool insertMode;
     enum { NoSequence, GotEsc, InCS, InOSC, OSCHalfClosed } sequenceState;
     QByteArray savedSequence;
     int shellPid;

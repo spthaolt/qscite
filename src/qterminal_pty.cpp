@@ -23,6 +23,7 @@ QTerminal::QTerminal(QWidget *parent, Qt::WindowFlags f) : QTextEdit(parent) {
   qDebug() << "Constructing QTerminal";
   savedCursor = this->textCursor();
   sequenceState = NoSequence;
+  insertMode = false;
 
   // The Following line causes the tab key to change focus...
   //setTextInteractionFlags(Qt::TextSelectableByMouse | Qt::TextSelectableByKeyboard);
@@ -202,7 +203,7 @@ void QTerminal::readOutput() {
             qApp->processEvents();
             // FALL THROUGH
           default:
-            if (!(this->textCursor().atEnd())) {
+            if (!(this->textCursor().atEnd()) && !insertMode) {
               this->textCursor().deleteChar();
             }
             this->insertPlainText(QChar(*c));
@@ -235,6 +236,20 @@ void QTerminal::doControlSeq(const QByteArray & seq) {
       break;
     case 'P':
       deleteChars(seq.left(seq.length() - 1).toInt());
+      break;
+    case 'h':
+      if (seq.left(seq.length() -1).toInt() == 4) {
+        insertMode = true;
+      } else {
+        qDebug("No Can Do ESC [ %s", seq.constData());
+      }
+      break;
+    case 'l':
+      if (seq.left(seq.length() -1).toInt() == 4) {
+        insertMode = false;
+      } else {
+        qDebug("No Can Do ESC [ %s", seq.constData());
+      }
       break;
     default:
       qDebug("No Can Do ESC [ %s", seq.constData());
