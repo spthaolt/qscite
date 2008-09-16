@@ -29,8 +29,8 @@ QTerminal::QTerminal(QWidget *parent, Qt::WindowFlags f) : QTextEdit(parent) {
   //setTextInteractionFlags(Qt::TextSelectableByMouse | Qt::TextSelectableByKeyboard);
   //
 
-  setTabChangesFocus(false);
-  setFocusPolicy(Qt::ClickFocus);
+  //setTabChangesFocus(false);
+  //setFocusPolicy(Qt::ClickFocus);
 
   /*
    * Launch a shell connected to the current process by a PTY
@@ -178,6 +178,10 @@ void QTerminal::readOutput() {
         switch (*c) {
           case '\x1b':
             /* ASCII ESC. */
+            if (!savedSequence.isEmpty()) {
+              this->insertPlainText(savedSequence);
+              savedSequence.clear();
+            }
             sequenceState = GotEsc;
             break;
           case '\r':
@@ -188,29 +192,39 @@ void QTerminal::readOutput() {
             break;
           case '\x08':
             /* Backspace. We assume non-destructive. */
+            if (!savedSequence.isEmpty()) {
+              this->insertPlainText(savedSequence);
+              savedSequence.clear();
+            }
             this->moveCursor(QTextCursor::PreviousCharacter);
             break;
           case '\a':
             /* ASCII BEL. */
             QApplication::beep();
             break;
-          case '\n':
+          // case '\n':
             /* Each insertPlainText() we do causes a paint event.
              * We processEvents() at the end of each line so those
              * paint events can be processed and the user can see
              * something happen.
              */
-            qApp->processEvents();
+            // qApp->processEvents();
             // FALL THROUGH
           default:
             if (!(this->textCursor().atEnd()) && !insertMode) {
               this->textCursor().deleteChar();
+              this->insertPlainText(QChar(*c));
+            } else {
+              savedSequence += *c;
             }
-            this->insertPlainText(QChar(*c));
             break;
         }
         break;
     }
+  }
+  if (sequenceState == NoSequence && !savedSequence.isEmpty()) {
+    this->insertPlainText(savedSequence);
+    savedSequence.clear();
   }
   savedCursor = this->textCursor();
 }
@@ -303,10 +317,6 @@ void QTerminal::keyPressEvent(QKeyEvent * event) {
     write(fdMaster, event->text().toAscii().data(), event->text().length());
   }
 
-  event->accept();
-}
-
-void QTerminal::keyReleaseEvent(QKeyEvent * event) {
   event->accept();
 }
 
