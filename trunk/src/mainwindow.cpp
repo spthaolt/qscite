@@ -78,9 +78,11 @@ MainWindow::MainWindow(QStringList & _argv, Launcher * _launcher) :
   //accept drag and drop events, handled in dropEvent()
   setAcceptDrops(true);
   
-  for (int i = 0; i < argv.size(); ++i) {
+//  for (int i = 0; i < argv.size(); ++i) {
+  while (!argv.isEmpty()) {
+  qDebug() << "argv.front() is " << argv.front();
     if (!argv.front().isEmpty()) {
-      loadFile(argv.front());
+      setupDocument(argv.front());
     }
     
     argv.pop_front();
