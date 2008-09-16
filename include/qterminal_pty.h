@@ -24,7 +24,6 @@ class QTerminal : public QTextEdit {
   protected:
     void insertFromMimeData(const QMimeData * data);
     void keyPressEvent(QKeyEvent * event);
-    void keyReleaseEvent(QKeyEvent * event);
 
   private slots:
     void readOutput();
