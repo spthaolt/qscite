@@ -185,10 +185,15 @@ void QTerminal::readOutput() {
             sequenceState = GotEsc;
             break;
           case '\r':
-            /* Ignore CR.
-             * We assume that CR will only be sent as part of a CR/LF pair,
-             * and in that case processing the LF does all we need.
-             */
+            if (!savedSequence.isEmpty()) {
+              this->insertPlainText(savedSequence);
+              savedSequence.clear();
+            }
+            {
+              QTextCursor cursor = this->textCursor();
+              cursor.movePosition(QTextCursor::StartOfBlock, QTextCursor::MoveAnchor);
+              this->setTextCursor(cursor);
+            }
             break;
           case '\x08':
             /* Backspace. We assume non-destructive. */
@@ -202,14 +207,30 @@ void QTerminal::readOutput() {
             /* ASCII BEL. */
             QApplication::beep();
             break;
-          // case '\n':
-            /* Each insertPlainText() we do causes a paint event.
-             * We processEvents() at the end of each line so those
-             * paint events can be processed and the user can see
-             * something happen.
-             */
-            // qApp->processEvents();
-            // FALL THROUGH
+          case '\n':
+            if (!savedSequence.isEmpty()) {
+              this->insertPlainText(savedSequence);
+              savedSequence.clear();
+            }
+            {
+              QTextCursor csr = this->textCursor();
+              QTextCursor tcStart = this->textCursor();
+              tcStart.movePosition(QTextCursor::StartOfBlock);
+              int col = csr.position() - tcStart.position();
+              if (!csr.movePosition(QTextCursor::NextBlock)) {
+                csr.movePosition(QTextCursor::EndOfBlock);
+                csr.insertText(QString("\n") + QString().fill(' ', col));
+              } else {
+                if (!csr.movePosition(QTextCursor::Right, QTextCursor::MoveAnchor, col)) {
+                  tcStart = csr;
+                  tcStart.movePosition(QTextCursor::StartOfBlock);
+                  int curCol = csr.position() - tcStart.position();
+                  csr.insertText(QString().fill(' ', col - curCol));
+                }
+              }
+              this->setTextCursor(csr);
+            }
+            break;
           default:
             if (!(this->textCursor().atEnd()) && !insertMode) {
               this->textCursor().deleteChar();
@@ -227,6 +248,7 @@ void QTerminal::readOutput() {
     savedSequence.clear();
   }
   savedCursor = this->textCursor();
+  ensureCursorVisible();
 }
 
 void QTerminal::doControlSeq(const QByteArray & seq) {
@@ -235,10 +257,19 @@ void QTerminal::doControlSeq(const QByteArray & seq) {
       this->insertPlainText(QString().fill(' ', seq.left(seq.length() - 1).toInt()));
       break;
     case 'C':
-      if (this->textCursor().atEnd()) {
-        this->insertPlainText(" ");
-      } else {
-        this->moveCursor(QTextCursor::Right, QTextCursor::MoveAnchor);
+      for (int i = 0; i < seq.left(seq.length() - 1).toInt(); ++i) {
+        if (this->textCursor().atEnd()) {
+          this->insertPlainText(" ");
+        } else {
+          this->moveCursor(QTextCursor::Right, QTextCursor::MoveAnchor);
+        }
+      }
+      break;
+    case 'D':
+      {
+        QTextCursor cursor = this->textCursor();
+        cursor.movePosition(QTextCursor::Left, QTextCursor::MoveAnchor,
+            seq.left(seq.length() - 1).toInt());
       }
       break;
     case 'J':
