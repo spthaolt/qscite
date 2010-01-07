@@ -35,7 +35,7 @@ class QTerminal;
 class TextDisplayPanel;
 class QStringList;
 class QActionGroup;
-class dlgFindText;
+class dlgFindReplace;
 
 struct FileData {
 
@@ -104,7 +104,8 @@ private slots:
     void convertIndentation();
     void toggleFolding();
     void showFindDialog();
-    void findDialogClosed();
+    void showReplaceDialog();
+    void replaceDialogClosed();
     void newWindow();
     
     /* Internal slots */
@@ -151,7 +152,7 @@ private:
     TextDisplayPanel * textSettingsWidget;
     QMenu * trayIconMenu;
     QString lastDir;
-    dlgFindText * findDialog;
+    dlgFindReplace * replaceDialog;
     
     bool copyFromTerm;
     bool termInDrawer;
@@ -204,6 +205,7 @@ private:
     QAction * convertIndentAct;
     QAction * codeFoldingAct;
     QAction * findTextAct;
+    QAction * replaceTextAct;
     QAction * newWindowAct;
 };
 
