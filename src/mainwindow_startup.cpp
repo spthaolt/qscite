@@ -131,6 +131,7 @@ void MainWindow::createActions() {
   connect(codeFoldingAct, SIGNAL(triggered()), this, SLOT(toggleFolding()));
 
   findTextAct = new QAction(tr("&Find..."), this);
+  findTextAct->setShortcut(tr("Ctrl+F"));
   connect(findTextAct, SIGNAL(triggered()), this, SLOT(showFindDialog()));
 
   newWindowAct = new QAction(QIcon(":/images/newwindow.png"), tr("&New Window"), this);
