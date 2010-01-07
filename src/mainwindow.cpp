@@ -47,7 +47,7 @@ MainWindow::MainWindow(QStringList & _argv, Launcher * _launcher) :
   termInDrawer(QSettings().value("terminalInDrawer", false).toBool()),
   curDocIdx(0),
   launcher(_launcher),
-  findDialog(NULL)
+  replaceDialog(NULL)
 {
   this->setUnifiedTitleAndToolBarOnMac(true);
   this->setAttribute(Qt::WA_DeleteOnClose);

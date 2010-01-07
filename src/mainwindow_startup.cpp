@@ -134,6 +134,10 @@ void MainWindow::createActions() {
   findTextAct = new QAction(tr("&Find..."), this);
   findTextAct->setShortcut(tr("Ctrl+F"));
   connect(findTextAct, SIGNAL(triggered()), this, SLOT(showFindDialog()));
+  
+  replaceTextAct = new QAction(tr("Replace..."), this);
+  replaceTextAct->setShortcut(tr("Ctrl+H"));
+  connect(replaceTextAct, SIGNAL(triggered()), this, SLOT(showReplaceDialog()));
 
   newWindowAct = new QAction(QIcon(":/images/newwindow.png"), tr("&New Window"), this);
   connect(newWindowAct, SIGNAL(triggered()), this, SLOT(newWindow()));
@@ -172,6 +176,7 @@ void MainWindow::createMenus() {
   editMenu->addAction(pasteAct);
   editMenu->addSeparator();
   editMenu->addAction(findTextAct);
+  editMenu->addAction(replaceTextAct);
   editMenu->addSeparator();
   editMenu->addAction(prefsAct);
 

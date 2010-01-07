@@ -19,7 +19,7 @@ HEADERS       = mainwindow.h \
                 lexer_utils.h \
                 prefs.h \
                 textdisplay.h \
-                findtext.h \
+                findreplace.h \
                 launcher.h
 
 SOURCES       = main.cpp \
@@ -32,13 +32,13 @@ SOURCES       = main.cpp \
                 prefs.cpp \
                 textdisplay.cpp \
                 reindent.cpp \
-                findtext.cpp \
+                findreplace.cpp \
                 launcher.cpp
 
 FORMS         = dlgPrefsUI.ui \
                 frmTextDisplay.ui \
                 dlgConvertIndent.ui \
-                dlgFindText.ui
+                dlgFindReplace.ui
 
 RESOURCES     = qscite.qrc
 

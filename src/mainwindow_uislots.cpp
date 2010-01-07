@@ -9,7 +9,7 @@
 #include "lexer_utils.h"
 #include "prefs.h"
 #include "textdisplay.h"
-#include "findtext.h"
+#include "findreplace.h"
 
 #ifdef _WIN32
   #include "qterminal.h"
@@ -308,31 +308,37 @@ void MainWindow::toggleFolding() {
 }
 
 /**
- * Function to call when the findDialog is closed.
+ * Creates a Find Dialog and displays it
  */
-void MainWindow::findDialogClosed() {
-  qDebug() << "dialog closed";
-  findDialog = NULL;
+void MainWindow::showFindDialog() {
+  showReplaceDialog();
+  replaceDialog->setFind();
+}
+
+/**
+ * Function to call when replace dialog is closed.
+ */
+void MainWindow::replaceDialogClosed() {
+  qDebug() << "replace dialog closed";
+  replaceDialog = NULL;
   this->activateWindow();
 }
 
 /**
- * Creates a Find Dialog and displays it
+ * Creates a Replace Dialog and displays it.
  */
-void MainWindow::showFindDialog() {
-  qDebug() << "show find dialog";
-  if( findDialog == NULL ) {
-    qDebug() << "creating find dialog";
-    findDialog = new dlgFindText(this);
-    //make sure that we call findDialogClosed() when Find Dialog is closed.
-    connect(findDialog, SIGNAL(destroyed()), this, SLOT(findDialogClosed()));
-    //make sure that find dialog is closed if QScite is closed.
-    connect(this, SIGNAL(destroyed()), findDialog, SLOT(close()));
-} else {
-    //make the dialog show up if it is already open.
-    qDebug() << "raising find dialog";
-    findDialog->activateWindow();
-    findDialog->raise();
+void MainWindow::showReplaceDialog() {
+  if( replaceDialog == NULL ) {
+    qDebug() << "creating replace dialog";
+    replaceDialog = new dlgFindReplace(this);
+    //make sure that we call replaceDialogClosed() when Replace Dialog is closed.
+    connect(replaceDialog, SIGNAL(destroyed()), this, SLOT(replaceDialogClosed()));
+    //make sure that replace dialog is closed if QScite is closed.
+    connect(this, SIGNAL(destroyed()), replaceDialog, SLOT(close()));
+  } else {
+    qDebug() << "raising replace dialog";
+    replaceDialog->activateWindow();
+    replaceDialog->raise();
   }
 }
 
