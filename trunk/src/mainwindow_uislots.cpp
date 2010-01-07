@@ -297,9 +297,33 @@ void MainWindow::toggleFolding() {
   getCurDoc()->setFolding(state);
 }
 
+/**
+ * Function to call when the findDialog is closed.
+ */
+void MainWindow::findDialogClosed() {
+  qDebug() << "dialog closed";
+  findDialog = NULL;
+  this->activateWindow();
+}
+
+/**
+ * Creates a Find Dialog and displays it
+ */
 void MainWindow::showFindDialog() {
-  qDebug() << "creating find dialog";
-  dlgFindText * findTextDlg = new dlgFindText(this);
+  qDebug() << "show find dialog";
+  if( findDialog == NULL ) {
+    qDebug() << "creating find dialog";
+    findDialog = new dlgFindText(this);
+    //make sure that we call findDialogClosed() when Find Dialog is closed.
+    connect(findDialog, SIGNAL(destroyed()), this, SLOT(findDialogClosed()));
+    //make sure that find dialog is closed if QScite is closed.
+    connect(this, SIGNAL(destroyed()), findDialog, SLOT(close()));
+} else {
+    //make the dialog show up if it is already open.
+    qDebug() << "raising find dialog";
+    findDialog->activateWindow();
+    findDialog->raise();
+  }
 }
 
 void MainWindow::newWindow() {

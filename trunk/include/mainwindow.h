@@ -103,6 +103,7 @@ private slots:
     void convertIndentation();
     void toggleFolding();
     void showFindDialog();
+    void findDialogClosed();
     void newWindow();
     
     /* Internal slots */
@@ -149,6 +150,7 @@ private:
     TextDisplayPanel * textSettingsWidget;
     QMenu * trayIconMenu;
     QString lastDir;
+    dlgFindText * findDialog;
     
     bool copyFromTerm;
     bool termInDrawer;
