@@ -1,6 +1,7 @@
 #include <QtGui>
 #include <Qsci/qsciscintilla.h>
 #include "mainwindow.h"
+#include "lexer_utils.h"
 
 void MainWindow::createActions() {
   newAct = new QAction(QIcon(":/images/filenew.png"), tr("&New"), this);
@@ -136,17 +137,27 @@ void MainWindow::createActions() {
 
   newWindowAct = new QAction(QIcon(":/images/newwindow.png"), tr("&New Window"), this);
   connect(newWindowAct, SIGNAL(triggered()), this, SLOT(newWindow()));
+
+  lexers = new QActionGroup(this);
+  for (int i = 0; !supportedLexers[i].isEmpty(); ++i) {
+    QAction * tmp = new QAction(tr(supportedLexers[i].toStdString().c_str()), this);
+    tmp->setCheckable(true);
+    connect(tmp, SIGNAL(triggered()), this, SLOT(setLexer()));
+    lexers->addAction(tmp);
+    //todo: add connections for signal/slot
+  }
+  
 }
 
 void MainWindow::createMenus() {
   fileMenu = menuBar()->addMenu(tr("&File"));
   fileMenu->addAction(newAct);
- 	fileMenu->addSeparator();
+  fileMenu->addSeparator();
   fileMenu->addAction(openAct);
   recentMenu = fileMenu->addMenu(tr("Open &Recent"));
   recentMenu->setIcon(QIcon(":/images/fileopen.png"));
   fileMenu->addAction(closeAct);
- 	fileMenu->addSeparator();
+  fileMenu->addSeparator();
   fileMenu->addAction(saveAct);
   fileMenu->addAction(saveAsAct);
   fileMenu->addSeparator();
@@ -166,12 +177,17 @@ void MainWindow::createMenus() {
 
   viewMenu = menuBar()->addMenu(tr("&View"));
   viewMenu->addAction(textDisplayAct);
-	viewMenu->addAction(fontAct);
+  viewMenu->addAction(fontAct);
   viewMenu->addAction(terminalAct);
   viewMenu->addSeparator();
   viewMenu->addAction(showLineEndsAct);
   viewMenu->addAction(codeFoldingAct);
-
+  lexerMenu = viewMenu->addMenu(tr("Lexer"));
+  QList<QAction *> * lexerList = &lexers->actions();
+  for (int i = 0; i < lexerList->size(); ++i) {
+    lexerMenu->addAction(lexerList->at(i));
+  }
+  
   optionsMenu = menuBar()->addMenu(tr("&Options"));
   lineEndMenu = optionsMenu->addMenu(tr("&Line Endings"));
   lineEndMenu->addAction(lineEndLf);

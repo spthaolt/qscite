@@ -98,6 +98,7 @@ private slots:
     void setEolCr();
     void setEolLf();
     void setEolCrLf();
+    void setLexer();
     void convertEols();
     void setEolVisibility(bool vis);
     void convertIndentation();
@@ -161,6 +162,7 @@ private:
     QMenu * recentMenu;
     QMenu * editMenu;
     QMenu * viewMenu;
+    QMenu * lexerMenu;
     QMenu * optionsMenu;
     QMenu * lineEndMenu;
     QMenu * windowMenu;
@@ -195,6 +197,7 @@ private:
     QAction * lineEndLf;
     QAction * lineEndCrLf;
     QActionGroup * lineEnds;
+    QActionGroup * lexers;
     
     QAction * showLineEndsAct;
 	
