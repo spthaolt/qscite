@@ -286,6 +286,16 @@ void MainWindow::setEolVisibility(bool vis) {
   }
 }
 
+void MainWindow::setLexer() {
+  QsciLexer * newLexer = NULL;
+  newLexer = getLexerByName(lexers->checkedAction()->text());
+  newLexer->setParent(openFiles[curDocIdx].edWidget);
+  QFont curFont = openFiles[curDocIdx].edWidget->font();
+  setLexerFont(newLexer, curFont.family(), curFont.pointSize());
+  openFiles[curDocIdx].edWidget->setLexer(newLexer);
+  openFiles[curDocIdx].edWidget->recolor();
+}
+
 void MainWindow::toggleFolding() {
   QsciScintilla::FoldStyle state = static_cast<QsciScintilla::FoldStyle>((!getCurDoc()->folding()) * 5);
 
