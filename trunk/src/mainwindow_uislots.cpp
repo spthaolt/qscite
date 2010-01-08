@@ -10,6 +10,7 @@
 #include "prefs.h"
 #include "textdisplay.h"
 #include "findreplace.h"
+#include "scriptconsole.h"
 
 #ifdef _WIN32
   #include "qterminal.h"
@@ -339,6 +340,33 @@ void MainWindow::showReplaceDialog() {
     qDebug() << "raising replace dialog";
     replaceDialog->activateWindow();
     replaceDialog->raise();
+  }
+}
+
+/**
+ * Function to call when script console is closed.
+ */
+void MainWindow::scriptConsoleClosed() {
+  qDebug() << "script console closed";
+  scriptConsole = NULL;
+  this->activateWindow();
+}
+
+/**
+ * Creates a Script Console and displays it.
+ */
+void MainWindow::showScriptConsole() {
+  if( scriptConsole == NULL ) {
+    qDebug() << "creating script console";
+    scriptConsole = new dlgScriptConsole(this);
+    //make sure that we call scriptConsoleClosed() when Script Console is closed.
+    connect(scriptConsole, SIGNAL(destroyed()), this, SLOT(scriptConsoleClosed()));
+    //make sure that Script Console is closed if QScite is closed.
+    connect(this, SIGNAL(destroyed()), scriptConsole, SLOT(close()));
+  } else {
+    qDebug() << "raising script console";
+    scriptConsole->activateWindow();
+    scriptConsole->raise();
   }
 }
 

@@ -32,6 +32,7 @@
 #include "lexer_utils.h"
 #include "prefs.h"
 #include "textdisplay.h"
+#include "scriptconsole.h"
 
 #ifdef _WIN32
   #include "qterminal.h"
@@ -47,7 +48,8 @@ MainWindow::MainWindow(QStringList & _argv, Launcher * _launcher) :
   termInDrawer(QSettings().value("terminalInDrawer", false).toBool()),
   curDocIdx(0),
   launcher(_launcher),
-  replaceDialog(NULL)
+  replaceDialog(NULL),
+  scriptConsole(NULL)
 {
   this->setUnifiedTitleAndToolBarOnMac(true);
   this->setAttribute(Qt::WA_DeleteOnClose);
@@ -164,6 +166,11 @@ void MainWindow::curDocChanged(int idx) {
     if (termWidget != NULL && !openFiles[curDocIdx].fullName.isEmpty()) {
       termWidget->changeDir(openFiles[curDocIdx].path);
     }
+  }
+  
+  //have to update the document in the script window if the script window exists.
+  if( scriptConsole != NULL ) {
+    scriptConsole->updateDoc();
   }
 }
 
