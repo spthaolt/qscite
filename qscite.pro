@@ -12,6 +12,8 @@ UI_DIR      = build
     DESTDIR = build
 }
 
+QT += script
+
 CONFIG       += thread
 
 HEADERS       = mainwindow.h \
@@ -20,6 +22,7 @@ HEADERS       = mainwindow.h \
                 prefs.h \
                 textdisplay.h \
                 findreplace.h \
+                scriptconsole.h \
                 launcher.h
 
 SOURCES       = main.cpp \
@@ -33,12 +36,14 @@ SOURCES       = main.cpp \
                 textdisplay.cpp \
                 reindent.cpp \
                 findreplace.cpp \
+                scriptconsole.cpp \
                 launcher.cpp
 
 FORMS         = dlgPrefsUI.ui \
                 frmTextDisplay.ui \
                 dlgConvertIndent.ui \
-                dlgFindReplace.ui
+                dlgFindReplace.ui \
+                dlgScriptConsole.ui
 
 RESOURCES     = qscite.qrc
 

@@ -36,6 +36,7 @@ class TextDisplayPanel;
 class QStringList;
 class QActionGroup;
 class dlgFindReplace;
+class dlgScriptConsole;
 
 struct FileData {
 
@@ -106,6 +107,8 @@ private slots:
     void showFindDialog();
     void showReplaceDialog();
     void replaceDialogClosed();
+    void showScriptConsole();
+    void scriptConsoleClosed();
     void newWindow();
     
     /* Internal slots */
@@ -153,6 +156,7 @@ private:
     QMenu * trayIconMenu;
     QString lastDir;
     dlgFindReplace * replaceDialog;
+    dlgScriptConsole * scriptConsole;
     
     bool copyFromTerm;
     bool termInDrawer;
@@ -206,6 +210,7 @@ private:
     QAction * codeFoldingAct;
     QAction * findTextAct;
     QAction * replaceTextAct;
+    QAction * scriptConsoleAct;
     QAction * newWindowAct;
 };
 

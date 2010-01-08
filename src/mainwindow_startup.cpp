@@ -139,6 +139,10 @@ void MainWindow::createActions() {
   replaceTextAct->setShortcut(tr("Ctrl+H"));
   connect(replaceTextAct, SIGNAL(triggered()), this, SLOT(showReplaceDialog()));
 
+  //ScriptConsole
+  scriptConsoleAct = new QAction(tr("Script Console"), this);
+  connect(scriptConsoleAct, SIGNAL(triggered()), this, SLOT(showScriptConsole()));
+
   newWindowAct = new QAction(QIcon(":/images/newwindow.png"), tr("&New Window"), this);
   connect(newWindowAct, SIGNAL(triggered()), this, SLOT(newWindow()));
 
@@ -177,6 +181,8 @@ void MainWindow::createMenus() {
   editMenu->addSeparator();
   editMenu->addAction(findTextAct);
   editMenu->addAction(replaceTextAct);
+  editMenu->addSeparator();
+  editMenu->addAction(scriptConsoleAct);
   editMenu->addSeparator();
   editMenu->addAction(prefsAct);
 
