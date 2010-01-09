@@ -7,6 +7,7 @@
 #include <QDialog>
 #include <QSettings>
 #include <QtScript>
+#include <Qsci/qsciscintilla.h>
 
 class dlgScriptConsole: public QDialog, protected Ui_dlgScript {
   
@@ -14,7 +15,7 @@ class dlgScriptConsole: public QDialog, protected Ui_dlgScript {
   
 public:
   dlgScriptConsole(MainWindow * _parent);
-  void updateDoc();
+  ~dlgScriptConsole();
 
   MainWindow * parent;
 
@@ -22,7 +23,8 @@ protected slots:
   void executeCommand();
 
 private:
-  QScriptEngine engine;
+  QScriptEngine * engine;
+  QsciScintilla * doc;
 };
   
 #endif /*SCRIPTCONSOLE_H_*/

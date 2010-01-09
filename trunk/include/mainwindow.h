@@ -24,6 +24,7 @@
 #include <QList>
 #include <QFileInfo>
 #include <QSystemTrayIcon>
+#include <QtScript>
 
 #include "launcher.h"
 
@@ -67,6 +68,7 @@ public:
     }
     
     bool closeWindow();
+    QScriptEngine scriptEngine;
 /*    
 signals:
     void closed();
