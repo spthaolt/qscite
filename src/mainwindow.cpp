@@ -81,7 +81,7 @@ MainWindow::MainWindow(QStringList & _argv, Launcher * _launcher) :
   //accept drag and drop events, handled in dropEvent()
   setAcceptDrops(true);
   
-//  for (int i = 0; i < argv.size(); ++i) {
+  //  for (int i = 0; i < argv.size(); ++i) {
   while (!argv.isEmpty()) {
   qDebug() << "argv.front() is " << argv.front();
     if (!argv.front().isEmpty()) {
@@ -90,6 +90,10 @@ MainWindow::MainWindow(QStringList & _argv, Launcher * _launcher) :
     
     argv.pop_front();
   }
+  
+  //add the window into the script engine.
+  QScriptValue window = scriptEngine.newQObject(this);
+  scriptEngine.globalObject().setProperty("window", window);
 }
 
 void MainWindow::createDocument() {
@@ -168,10 +172,9 @@ void MainWindow::curDocChanged(int idx) {
     }
   }
   
-  //have to update the document in the script window if the script window exists.
-  if( scriptConsole != NULL ) {
-    scriptConsole->updateDoc();
-  }
+  //have to update the document in the scriptEngine.
+  QScriptValue document = scriptEngine.newQObject(this->getCurDoc());
+  scriptEngine.globalObject().setProperty("document", document);
 }
 
 bool MainWindow::maybeSave() {

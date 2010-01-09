@@ -2,10 +2,12 @@
 #include <QtDebug>
 #include <QString>
 #include <Qsci/qsciscintilla.h>
+#include <Qsci/qscilexerjavascript.h>
 #include <QtScript>
 
 #include "scriptconsole.h"
 #include "mainwindow.h"
+#include "prefs.h"
 
 dlgScriptConsole::dlgScriptConsole(MainWindow * _parent) {
   parent = _parent;
@@ -14,26 +16,38 @@ dlgScriptConsole::dlgScriptConsole(MainWindow * _parent) {
   connect(btnExecute, SIGNAL(clicked()), this, SLOT(executeCommand()));
   this->setAttribute(Qt::WA_DeleteOnClose);
   
-  //add some globals into the script engine
-  updateDoc();
+  engine = &(parent->scriptEngine);
+  
+  QsciScintilla * curDoc = new QsciScintilla();
+  
+  /*qDebug() << "ready to create scintilla";
+  doc = new QsciScintilla(verticalLayout);*/
+  curDoc->setUtf8(true);
+  
+  qDebug() << "apply settings to scintilla";
+  applySettingsToDoc(curDoc);
+  
+  qDebug() << "set the lexer to javascript";
+  QsciLexerJavaScript * lexer = new QsciLexerJavaScript();
+  curDoc->setLexer(lexer);
+  
+  qDebug() << "add scintilla to window";
+  verticalLayout->insertWidget(0, curDoc);
+  doc = curDoc;
+  doc->show();
+  qDebug() << "done";
 }
 
-/**
- * Updates the doc variable that is available in the script engine.
- */
-void dlgScriptConsole::updateDoc() {
-  QScriptValue document = engine.newQObject(parent->getCurDoc());
-  QScriptValue window = engine.newQObject(parent);
-  engine.globalObject().setProperty("document", document);
-  engine.globalObject().setProperty("window", window);
+dlgScriptConsole::~dlgScriptConsole() {
+  delete doc;
 }
 
 /**
  * Executes the command in the command text box.
  */
 void dlgScriptConsole::executeCommand() {
-  QString cmd = txtCommand->toPlainText();
-  QScriptValue result = engine.evaluate(cmd);
+  QString cmd = doc->text(); //txtCommand->toPlainText();
+  QScriptValue result = engine->evaluate(cmd);
   
   if( !(result.isUndefined()) && !(result.isNull()) ) {
     lblError->setText(result.toString());
