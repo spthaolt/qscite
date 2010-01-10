@@ -158,11 +158,14 @@ bool MainWindow::saveAs() {
       QsciScintilla * curDoc = getCurDoc();
       QsciLexer * newLexer = getLexerForDocument(fileName, curDoc->text());
       if (newLexer != NULL) {
+/*
         QFont curFont = curDoc->font();
         setLexerFont(newLexer, curFont.family(), curFont.pointSize());
         newLexer->setParent(curDoc);
         curDoc->setLexer(newLexer);
         curDoc->recolor();
+*/
+        setLexer(newLexer);
       }
     }
     return success;
@@ -287,14 +290,8 @@ void MainWindow::setEolVisibility(bool vis) {
   }
 }
 
-void MainWindow::setLexer() {
-  QsciLexer * newLexer = NULL;
-  newLexer = getLexerByName(lexers->checkedAction()->text());
-  newLexer->setParent(openFiles[curDocIdx].edWidget);
-  QFont curFont = openFiles[curDocIdx].edWidget->font();
-  setLexerFont(newLexer, curFont.family(), curFont.pointSize());
-  openFiles[curDocIdx].edWidget->setLexer(newLexer);
-  openFiles[curDocIdx].edWidget->recolor();
+void MainWindow::lexerMenuChanged() {
+  setLexer(lexers->checkedAction()->text());
 }
 
 void MainWindow::toggleFolding() {

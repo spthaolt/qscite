@@ -150,9 +150,8 @@ void MainWindow::createActions() {
   for (int i = 0; !supportedLexers[i].isEmpty(); ++i) {
     QAction * tmp = new QAction(tr(supportedLexers[i].toStdString().c_str()), this);
     tmp->setCheckable(true);
-    connect(tmp, SIGNAL(triggered()), this, SLOT(setLexer()));
+    connect(tmp, SIGNAL(triggered()), this, SLOT(lexerMenuChanged()));
     lexers->addAction(tmp);
-    //todo: add connections for signal/slot
   }
   
 }

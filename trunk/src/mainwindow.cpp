@@ -81,7 +81,6 @@ MainWindow::MainWindow(QStringList & _argv, Launcher * _launcher) :
   //accept drag and drop events, handled in dropEvent()
   setAcceptDrops(true);
   
-  //  for (int i = 0; i < argv.size(); ++i) {
   while (!argv.isEmpty()) {
   qDebug() << "argv.front() is " << argv.front();
     if (!argv.front().isEmpty()) {
@@ -229,11 +228,14 @@ void MainWindow::loadFile(const QString &fileName) {
   QsciLexer * newLexer = getLexerForDocument(fileName, curDoc->text());
   
   if (newLexer != NULL) {
+/*    
     qDebug() << "Using lexer " << newLexer->lexer();
   	newLexer->setParent(curDoc);
     curDoc->setLexer(newLexer);
     setLexerFont(newLexer, currentFont.family(), currentFont.pointSize());
     curDoc->setCaretForegroundColor(QColor(0,0,0));
+*/
+    setLexer(newLexer);
   }
   
   curDoc->setEolMode(detectEolMode(curDoc));
@@ -300,6 +302,21 @@ void MainWindow::updateCopyAvailable(bool yes) {
 		cutAct->setEnabled(yes);
 		copyAct->setEnabled(yes);
 	}
+}
+
+void MainWindow::setLexer(const QString & lexerName) {
+  QsciScintilla * curDoc = getCurDoc();
+  QsciLexer * newLexer = NULL;
+  newLexer = getLexerByName(lexerName);
+  newLexer->setParent(curDoc);
+  QFont curFont = curDoc->font();
+  setLexerFont(newLexer, curFont.family(), curFont.pointSize());
+  curDoc->setLexer(newLexer);
+  curDoc->recolor();
+}
+
+void MainWindow::setLexer(QsciLexer * lexer) {
+  setLexer(QString(lexer->lexer()));
 }
 
 void MainWindow::noticeFocusChange(QWidget * prev, QWidget * current) {
