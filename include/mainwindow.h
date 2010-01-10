@@ -31,6 +31,7 @@
 class QAction;
 class QMenu;
 class QsciScintilla;
+class QsciLexer;
 class QTabWidget;
 class QTerminal;
 class TextDisplayPanel;
@@ -101,7 +102,6 @@ private slots:
     void setEolCr();
     void setEolLf();
     void setEolCrLf();
-    void setLexer();
     void convertEols();
     void setEolVisibility(bool vis);
     void convertIndentation();
@@ -112,6 +112,7 @@ private slots:
     void showScriptConsole();
     void scriptConsoleClosed();
     void newWindow();
+    void lexerMenuChanged();
     
     /* Internal slots */
     void curDocChanged(int idx);
@@ -145,7 +146,8 @@ private:
     void changeTabs(int index);
     void documentWasModified();
     void setUIForDocumentEolMode();
-
+    void setLexer(const QString & lexerName);
+    void setLexer(QsciLexer * lexer);
     void setupDocument(QString &fileName);
 
     QStringList argv;

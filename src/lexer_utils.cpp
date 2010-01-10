@@ -15,6 +15,7 @@
 #include <Qsci/qscilexerpov.h>
 #include <Qsci/qscilexerpython.h>
 #include <Qsci/qscilexerruby.h>
+#include <Qsci/qscilexerjavascript.h>
 
 #include <cassert>
 
@@ -23,7 +24,7 @@
  */
 const QString supportedLexers[] = {
 	"bash", "cpp", "csharp", "css", "html", "java", "perl", "pov", "python",
-	"ruby", "" 
+	"ruby", "javascript", "" 
 };
 
 QsciLexer * getLexerByName(const QString & lexerName) {
@@ -47,6 +48,8 @@ QsciLexer * getLexerByName(const QString & lexerName) {
 		return new QsciLexerPython();
 	} else if (lexerName == "ruby") {
 		return new QsciLexerRuby();
+  } else if (lexerName == "javascript") {
+    return new QsciLexerJavaScript();
 	} else {
 		return NULL;
 	}
@@ -66,16 +69,17 @@ namespace {
 	 * End of extensions for each lexer marked with "".
 	 */
 	const QString defaultExtensions[] = {
-		/* bash   */ "sh", "",
-		/* cpp    */ "c", "h", "cc", "cpp", "cxx", "",
-		/* csharp */ "cs", "",
-		/* css    */ "css","",
-		/* html   */ "html", "xhtml", "xml", "plist", "",
-		/* java   */ "java", "",
-		/* perl   */ "pl", "pm", "",
-		/* pov    */ "pov", "inc", "",
-		/* python */ "py", "pyw", "",
-		/* ruby   */ "rb", ""
+		/* bash        */ "sh", "",
+		/* cpp         */ "c", "h", "cc", "cpp", "cxx", "",
+		/* csharp      */ "cs", "",
+		/* css         */ "css","",
+		/* html        */ "html", "xhtml", "xml", "plist", "",
+		/* java        */ "java", "",
+		/* perl        */ "pl", "pm", "",
+		/* pov         */ "pov", "inc", "",
+		/* python      */ "py", "pyw", "",
+		/* ruby        */ "rb", "",
+    /* javascript  */ "js", ""
 	};
 	
 	/* Default magic values for identifying files we can't identify by
@@ -94,6 +98,7 @@ namespace {
 		/* pov    */ "",
 		/* python */ "python", "",
 		/* ruby   */ "ruby", ""
+    /* javascript  */ "",
 	};	
 } // namespace	
 	
