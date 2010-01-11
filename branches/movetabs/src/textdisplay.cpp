@@ -51,7 +51,7 @@ void TextDisplayPanel::populate() {
 	}
 	this->setEnabled(true);
 	
-	QsciScintilla * theEditor = parent->openFiles[parent->curDocIdx].edWidget;
+	QsciScintilla * theEditor = parent->getCurDoc();
 	cbWrapMode->setChecked(theEditor->wrapMode() == QsciScintilla::WrapWord);
 	cbxWrapMarkers->setCurrentIndex(getWrapVisualFlag(theEditor));
 	cbLineNos->setChecked(theEditor->marginWidth(1) > 0);
@@ -81,7 +81,7 @@ void TextDisplayPanel::on_btnReset_clicked() {
 	if (parent->openFiles.empty()) {
 		return;
 	}
-	applySettingsToDoc(parent->openFiles[parent->curDocIdx].edWidget);
+	applySettingsToDoc(parent->getCurDoc());
 	populate();
 }
 
@@ -100,7 +100,7 @@ void TextDisplayPanel::on_btnSaveSettings_clicked() {
 	
 	settings.beginGroup("font");
 	if (!parent->openFiles.empty()) {
-		QsciScintilla * theEditor = parent->openFiles[parent->curDocIdx].edWidget;
+		QsciScintilla * theEditor = parent->getCurDoc();
 		settings.setValue("docFamily", theEditor->font().family());
 		settings.setValue("docSize", theEditor->font().pointSize());
 	}
@@ -116,11 +116,11 @@ void TextDisplayPanel::on_btnSaveSettings_clicked() {
 }
 
 void TextDisplayPanel::on_cbWrapMode_clicked(bool checked) {
-	parent->openFiles[parent->curDocIdx].edWidget->setWrapMode(checked ? QsciScintilla::WrapWord : QsciScintilla::WrapNone);
+	parent->getCurDoc()->setWrapMode(checked ? QsciScintilla::WrapWord : QsciScintilla::WrapNone);
 }
 
 void TextDisplayPanel::on_cbxWrapMarkers_currentIndexChanged(int idx) {
-	QsciScintilla * curDoc = parent->openFiles[parent->curDocIdx].edWidget;
+	QsciScintilla * curDoc = parent->getCurDoc();
 	curDoc->setWrapVisualFlags(
 		static_cast<QsciScintilla::WrapVisualFlag>(idx),
 		QsciScintilla::WrapFlagNone,
@@ -130,47 +130,47 @@ void TextDisplayPanel::on_cbxWrapMarkers_currentIndexChanged(int idx) {
 
 void TextDisplayPanel::on_cbLineNos_clicked(bool checked) {
 	if (checked) {
-		parent->openFiles[parent->curDocIdx].edWidget->setMarginWidth(1, "9999");
+		parent->getCurDoc()->setMarginWidth(1, "9999");
 		parent->redoSetMargin();
 	} else {
-		parent->openFiles[parent->curDocIdx].edWidget->setMarginWidth(1, 0);
+		parent->getCurDoc()->setMarginWidth(1, 0);
 	}
 }
 
 void TextDisplayPanel::on_cbIndentGuides_clicked(bool checked) {
-	parent->openFiles[parent->curDocIdx].edWidget->setIndentationGuides(checked);
+	parent->getCurDoc()->setIndentationGuides(checked);
 }
 
 void TextDisplayPanel::on_sbIndentSize_valueChanged(int val) {
-	parent->openFiles[parent->curDocIdx].edWidget->setIndentationWidth(val);
-	parent->openFiles[parent->curDocIdx].edWidget->setTabWidth(val);
+	parent->getCurDoc()->setIndentationWidth(val);
+	parent->getCurDoc()->setTabWidth(val);
 }
 
 void TextDisplayPanel::on_cbAutoIndent_clicked(bool checked) {
-	parent->openFiles[parent->curDocIdx].edWidget->setAutoIndent(checked);
+	parent->getCurDoc()->setAutoIndent(checked);
 }
 
 void TextDisplayPanel::on_cbxUseTabs_currentIndexChanged(int idx) {
-	parent->openFiles[parent->curDocIdx].edWidget->setIndentationsUseTabs(idx == 1);
+	parent->getCurDoc()->setIndentationsUseTabs(idx == 1);
 }
 
 void TextDisplayPanel::on_cbxEOLMode_currentIndexChanged(int idx) {
-	parent->openFiles[parent->curDocIdx].edWidget->setEolMode( static_cast<QsciScintilla::EolMode>(idx) );
+	parent->getCurDoc()->setEolMode( static_cast<QsciScintilla::EolMode>(idx) );
 }
 
 void TextDisplayPanel::on_cbxLexer_currentIndexChanged(int idx) {
 	QsciLexer * newLexer = NULL;
 	if (idx > 0) {
 		newLexer = getLexerByName(supportedLexers[idx - 1]);
-		newLexer->setParent(parent->openFiles[parent->curDocIdx].edWidget);
-		QFont curFont = parent->openFiles[parent->curDocIdx].edWidget->font();
+		newLexer->setParent(parent->getCurDoc());
+		QFont curFont = parent->getCurDoc()->font();
 		setLexerFont(newLexer, curFont.family(), curFont.pointSize());
 	}
-	parent->openFiles[parent->curDocIdx].edWidget->setLexer(newLexer);
-	parent->openFiles[parent->curDocIdx].edWidget->recolor();
+	parent->getCurDoc()->setLexer(newLexer);
+	parent->getCurDoc()->recolor();
 }
 
 void TextDisplayPanel::applyColor() {
-	parent->openFiles[parent->curDocIdx].edWidget->setColor( QColor(sbFgR->value(), sbFgG->value(), sbFgB->value()) );
-	parent->openFiles[parent->curDocIdx].edWidget->setPaper( QColor(sbBgR->value(), sbBgG->value(), sbBgB->value()) );
+	parent->getCurDoc()->setColor( QColor(sbFgR->value(), sbFgG->value(), sbFgB->value()) );
+	parent->getCurDoc()->setPaper( QColor(sbBgR->value(), sbBgG->value(), sbBgB->value()) );
 }
