@@ -61,11 +61,12 @@ class MainWindow : public QMainWindow {
 
 public:
     MainWindow(QStringList & _argv, Launcher * _launcher);
-
+    FileData getCurFileObj();
+    
     inline QsciScintilla * getCurDoc() {
       // this implementation is in the header file to avoid excessive warnings...
       // and to allow QSciTE to compile on Win32.
-      return (openFiles.size() > curDocIdx ? openFiles[curDocIdx].edWidget : NULL);
+      return (openFiles.size() > 0 ? getCurFileObj().edWidget : NULL);
     }
     
     bool closeWindow();
@@ -153,7 +154,7 @@ private:
 
     QStringList argv;
     Launcher * launcher;
-    std::vector<FileData> openFiles;
+    QMap<QsciScintilla *, FileData> openFiles;
     QList<QFileInfo> recentFiles;
     QTabWidget * tabWidget;
     QTerminal * termWidget;

@@ -27,7 +27,7 @@ void MainWindow::convertIndentation() {
   QsciScintilla * curDoc;
   
   if (curDocIdx < openFiles.size()) {
-    curDoc = openFiles[curDocIdx].edWidget;
+    curDoc = getCurDoc();
   } else {
     return;
   }

@@ -34,7 +34,7 @@ void MainWindow::toggleTerminal(bool alive) {
     termWidget->deleteLater();
     termWidget = NULL;
 
-    if (openFiles.size() > curDocIdx) {
+    if (openFiles.size() >= 0) {
       getCurDoc()->setFocus();
     }
 
@@ -43,8 +43,8 @@ void MainWindow::toggleTerminal(bool alive) {
     qDebug() << "Opening terminal";
     termWidget = new QTerminal(this);
     applyPrefsToTerminal(termWidget);
-    if (openFiles.size() > curDocIdx && !openFiles[curDocIdx].fullName.isEmpty()) {
-    	termWidget->changeDir(openFiles[curDocIdx].path);
+    if (openFiles.size() >= 0 && !getCurFileObj().fullName.isEmpty()) {
+    	termWidget->changeDir(getCurFileObj().path);
     }
 
     if (termInDrawer) {
@@ -74,7 +74,7 @@ bool MainWindow::closeFile() {
     if (maybeSave()) {
       QsciScintilla * theEditor = getCurDoc();
 
-      openFiles.erase(openFiles.begin() + curDocIdx);
+      openFiles.remove(theEditor);
       tabWidget->removeTab(curDocIdx);
 
       delete theEditor;
@@ -94,11 +94,11 @@ bool MainWindow::closeFile() {
 }
 
 void MainWindow::open() {
-  QStringList fileNames = QFileDialog::getOpenFileNames(this, "Select one or more files to open", (curDocIdx < openFiles.size() && !openFiles[curDocIdx].path.isEmpty()) ? openFiles[curDocIdx].path : lastDir);
+  QStringList fileNames = QFileDialog::getOpenFileNames(this, "Select one or more files to open", (openFiles.size() >= 0 && !getCurFileObj().path.isEmpty()) ? getCurFileObj().path : lastDir);
 
   while (fileNames.count()) {
     if (!fileNames.back().isEmpty()) {
-      if ((!tabWidget->count()) || (!openFiles[curDocIdx].baseName.isEmpty()) || getCurDoc()->isModified()) {
+      if ((!tabWidget->count()) || (!getCurFileObj().baseName.isEmpty()) || getCurDoc()->isModified()) {
         createDocument();
       }
 
@@ -113,13 +113,13 @@ void MainWindow::open() {
 
   if (!openFiles.empty()) {
     getCurDoc()->setFocus();
-    lastDir = openFiles[curDocIdx].path;
+    lastDir = getCurFileObj.path;
   }
 }
 
 void MainWindow::openRecent(QAction * src) {
   qDebug() << "openRecent(" << src->statusTip() << ')';
-  if ((!tabWidget->count()) || (!openFiles[curDocIdx].baseName.isEmpty()) || getCurDoc()->isModified()) {
+  if ((!tabWidget->count()) || (!getCurFileObj().baseName.isEmpty()) || getCurDoc()->isModified()) {
 	createDocument();
   }
 
@@ -129,10 +129,10 @@ void MainWindow::openRecent(QAction * src) {
 
 bool MainWindow::save() {
   if (tabWidget->count()) {
-    if (openFiles[curDocIdx].fullName.isEmpty()) {
+    if (getCurFileObj().fullName.isEmpty()) {
       return saveAs();
     } else {
-      return saveFile(openFiles[curDocIdx].fullName);
+      return saveFile(getCurFileObj().fullName);
     }
   }
 
@@ -142,7 +142,7 @@ bool MainWindow::save() {
 
 bool MainWindow::saveAs() {
   if (tabWidget->count()) {
-    QString fileName = QFileDialog::getSaveFileName(this, "Save - QSciTE", (curDocIdx < openFiles.size() && !openFiles[curDocIdx].path.isEmpty()) ? openFiles[curDocIdx].path : lastDir);
+    QString fileName = QFileDialog::getSaveFileName(this, "Save - QSciTE", (openFiles.size() > 0 && !getCurFileObj().path.isEmpty()) ? getCurFileObj().path : lastDir);
 
     if (fileName.isEmpty()) {
       return false;
@@ -151,10 +151,10 @@ bool MainWindow::saveAs() {
     bool success = saveFile(fileName);
     if (success) {
       addRecentFile(fileName);
-      openFiles[curDocIdx].setPathName(fileName);
+      getCurFileObj().setPathName(fileName);
       setCurrentTabTitle();
-      setWindowTitleForFile(openFiles[curDocIdx].baseName);
-      lastDir = openFiles[curDocIdx].path;
+      setWindowTitleForFile(getCurFileObj().baseName);
+      lastDir = getCurFileObj().path;
       QsciScintilla * curDoc = getCurDoc();
       QsciLexer * newLexer = getLexerForDocument(fileName, curDoc->text());
       if (newLexer != NULL) {
@@ -261,31 +261,31 @@ void MainWindow::prevDoc() {
 }
 
 void MainWindow::setEolCr () {
-  if (openFiles.size() > curDocIdx) {
+  if (openFiles.size() >= 0) {
     getCurDoc()->setEolMode(QsciScintilla::EolMac);
   }
 }
 
 void MainWindow::setEolLf () {
-  if (openFiles.size() > curDocIdx) {
+  if (openFiles.size() >= 0) {
     getCurDoc()->setEolMode(QsciScintilla::EolUnix);
   }
 }
 
 void MainWindow::setEolCrLf () {
-  if (openFiles.size() > curDocIdx) {
+  if (openFiles.size() >= 0) {
     getCurDoc()->setEolMode(QsciScintilla::EolWindows);
   }
 }
 
 void MainWindow::convertEols () {
-  if (openFiles.size() > curDocIdx) {
+  if (openFiles.size() >= 0) {
     getCurDoc()->convertEols(getCurDoc()->eolMode());
   }
 }
 
 void MainWindow::setEolVisibility(bool vis) {
-  if (openFiles.size() > curDocIdx) {
+  if (openFiles.size() >= 0) {
     getCurDoc()->setEolVisibility(vis);
   }
 }
