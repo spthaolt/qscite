@@ -145,12 +145,13 @@ private:
     
     void setWindowTitleForFile(const QString & fileName);
     void setCurrentTabTitle();
-    void changeTabs(int index);
+    void changeTabs(QsciScintilla * edWidget);
+    void changeTabs(int tabIndex);
     void documentWasModified();
     void setUIForDocumentEolMode();
     void setLexer(const QString & lexerName);
     void setLexer(QsciLexer * lexer);
-    void setupDocument(QString &fileName);
+    void setupDocument(QString & fileName);
 
     QStringList argv;
     Launcher * launcher;

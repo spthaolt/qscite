@@ -79,7 +79,7 @@ MainWindow::MainWindow(QStringList & _argv, Launcher * _launcher) :
   tabWidget->setCornerWidget(closeTabButton);
 */
 
-  connect(tabWidget, SIGNAL(currentChanged(int)), this, SLOT(curDocChanged(int)));
+  //connect(tabWidget, SIGNAL(currentChanged(int)), this, SLOT(curDocChanged(int)));
   connect(QApplication::instance(), SIGNAL(focusChanged(QWidget *, QWidget *)), this, SLOT(noticeFocusChange(QWidget *, QWidget *)));
   setWindowTitleForFile("");
 
@@ -110,7 +110,7 @@ void MainWindow::createDocument() {
   tabWidget->addTab(curDoc, "Untitled");
   
   if (tabWidget->count() > 1) {
-    changeTabs(tabWidget->count() - 1);
+    changeTabs(curDoc);
   } else {
     curDocChanged(0);
   }
@@ -120,9 +120,12 @@ void MainWindow::createDocument() {
   connect(curDoc, SIGNAL(linesChanged()), this, SLOT(redoSetMargin()));
 }
 
-void MainWindow::changeTabs(int index) {
-  qDebug() << "attempting to change tabs to index " << index;
-  tabWidget->setCurrentIndex(index);
+void MainWindow::changeTabs(QsciScintilla * edWidget) {
+  tabWidget->setCurrentIndex(tabWidget->indexOf(edWidget));
+}
+
+void MainWindow::changeTabs(int tabIndex) {
+  tabWidget->setCurrentIndex(tabIndex);
 }
 
 void MainWindow::closeEvent(QCloseEvent *event) {
@@ -276,6 +279,8 @@ bool MainWindow::saveFile(const QString &fileName) {
 }
 
 void MainWindow::setWindowTitleForFile(const QString & fileName) {
+  qDebug() << "Pointer Addr is " << QString().number((uint)getCurDoc());
+  qDebug() << "Setting window title to " << fileName;
   QString shownName;
   
   if (fileName.isEmpty()) {
@@ -426,6 +431,8 @@ FileData::FileData(const FileData & src) : fullName(src.fullName), baseName(src.
 
 void FileData::setPathName(const QString & newPathName) {
 	fullName = newPathName;
+  qDebug() << "Full file name is " << newPathName;
+  qDebug() << "Pointer Addr is " << QString().number((uint)edWidget);
 	QFileInfo info(newPathName);
 	baseName = info.fileName();
 	path = newPathName.isEmpty() ? "": info.absolutePath();
