@@ -1,6 +1,7 @@
 #include <QtGui>
 #include <QtDebug>
 #include <QString>
+#include <QEvent>
 #include <Qsci/qsciscintilla.h>
 
 #include "findreplace.h"
@@ -27,6 +28,14 @@ void dlgFindReplace::setFind() {
   btnReplace->hide();
   this->resize(10,10);
   this->adjustSize();
+}
+
+void dlgFindReplace::keyPressEvent(QKeyEvent * event) {
+  if (event->key() == Qt::Key_Return || event->key() == Qt::Key_Enter) {
+    this->doSearch();
+  }
+  
+  QDialog::keyPressEvent(event);
 }
 
 void dlgFindReplace::doSearch() {
