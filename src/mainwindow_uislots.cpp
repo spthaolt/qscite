@@ -113,7 +113,7 @@ void MainWindow::open() {
 
   if (!openFiles.empty()) {
     getCurDoc()->setFocus();
-    lastDir = getCurFileObj.path;
+    lastDir = getCurFileObj().path;
   }
 }
 
