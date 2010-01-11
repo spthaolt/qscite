@@ -1,0 +1,125 @@
+<ui version="4.0" >
+ <class>dlgConvertIndent</class>
+ <widget class="QDialog" name="dlgConvertIndent" >
+  <property name="windowModality" >
+   <enum>Qt::WindowModal</enum>
+  </property>
+  <property name="geometry" >
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>420</width>
+    <height>160</height>
+   </rect>
+  </property>
+  <property name="windowTitle" >
+   <string>Convert Indentation - QSciTE</string>
+  </property>
+  <widget class="QWidget" name="layoutWidget" >
+   <property name="geometry" >
+    <rect>
+     <x>10</x>
+     <y>11</y>
+     <width>401</width>
+     <height>141</height>
+    </rect>
+   </property>
+   <layout class="QVBoxLayout" >
+    <item>
+     <layout class="QHBoxLayout" >
+      <property name="spacing" >
+       <number>16</number>
+      </property>
+      <item>
+       <layout class="QVBoxLayout" >
+        <item>
+         <widget class="QLabel" name="lblOldWidth" >
+          <property name="text" >
+           <string>Old indent width:</string>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QSpinBox" name="sbOldWidth" />
+        </item>
+        <item>
+         <widget class="QCheckBox" name="cbExpandTabs" >
+          <property name="text" >
+           <string>Expand tabs before converting</string>
+          </property>
+         </widget>
+        </item>
+       </layout>
+      </item>
+      <item>
+       <layout class="QVBoxLayout" >
+        <item>
+         <widget class="QLabel" name="lblNewWidth" >
+          <property name="text" >
+           <string>New indent width:</string>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QSpinBox" name="sbNewWidth" />
+        </item>
+        <item>
+         <widget class="QCheckBox" name="cbLeaveTabs" >
+          <property name="text" >
+           <string>Use tabs in output</string>
+          </property>
+         </widget>
+        </item>
+       </layout>
+      </item>
+     </layout>
+    </item>
+    <item>
+     <widget class="QDialogButtonBox" name="buttonBox" >
+      <property name="orientation" >
+       <enum>Qt::Horizontal</enum>
+      </property>
+      <property name="standardButtons" >
+       <set>QDialogButtonBox::Cancel|QDialogButtonBox::NoButton|QDialogButtonBox::Ok</set>
+      </property>
+     </widget>
+    </item>
+   </layout>
+  </widget>
+ </widget>
+ <resources/>
+ <connections>
+  <connection>
+   <sender>buttonBox</sender>
+   <signal>accepted()</signal>
+   <receiver>dlgConvertIndent</receiver>
+   <slot>accept()</slot>
+   <hints>
+    <hint type="sourcelabel" >
+     <x>228</x>
+     <y>134</y>
+    </hint>
+    <hint type="destinationlabel" >
+     <x>157</x>
+     <y>183</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>buttonBox</sender>
+   <signal>rejected()</signal>
+   <receiver>dlgConvertIndent</receiver>
+   <slot>reject()</slot>
+   <hints>
+    <hint type="sourcelabel" >
+     <x>296</x>
+     <y>140</y>
+    </hint>
+    <hint type="destinationlabel" >
+     <x>286</x>
+     <y>183</y>
+    </hint>
+   </hints>
+  </connection>
+ </connections>
+</ui>
