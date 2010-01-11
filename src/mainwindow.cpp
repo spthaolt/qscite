@@ -60,6 +60,8 @@ MainWindow::MainWindow(QStringList & _argv, Launcher * _launcher) :
   // We might need to support a lot of tabs
   tabWidget->setUsesScrollButtons(true);
   tabWidget->setElideMode(Qt::ElideNone);
+  tabWidget->setTabsClosable(true);
+  connect(tabWidget, SIGNAL(tabCloseRequested(int)), this, SLOT(closeTab(int)));
   
   setCentralWidget(tabWidget);
   this->setWindowIcon(QIcon(":images/appIcon.png"));
@@ -70,9 +72,11 @@ MainWindow::MainWindow(QStringList & _argv, Launcher * _launcher) :
   createToolBars();
   createStatusBar();  
 
+/*
   QToolButton * closeTabButton = new QToolButton(tabWidget);
   closeTabButton->setDefaultAction(closeAct);
   tabWidget->setCornerWidget(closeTabButton);
+*/
 
   connect(tabWidget, SIGNAL(currentChanged(int)), this, SLOT(curDocChanged(int)));
   connect(QApplication::instance(), SIGNAL(focusChanged(QWidget *, QWidget *)), this, SLOT(noticeFocusChange(QWidget *, QWidget *)));

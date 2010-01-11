@@ -370,3 +370,8 @@ void MainWindow::showScriptConsole() {
 void MainWindow::newWindow() {
   launcher->createNewWindow();
 }
+
+void MainWindow::closeTab(int tabIndex) {
+  changeTabs(tabIndex);
+  closeFile();
+}

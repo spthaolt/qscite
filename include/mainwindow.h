@@ -113,6 +113,7 @@ private slots:
     void scriptConsoleClosed();
     void newWindow();
     void lexerMenuChanged();
+    void closeTab(int tabIndex);
     
     /* Internal slots */
     void curDocChanged(int idx);
