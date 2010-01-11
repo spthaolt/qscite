@@ -6,6 +6,7 @@
 
 #include <QDialog>
 #include <QSettings>
+#include <QEvent>
 
 class dlgFindReplace: public QDialog, protected Ui_dlgFindReplace {
   
@@ -20,6 +21,7 @@ private slots:
   void doSearch();
   void doReplace();
   void onTextChange(QString text);
+  void keyPressEvent(QKeyEvent * event);
 };
   
 #endif /*FINDREPLACE_H_*/
