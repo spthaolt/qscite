@@ -43,8 +43,8 @@ void MainWindow::toggleTerminal(bool alive) {
     qDebug() << "Opening terminal";
     termWidget = new QTerminal(this);
     applyPrefsToTerminal(termWidget);
-    if (openFiles.size() >= 0 && !getCurFileObj().fullName.isEmpty()) {
-    	termWidget->changeDir(getCurFileObj().path);
+    if (openFiles.size() >= 0 && !getCurFileObj()->fullName.isEmpty()) {
+    	termWidget->changeDir(getCurFileObj()->path);
     }
 
     if (termInDrawer) {
@@ -75,7 +75,7 @@ bool MainWindow::closeFile() {
       QsciScintilla * theEditor = getCurDoc();
 
       openFiles.remove(theEditor);
-      tabWidget->removeTab(curDocIdx);
+      tabWidget->removeTab(getCurTabIndex());
 
       delete theEditor;
 
@@ -94,11 +94,11 @@ bool MainWindow::closeFile() {
 }
 
 void MainWindow::open() {
-  QStringList fileNames = QFileDialog::getOpenFileNames(this, "Select one or more files to open", (openFiles.size() >= 0 && !getCurFileObj().path.isEmpty()) ? getCurFileObj().path : lastDir);
+  QStringList fileNames = QFileDialog::getOpenFileNames(this, "Select one or more files to open", (openFiles.size() >= 0 && !getCurFileObj()->path.isEmpty()) ? getCurFileObj()->path : lastDir);
 
   while (fileNames.count()) {
     if (!fileNames.back().isEmpty()) {
-      if ((!tabWidget->count()) || (!getCurFileObj().baseName.isEmpty()) || getCurDoc()->isModified()) {
+      if ((!tabWidget->count()) || (!getCurFileObj()->baseName.isEmpty()) || getCurDoc()->isModified()) {
         createDocument();
       }
 
@@ -113,13 +113,13 @@ void MainWindow::open() {
 
   if (!openFiles.empty()) {
     getCurDoc()->setFocus();
-    lastDir = getCurFileObj().path;
+    lastDir = getCurFileObj()->path;
   }
 }
 
 void MainWindow::openRecent(QAction * src) {
   qDebug() << "openRecent(" << src->statusTip() << ')';
-  if ((!tabWidget->count()) || (!getCurFileObj().baseName.isEmpty()) || getCurDoc()->isModified()) {
+  if ((!tabWidget->count()) || (!getCurFileObj()->baseName.isEmpty()) || getCurDoc()->isModified()) {
 	createDocument();
   }
 
@@ -129,10 +129,10 @@ void MainWindow::openRecent(QAction * src) {
 
 bool MainWindow::save() {
   if (tabWidget->count()) {
-    if (getCurFileObj().fullName.isEmpty()) {
+    if (getCurFileObj()->fullName.isEmpty()) {
       return saveAs();
     } else {
-      return saveFile(getCurFileObj().fullName);
+      return saveFile(getCurFileObj()->fullName);
     }
   }
 
@@ -142,7 +142,7 @@ bool MainWindow::save() {
 
 bool MainWindow::saveAs() {
   if (tabWidget->count()) {
-    QString fileName = QFileDialog::getSaveFileName(this, "Save - QSciTE", (openFiles.size() > 0 && !getCurFileObj().path.isEmpty()) ? getCurFileObj().path : lastDir);
+    QString fileName = QFileDialog::getSaveFileName(this, "Save - QSciTE", (openFiles.size() > 0 && !getCurFileObj()->path.isEmpty()) ? getCurFileObj()->path : lastDir);
 
     if (fileName.isEmpty()) {
       return false;
@@ -151,10 +151,10 @@ bool MainWindow::saveAs() {
     bool success = saveFile(fileName);
     if (success) {
       addRecentFile(fileName);
-      getCurFileObj().setPathName(fileName);
+      getCurFileObj()->setPathName(fileName);
       setCurrentTabTitle();
-      setWindowTitleForFile(getCurFileObj().baseName);
-      lastDir = getCurFileObj().path;
+      setWindowTitleForFile(getCurFileObj()->baseName);
+      lastDir = getCurFileObj()->path;
       QsciScintilla * curDoc = getCurDoc();
       QsciLexer * newLexer = getLexerForDocument(fileName, curDoc->text());
       if (newLexer != NULL) {
@@ -241,7 +241,7 @@ void MainWindow::redo() {
 }
 
 void MainWindow::nextDoc() {
-  int newIdx = curDocIdx + 1;
+  int newIdx = getCurTabIndex() + 1;
 
   if (newIdx >= tabWidget->count()) {
     newIdx = 0;
@@ -251,7 +251,7 @@ void MainWindow::nextDoc() {
 }
 
 void MainWindow::prevDoc() {
-  int newIdx = curDocIdx - 1;
+  int newIdx = getCurTabIndex() - 1;
 
   if (newIdx < 0) {
     newIdx = tabWidget->count() - 1 ;
