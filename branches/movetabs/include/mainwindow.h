@@ -61,12 +61,21 @@ class MainWindow : public QMainWindow {
 
 public:
     MainWindow(QStringList & _argv, Launcher * _launcher);
-    FileData getCurFileObj();
-    
+
+    inline FileData * getCurFileObj() {
+      // this implementation is in the header file to avoid excessive warnings...
+      // and to allow QSciTE to compile on Win32.
+      return (openFiles.size() > 0 ? &openFiles[(QsciScintilla *)(tabWidget->widget(tabWidget->currentIndex()))] : NULL);
+    }
+
     inline QsciScintilla * getCurDoc() {
       // this implementation is in the header file to avoid excessive warnings...
       // and to allow QSciTE to compile on Win32.
-      return (openFiles.size() > 0 ? getCurFileObj().edWidget : NULL);
+      return (openFiles.size() > 0 ? getCurFileObj()->edWidget : NULL);
+    }
+    
+    inline int getCurTabIndex() {
+      return (openFiles.size() > 0 ? tabWidget->indexOf((QWidget *)getCurDoc()) : -1);
     }
     
     bool closeWindow();
@@ -167,8 +176,6 @@ private:
     
     bool copyFromTerm;
     bool termInDrawer;
-
-    unsigned int curDocIdx;
 
     QMenu * fileMenu;
     QMenu * recentMenu;

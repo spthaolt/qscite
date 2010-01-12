@@ -46,7 +46,6 @@ MainWindow::MainWindow(QStringList & _argv, Launcher * _launcher) :
   textSettingsWidget(NULL),
   copyFromTerm(false),
   termInDrawer(QSettings().value("terminalInDrawer", false).toBool()),
-  curDocIdx(0),
   launcher(_launcher),
   replaceDialog(NULL),
   scriptConsole(NULL)
@@ -161,7 +160,7 @@ void MainWindow::curDocChanged(int idx) {
   if (openFiles.size() >= 0) {
     QsciScintilla * doc = getCurDoc();
     
-    setWindowTitleForFile(getCurFileObj().baseName);
+    setWindowTitleForFile(getCurFileObj()->baseName);
     setWindowModified(doc->isModified());
     
     setUIForDocumentEolMode();
@@ -170,8 +169,8 @@ void MainWindow::curDocChanged(int idx) {
       codeFoldingAct->setChecked(getCurDoc()->folding());
     }
     
-    if (termWidget != NULL && !getCurFileObj().fullName.isEmpty()) {
-      termWidget->changeDir(getCurFileObj().path);
+    if (termWidget != NULL && !getCurFileObj()->fullName.isEmpty()) {
+      termWidget->changeDir(getCurFileObj()->path);
     }
   }
   
@@ -183,7 +182,7 @@ void MainWindow::curDocChanged(int idx) {
 bool MainWindow::maybeSave() {
   if (getCurDoc()->isModified()) {
     int ret = QMessageBox::warning(this, tr("QSciTE"),
-                 tr("%1 has been modified.\nDo you want to save your changes?").arg(getCurFileObj().baseName.isEmpty() ? tr("<Untitled document>") : getCurFileObj().baseName),
+                 tr("%1 has been modified.\nDo you want to save your changes?").arg(getCurFileObj()->baseName.isEmpty() ? tr("<Untitled document>") : getCurFileObj()->baseName),
                  QMessageBox::Yes | QMessageBox::Default,
                  QMessageBox::No,
                  QMessageBox::Cancel | QMessageBox::Escape);
@@ -215,13 +214,13 @@ void MainWindow::loadFile(const QString &fileName) {
   getCurDoc()->setText(in.readAll());
   QApplication::restoreOverrideCursor();
   
-  getCurFileObj().setPathName(fileName);
+  getCurFileObj()->setPathName(fileName);
 
-  setWindowTitleForFile(getCurFileObj().baseName);
+  setWindowTitleForFile(getCurFileObj()->baseName);
   getCurDoc()->setModified(false);
   
   if (termWidget != NULL) {
-    termWidget->changeDir(getCurFileObj().path);
+    termWidget->changeDir(getCurFileObj()->path);
   }
   
   redoSetMargin();
@@ -294,13 +293,14 @@ void MainWindow::setWindowTitleForFile(const QString & fileName) {
 }
 
 void MainWindow::setCurrentTabTitle() {
-	QString displayName = getCurFileObj().baseName.isEmpty() ? "Untitled" : getCurFileObj().baseName;
+  qDebug() << getCurFileObj()->fullName;
+	QString displayName = getCurFileObj()->baseName.isEmpty() ? "Untitled" : getCurFileObj()->baseName;
 	
 	if (getCurDoc()->isModified()) {
 		displayName += "*";
 	}
 	
-	tabWidget->setTabText(curDocIdx, displayName);
+	tabWidget->setTabText(getCurTabIndex(), displayName);
 }
 
 void MainWindow::updateCopyAvailable(bool yes) {
@@ -372,7 +372,7 @@ bool MainWindow::eventFilter(QObject * target, QEvent * event) {
 //load a new document and set up its tab and the associated application metadata
 void MainWindow::setupDocument(QString &fileName) {
 	//create a new tab, if necessary
-	if ((!tabWidget->count()) || (!getCurFileObj().baseName.isEmpty()) || getCurDoc()->isModified()) {
+	if ((!tabWidget->count()) || (!getCurFileObj()->baseName.isEmpty()) || getCurDoc()->isModified()) {
 		createDocument();
 	}
 
@@ -401,12 +401,10 @@ void MainWindow::setUIForDocumentEolMode() {
 }
 
 //triggered when a dragged object enters the window
-void MainWindow::dragEnterEvent(QDragEnterEvent *event)
-{
+void MainWindow::dragEnterEvent(QDragEnterEvent *event) {
 	qDebug() << "Drag enter event triggered.\n";
 	//only accept the drop if the dropped item has a URL
-	if (event->mimeData()->hasFormat("text/uri-list")) 
-	{
+	if (event->mimeData()->hasFormat("text/uri-list")) {
 		qDebug() << event->proposedAction() << "\n";
 		event->acceptProposedAction();
 	}
@@ -438,8 +436,3 @@ void FileData::setPathName(const QString & newPathName) {
 	path = newPathName.isEmpty() ? "": info.absolutePath();
 }
 
-FileData MainWindow::getCurFileObj() {
-  // this implementation is in the header file to avoid excessive warnings...
-  // and to allow QSciTE to compile on Win32.
-  return (openFiles.size() > 0 ? openFiles.value((QsciScintilla*)(tabWidget->widget(tabWidget->currentIndex()))) : NULL);
-}
