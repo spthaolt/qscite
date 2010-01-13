@@ -90,7 +90,7 @@ void MainWindow::prefsWereChanged() {
 	if (termWidget != NULL) {
 		applyPrefsToTerminal(termWidget);
 	}
-	if (openFiles.size() >= 0) {
+	if (openFiles.size() > 0) {
 		applySettingsToDoc(getCurDoc());
 		if (textSettingsWidget != NULL) {
 			textSettingsWidget->populate();

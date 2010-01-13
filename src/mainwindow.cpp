@@ -156,7 +156,7 @@ void MainWindow::setDocumentModified(bool wasModified) {
 }
 
 void MainWindow::curDocChanged(int idx) {
-  if (openFiles.size() >= 0) {
+  if (openFiles.size() > 0) {
     QsciScintilla * doc = getCurDoc();
     
     setWindowTitleForFile(getCurFileObj()->baseName);
@@ -328,7 +328,7 @@ void MainWindow::noticeFocusChange(QWidget * prev, QWidget * current) {
   
 	if (termWidget != NULL && current == termWidget) {
 		copyFromTerm = true;
-	} else if (openFiles.size() >= 0 && current == getCurDoc()) {
+	} else if (openFiles.size() > 0 && current == getCurDoc()) {
 		copyFromTerm = false;
 	}
 }
