@@ -86,7 +86,6 @@ MainWindow::MainWindow(QStringList & _argv, Launcher * _launcher) :
   setAcceptDrops(true);
   
   while (!argv.isEmpty()) {
-  qDebug() << "argv.front() is " << argv.front();
     if (!argv.front().isEmpty()) {
       setupDocument(argv.front());
     }
@@ -278,7 +277,6 @@ bool MainWindow::saveFile(const QString &fileName) {
 }
 
 void MainWindow::setWindowTitleForFile(const QString & fileName) {
-  qDebug() << "Pointer Addr is " << QString().number((uint)getCurDoc());
   qDebug() << "Setting window title to " << fileName;
   QString shownName;
   
@@ -430,7 +428,6 @@ FileData::FileData(const FileData & src) : fullName(src.fullName), baseName(src.
 void FileData::setPathName(const QString & newPathName) {
 	fullName = newPathName;
   qDebug() << "Full file name is " << newPathName;
-  qDebug() << "Pointer Addr is " << QString().number((uint)edWidget);
 	QFileInfo info(newPathName);
 	baseName = info.fileName();
 	path = newPathName.isEmpty() ? "": info.absolutePath();
