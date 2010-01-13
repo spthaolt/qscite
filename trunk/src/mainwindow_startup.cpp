@@ -198,14 +198,14 @@ void MainWindow::createMenus() {
     lexerMenu->addAction(lexerList->at(i));
   }
   
-  optionsMenu = menuBar()->addMenu(tr("&Options"));
-  lineEndMenu = optionsMenu->addMenu(tr("&Line Endings"));
+  toolsMenu = menuBar()->addMenu(tr("&Tools"));
+  lineEndMenu = toolsMenu->addMenu(tr("&Line Endings"));
   lineEndMenu->addAction(lineEndLf);
   lineEndMenu->addAction(lineEndCrLf);
   lineEndMenu->addAction(lineEndCr);
   lineEndMenu->addSeparator();
   lineEndMenu->addAction(convertEndings);
-  optionsMenu->addAction(convertIndentAct);
+  toolsMenu->addAction(convertIndentAct);
   menuBar()->addSeparator();
 
   windowMenu = menuBar()->addMenu(tr("&Window"));

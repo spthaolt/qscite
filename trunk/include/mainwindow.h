@@ -182,7 +182,7 @@ private:
     QMenu * editMenu;
     QMenu * viewMenu;
     QMenu * lexerMenu;
-    QMenu * optionsMenu;
+    QMenu * toolsMenu;
     QMenu * lineEndMenu;
     QMenu * windowMenu;
     QMenu * helpMenu;
