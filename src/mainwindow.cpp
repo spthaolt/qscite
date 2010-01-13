@@ -61,6 +61,7 @@ MainWindow::MainWindow(QStringList & _argv, Launcher * _launcher) :
   tabWidget->setElideMode(Qt::ElideNone);
   tabWidget->setTabsClosable(true);
   tabWidget->setMovable(true);
+  tabWidget->setFocusPolicy(Qt::ClickFocus);
   connect(tabWidget, SIGNAL(tabCloseRequested(int)), this, SLOT(closeTab(int)));
   
   setCentralWidget(tabWidget);
@@ -99,7 +100,7 @@ MainWindow::MainWindow(QStringList & _argv, Launcher * _launcher) :
 }
 
 void MainWindow::createDocument() {
-  QsciScintilla * curDoc = new QsciScintilla();
+  QsciteEditor * curDoc = new QsciteEditor();
   curDoc->setUtf8(true);
   applySettingsToDoc(curDoc);
 
@@ -118,7 +119,7 @@ void MainWindow::createDocument() {
   connect(curDoc, SIGNAL(linesChanged()), this, SLOT(redoSetMargin()));
 }
 
-void MainWindow::changeTabs(QsciScintilla * edWidget) {
+void MainWindow::changeTabs(QsciteEditor * edWidget) {
   tabWidget->setCurrentIndex(tabWidget->indexOf(edWidget));
 }
 
@@ -157,7 +158,7 @@ void MainWindow::setDocumentModified(bool wasModified) {
 
 void MainWindow::curDocChanged(int idx) {
   if (openFiles.size() > 0) {
-    QsciScintilla * doc = getCurDoc();
+    QsciteEditor * doc = getCurDoc();
     
     setWindowTitleForFile(getCurFileObj()->baseName);
     setWindowModified(doc->isModified());
@@ -224,7 +225,7 @@ void MainWindow::loadFile(const QString &fileName) {
   
   redoSetMargin();
   
-  QsciScintilla * curDoc = getCurDoc();
+  QsciteEditor * curDoc = getCurDoc();
   
   QFont currentFont = curDoc->font();
   QsciLexer * newLexer = getLexerForDocument(fileName, curDoc->text());
@@ -309,7 +310,7 @@ void MainWindow::updateCopyAvailable(bool yes) {
 }
 
 void MainWindow::setLexer(const QString & lexerName) {
-  QsciScintilla * curDoc = getCurDoc();
+  QsciteEditor * curDoc = getCurDoc();
   QsciLexer * newLexer = NULL;
   newLexer = getLexerByName(lexerName);
   newLexer->setParent(curDoc);
@@ -357,6 +358,15 @@ void MainWindow::addRecentFile(const QString & fileName) {
 }
 
 bool MainWindow::eventFilter(QObject * target, QEvent * event) {
+/*  if (event->type() == QEvent::KeyPress) {
+    qDebug() << "it's a key press event";
+    QKeyEvent *kevent = (QKeyEvent *)event;
+  if (kevent->key() == Qt::Key_Tab && kevent->modifiers() & Qt::ShiftModifier) {
+    qDebug() << "Shift-tab pressed";
+  }
+  }	*/  
+
+
 	if (target == qApp && event->type() == QEvent::FileOpen) {
 		QString fileName = dynamic_cast<QFileOpenEvent *>(event)->file();
 		setupDocument(fileName);
@@ -382,15 +392,15 @@ void MainWindow::setupDocument(QString &fileName) {
 
 void MainWindow::setUIForDocumentEolMode() {
 	switch (getCurDoc()->eolMode()) {
-		case QsciScintilla::EolWindows:
+		case QsciteEditor::EolWindows:
 			lineEndCrLf->setChecked(true);
 		break;
 		
-		case QsciScintilla::EolUnix:
+		case QsciteEditor::EolUnix:
 			lineEndLf->setChecked(true);
 		break;
 		
-		case QsciScintilla::EolMac:
+		case QsciteEditor::EolMac:
 			lineEndCr->setChecked(true);
 		break;
 	}
@@ -422,7 +432,7 @@ void MainWindow::dropEvent(QDropEvent *event) {
 	event->acceptProposedAction();
 }
 
-FileData::FileData(QsciScintilla * doc) : path(QDir::homePath()), edWidget(doc) { ; }
+FileData::FileData(QsciteEditor * doc) : path(QDir::homePath()), edWidget(doc) { ; }
 FileData::FileData(const FileData & src) : fullName(src.fullName), baseName(src.baseName), path(src.path), edWidget(src.edWidget) { ; }
 
 void FileData::setPathName(const QString & newPathName) {

@@ -43,16 +43,16 @@ void printHex (QString & thestr) {
   std::cerr << "-- " << readableStr;
 }
 
-QsciScintilla::EolMode detectEolMode(QsciScintilla * doc) {
+QsciteEditor::EolMode detectEolMode(QsciteEditor * doc) {
 	QString firstLine = doc->text(0);
 	if (firstLine.endsWith("\r\n")) {
-		return QsciScintilla::EolWindows;
+		return QsciteEditor::EolWindows;
 	}
 	if (firstLine.endsWith('\n')) {
-		return QsciScintilla::EolUnix;
+		return QsciteEditor::EolUnix;
 	}
 	if (firstLine.endsWith('\r')) {
-		return QsciScintilla::EolMac;
+		return QsciteEditor::EolMac;
 	}
 	return doc->eolMode();
 }

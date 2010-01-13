@@ -72,7 +72,7 @@ void MainWindow::newFile() {
 bool MainWindow::closeFile() {
   if (tabWidget->count()) {
     if (maybeSave()) {
-      QsciScintilla * theEditor = getCurDoc();
+      QsciteEditor * theEditor = getCurDoc();
 
       openFiles.remove(theEditor);
       tabWidget->removeTab(getCurTabIndex());
@@ -155,7 +155,7 @@ bool MainWindow::saveAs() {
       setCurrentTabTitle();
       setWindowTitleForFile(getCurFileObj()->baseName);
       lastDir = getCurFileObj()->path;
-      QsciScintilla * curDoc = getCurDoc();
+      QsciteEditor * curDoc = getCurDoc();
       QsciLexer * newLexer = getLexerForDocument(fileName, curDoc->text());
       if (newLexer != NULL) {
 /*
@@ -262,19 +262,19 @@ void MainWindow::prevDoc() {
 
 void MainWindow::setEolCr () {
   if (openFiles.size() > 0) {
-    getCurDoc()->setEolMode(QsciScintilla::EolMac);
+    getCurDoc()->setEolMode(QsciteEditor::EolMac);
   }
 }
 
 void MainWindow::setEolLf () {
   if (openFiles.size() > 0) {
-    getCurDoc()->setEolMode(QsciScintilla::EolUnix);
+    getCurDoc()->setEolMode(QsciteEditor::EolUnix);
   }
 }
 
 void MainWindow::setEolCrLf () {
   if (openFiles.size() > 0) {
-    getCurDoc()->setEolMode(QsciScintilla::EolWindows);
+    getCurDoc()->setEolMode(QsciteEditor::EolWindows);
   }
 }
 
@@ -295,7 +295,7 @@ void MainWindow::lexerMenuChanged() {
 }
 
 void MainWindow::toggleFolding() {
-  QsciScintilla::FoldStyle state = static_cast<QsciScintilla::FoldStyle>((!getCurDoc()->folding()) * 5);
+  QsciteEditor::FoldStyle state = static_cast<QsciteEditor::FoldStyle>((!getCurDoc()->folding()) * 5);
 
   if (!state) {
     // unfold all code before turning off folding

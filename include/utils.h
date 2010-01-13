@@ -18,8 +18,8 @@
  ***************************************************************************/
  
 #include <QString>
-#include <Qsci/qsciscintilla.h>
+#include "qsciteeditor.h"
 
 void printHex (QString & str);
 
-QsciScintilla::EolMode detectEolMode(QsciScintilla * doc);
+QsciteEditor::EolMode detectEolMode(QsciteEditor * doc);
