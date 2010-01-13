@@ -34,7 +34,7 @@ void MainWindow::toggleTerminal(bool alive) {
     termWidget->deleteLater();
     termWidget = NULL;
 
-    if (openFiles.size() >= 0) {
+    if (openFiles.size() > 0) {
       getCurDoc()->setFocus();
     }
 
@@ -43,7 +43,7 @@ void MainWindow::toggleTerminal(bool alive) {
     qDebug() << "Opening terminal";
     termWidget = new QTerminal(this);
     applyPrefsToTerminal(termWidget);
-    if (openFiles.size() >= 0 && !getCurFileObj()->fullName.isEmpty()) {
+    if (openFiles.size() > 0 && !getCurFileObj()->fullName.isEmpty()) {
     	termWidget->changeDir(getCurFileObj()->path);
     }
 
@@ -261,31 +261,31 @@ void MainWindow::prevDoc() {
 }
 
 void MainWindow::setEolCr () {
-  if (openFiles.size() >= 0) {
+  if (openFiles.size() > 0) {
     getCurDoc()->setEolMode(QsciScintilla::EolMac);
   }
 }
 
 void MainWindow::setEolLf () {
-  if (openFiles.size() >= 0) {
+  if (openFiles.size() > 0) {
     getCurDoc()->setEolMode(QsciScintilla::EolUnix);
   }
 }
 
 void MainWindow::setEolCrLf () {
-  if (openFiles.size() >= 0) {
+  if (openFiles.size() > 0) {
     getCurDoc()->setEolMode(QsciScintilla::EolWindows);
   }
 }
 
 void MainWindow::convertEols () {
-  if (openFiles.size() >= 0) {
+  if (openFiles.size() > 0) {
     getCurDoc()->convertEols(getCurDoc()->eolMode());
   }
 }
 
 void MainWindow::setEolVisibility(bool vis) {
-  if (openFiles.size() >= 0) {
+  if (openFiles.size() > 0) {
     getCurDoc()->setEolVisibility(vis);
   }
 }
