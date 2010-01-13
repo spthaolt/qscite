@@ -62,10 +62,20 @@ class MainWindow : public QMainWindow {
 public:
     MainWindow(QStringList & _argv, Launcher * _launcher);
 
+    inline FileData * getCurFileObj() {
+      // this implementation is in the header file to avoid excessive warnings...
+      // and to allow QSciTE to compile on Win32.
+      return (openFiles.size() > 0 ? &openFiles[(QsciScintilla *)(tabWidget->widget(tabWidget->currentIndex()))] : NULL);
+    }
+
     inline QsciScintilla * getCurDoc() {
       // this implementation is in the header file to avoid excessive warnings...
       // and to allow QSciTE to compile on Win32.
-      return (openFiles.size() > curDocIdx ? openFiles[curDocIdx].edWidget : NULL);
+      return (openFiles.size() > 0 ? getCurFileObj()->edWidget : NULL);
+    }
+    
+    inline int getCurTabIndex() {
+      return (openFiles.size() > 0 ? tabWidget->indexOf((QWidget *)getCurDoc()) : -1);
     }
     
     bool closeWindow();
@@ -144,16 +154,17 @@ private:
     
     void setWindowTitleForFile(const QString & fileName);
     void setCurrentTabTitle();
-    void changeTabs(int index);
+    void changeTabs(QsciScintilla * edWidget);
+    void changeTabs(int tabIndex);
     void documentWasModified();
     void setUIForDocumentEolMode();
     void setLexer(const QString & lexerName);
     void setLexer(QsciLexer * lexer);
-    void setupDocument(QString &fileName);
+    void setupDocument(QString & fileName);
 
     QStringList argv;
     Launcher * launcher;
-    std::vector<FileData> openFiles;
+    QMap<QsciScintilla *, FileData> openFiles;
     QList<QFileInfo> recentFiles;
     QTabWidget * tabWidget;
     QTerminal * termWidget;
@@ -165,8 +176,6 @@ private:
     
     bool copyFromTerm;
     bool termInDrawer;
-
-    unsigned int curDocIdx;
 
     QMenu * fileMenu;
     QMenu * recentMenu;

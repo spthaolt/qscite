@@ -26,8 +26,8 @@ namespace {
 void MainWindow::convertIndentation() {
   QsciScintilla * curDoc;
   
-  if (curDocIdx < openFiles.size()) {
-    curDoc = openFiles[curDocIdx].edWidget;
+  if (openFiles.size() >= 0) {
+    curDoc = getCurDoc();
   } else {
     return;
   }
