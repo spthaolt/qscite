@@ -94,7 +94,7 @@ bool MainWindow::closeFile() {
 }
 
 void MainWindow::open() {
-  QStringList fileNames = QFileDialog::getOpenFileNames(this, "Select one or more files to open", (openFiles.size() >= 0 && !getCurFileObj()->path.isEmpty()) ? getCurFileObj()->path : lastDir);
+  QStringList fileNames = QFileDialog::getOpenFileNames(this, "Select one or more files to open", (openFiles.size() > 0 && !getCurFileObj()->path.isEmpty()) ? getCurFileObj()->path : lastDir);
 
   while (fileNames.count()) {
     if (!fileNames.back().isEmpty()) {
@@ -102,13 +102,13 @@ void MainWindow::open() {
         createDocument();
       }
 
-      loadFile(fileNames.back());
+      loadFile(fileNames.front());
       setCurrentTabTitle();
 
-      addRecentFile(fileNames.back());
+      addRecentFile(fileNames.front());
     }
 
-    fileNames.pop_back();
+    fileNames.pop_front();
   }
 
   if (!openFiles.empty()) {
@@ -120,7 +120,7 @@ void MainWindow::open() {
 void MainWindow::openRecent(QAction * src) {
   qDebug() << "openRecent(" << src->statusTip() << ')';
   if ((!tabWidget->count()) || (!getCurFileObj()->baseName.isEmpty()) || getCurDoc()->isModified()) {
-	createDocument();
+    createDocument();
   }
 
   loadFile(src->statusTip());
