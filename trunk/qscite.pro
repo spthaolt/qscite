@@ -23,7 +23,8 @@ HEADERS       = mainwindow.h \
                 textdisplay.h \
                 findreplace.h \
                 scriptconsole.h \
-                launcher.h
+                launcher.h \
+                qsciteeditor.h
 
 SOURCES       = main.cpp \
                 mainwindow.cpp \
@@ -37,7 +38,8 @@ SOURCES       = main.cpp \
                 reindent.cpp \
                 findreplace.cpp \
                 scriptconsole.cpp \
-                launcher.cpp
+                launcher.cpp \
+                qsciteeditor.cpp
 
 FORMS         = dlgPrefsUI.ui \
                 frmTextDisplay.ui \

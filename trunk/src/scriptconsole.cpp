@@ -18,10 +18,10 @@ dlgScriptConsole::dlgScriptConsole(MainWindow * _parent) {
   
   engine = &(parent->scriptEngine);
   
-  QsciScintilla * curDoc = new QsciScintilla();
+  QsciteEditor * curDoc = new QsciteEditor();
   
   /*qDebug() << "ready to create scintilla";
-  doc = new QsciScintilla(verticalLayout);*/
+  doc = new QsciteEditor(verticalLayout);*/
   curDoc->setUtf8(true);
   
   qDebug() << "apply settings to scintilla";

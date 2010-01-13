@@ -5,7 +5,7 @@
 
 #include <QDialog>
 #include <QSettings>
-class QsciScintilla;
+#include "qsciteeditor.h"
 class QTerminal;
 
 class MainPrefsDialog: public QDialog, protected Ui_QSciTEPrefs {
@@ -43,7 +43,7 @@ private:
 
 void writeDefaultSettings(QSettings & settings);
 
-void applySettingsToDoc(QsciScintilla * curDoc);
+void applySettingsToDoc(QsciteEditor * curDoc);
 void applyPrefsToTerminal(QTerminal * term);
 
 #endif

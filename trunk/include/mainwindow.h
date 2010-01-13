@@ -27,10 +27,10 @@
 #include <QtScript>
 
 #include "launcher.h"
+#include "qsciteeditor.h"
 
 class QAction;
 class QMenu;
-class QsciScintilla;
 class QsciLexer;
 class QTabWidget;
 class QTerminal;
@@ -42,14 +42,14 @@ class dlgScriptConsole;
 
 struct FileData {
 
-	FileData(QsciScintilla * doc = NULL);
+	FileData(QsciteEditor * doc = NULL);
 	FileData(const FileData & src);
 	
 	QString fullName;
 	QString baseName;
 	QString path;
 	
-	QsciScintilla * edWidget;
+	QsciteEditor * edWidget;
 	
 	void setPathName(const QString & newPathName);
 };
@@ -65,10 +65,10 @@ public:
     inline FileData * getCurFileObj() {
       // this implementation is in the header file to avoid excessive warnings...
       // and to allow QSciTE to compile on Win32.
-      return (openFiles.size() > 0 ? &openFiles[(QsciScintilla *)(tabWidget->widget(tabWidget->currentIndex()))] : NULL);
+      return (openFiles.size() > 0 ? &openFiles[(QsciteEditor *)(tabWidget->widget(tabWidget->currentIndex()))] : NULL);
     }
 
-    inline QsciScintilla * getCurDoc() {
+    inline QsciteEditor * getCurDoc() {
       // this implementation is in the header file to avoid excessive warnings...
       // and to allow QSciTE to compile on Win32.
       return (openFiles.size() > 0 ? getCurFileObj()->edWidget : NULL);
@@ -154,7 +154,7 @@ private:
     
     void setWindowTitleForFile(const QString & fileName);
     void setCurrentTabTitle();
-    void changeTabs(QsciScintilla * edWidget);
+    void changeTabs(QsciteEditor * edWidget);
     void changeTabs(int tabIndex);
     void documentWasModified();
     void setUIForDocumentEolMode();
@@ -164,7 +164,7 @@ private:
 
     QStringList argv;
     Launcher * launcher;
-    QMap<QsciScintilla *, FileData> openFiles;
+    QMap<QsciteEditor *, FileData> openFiles;
     QList<QFileInfo> recentFiles;
     QTabWidget * tabWidget;
     QTerminal * termWidget;

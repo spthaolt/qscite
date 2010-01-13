@@ -24,7 +24,7 @@ protected slots:
 
 private:
   QScriptEngine * engine;
-  QsciScintilla * doc;
+  QsciteEditor * doc;
 };
   
 #endif /*SCRIPTCONSOLE_H_*/

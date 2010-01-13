@@ -8,7 +8,7 @@
 namespace {
   class DlgConvertIndent : public QDialog, public Ui_dlgConvertIndent {
     public:
-    DlgConvertIndent( QsciScintilla * doc = 0,
+    DlgConvertIndent( QsciteEditor * doc = 0,
                       QWidget * parent = 0,
                       Qt::WindowFlags f = 0) : QDialog(parent, f)
     {
@@ -24,7 +24,7 @@ namespace {
 }
 
 void MainWindow::convertIndentation() {
-  QsciScintilla * curDoc;
+  QsciteEditor * curDoc;
   
   if (openFiles.size() > 0) {
     curDoc = getCurDoc();

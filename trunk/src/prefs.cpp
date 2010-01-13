@@ -1,6 +1,6 @@
 #include <QtGui>
 #include <QtDebug>
-#include <Qsci/qsciscintilla.h>
+#include "qsciteeditor.h"
 
 #include "prefs.h"
 #include "lexer_utils.h"
@@ -63,7 +63,7 @@ void MainPrefsDialog::populate() {
 	cbSaveSize->setChecked(settings.value("saveWindowGeometry").toBool());
 	sbRecentCount->setValue(settings.value("recentFileCount").toInt());
 	cbWrapMode->setChecked(
-		settings.value("wrapMode").toInt() == QsciScintilla::WrapWord
+		settings.value("wrapMode").toInt() == QsciteEditor::WrapWord
 	);
 	cbxWrapMarkers->setCurrentIndex(
 		settings.value("wrapIndicatorMode").toInt()
@@ -234,7 +234,7 @@ void MainPrefsDialog::writeValues() {
 	settings.setValue("saveWindowGeometry", cbSaveSize->isChecked());
 	settings.setValue("recentFileCount", sbRecentCount->value());
 
-	settings.setValue("wrapMode", cbWrapMode->isChecked() ? QsciScintilla::WrapWord : QsciScintilla::WrapNone);
+	settings.setValue("wrapMode", cbWrapMode->isChecked() ? QsciteEditor::WrapWord : QsciteEditor::WrapNone);
 	settings.setValue("wrapIndicatorMode", cbxWrapMarkers->currentIndex());
 	
 	settings.setValue("showLineNumbers", cbLineNos->isChecked());
@@ -311,9 +311,9 @@ void writeDefaultSettings(QSettings & settings) {
 	settings.setValue("trayIcon", true);
 	settings.setValue("wndOpacity", 1.0);
 
-	settings.setValue("EOLMode", QsciScintilla::EolUnix);
-	settings.setValue("wrapMode", QsciScintilla::WrapWord);
-	settings.setValue("wrapIndicatorMode", QsciScintilla::WrapFlagNone);
+	settings.setValue("EOLMode", QsciteEditor::EolUnix);
+	settings.setValue("wrapMode", QsciteEditor::WrapWord);
+	settings.setValue("wrapIndicatorMode", QsciteEditor::WrapFlagNone);
 	settings.setValue("showLineNumbers", true);
 	
 	settings.setValue("indentUseTabs", false);
@@ -336,19 +336,19 @@ void writeDefaultSettings(QSettings & settings) {
 	settings.setValue("version", 1);
 }
 
-void applySettingsToDoc(QsciScintilla * curDoc) {
+void applySettingsToDoc(QsciteEditor * curDoc) {
 	QSettings settings;
 
 	// Default EOL mode to LF
 	curDoc->setEolMode(
-		static_cast<QsciScintilla::EolMode>(
-			settings.value("EOLMode", QsciScintilla::EolUnix).toInt()
+		static_cast<QsciteEditor::EolMode>(
+			settings.value("EOLMode", QsciteEditor::EolUnix).toInt()
 		)
 	);
 	
 	// Default wrap mode to WrapWord
 	curDoc->setWrapMode(
-		static_cast<QsciScintilla::WrapMode>(
+		static_cast<QsciteEditor::WrapMode>(
 			settings.value("wrapMode").toInt()
 		)
 	);
@@ -385,10 +385,10 @@ void applySettingsToDoc(QsciScintilla * curDoc) {
 	
 	// Set wrap visual indication
 	curDoc->setWrapVisualFlags(
-		static_cast<QsciScintilla::WrapVisualFlag>(
+		static_cast<QsciteEditor::WrapVisualFlag>(
 			settings.value("wrapIndicatorMode").toInt()
 		),
-		QsciScintilla::WrapFlagNone,
+		QsciteEditor::WrapFlagNone,
 		curDoc->indentationWidth()
 	);
 			
@@ -398,8 +398,8 @@ void applySettingsToDoc(QsciScintilla * curDoc) {
 	
 	// Turn on strict brace matching by default
 	curDoc->setBraceMatching(
-		static_cast<QsciScintilla::BraceMatch>(
-			settings.value("braceMatchMode", QsciScintilla::StrictBraceMatch).toInt()
+		static_cast<QsciteEditor::BraceMatch>(
+			settings.value("braceMatchMode", QsciteEditor::StrictBraceMatch).toInt()
 		)
 	);
 	// use Monospaced font at size 10 by default

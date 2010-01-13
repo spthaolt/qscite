@@ -2,6 +2,7 @@
 #include "mainwindow.h"
 #include "lexer_utils.h"
 #include "prefs.h"
+#include "qsciteeditor.h"
 
 #include <Qsci/qsciscintilla.h>
 #include <Qsci/qscilexer.h>
@@ -33,14 +34,14 @@ TextDisplayPanel::TextDisplayPanel(QWidget * _parent, Qt::WindowFlags f) :
 }
 
 namespace {
-	/* Read back the wrap visual information from a QsciScintilla.
-	 * This method is oddly missing from the QsciScintilla class. Would be
+	/* Read back the wrap visual information from a QsciteEditor.
+	 * This method is oddly missing from the QsciteEditor class. Would be
 	 * a good use for an Objective-C category, but this is C++.
 	 */
-	QsciScintilla::WrapVisualFlag getWrapVisualFlag(QsciScintilla * e) {
+	QsciteEditor::WrapVisualFlag getWrapVisualFlag(QsciteEditor * e) {
 		int showFlags = e->SendScintilla( QsciScintillaBase::SCI_GETWRAPVISUALFLAGS );
 		int flagsNearText = e->SendScintilla( QsciScintillaBase::SCI_GETWRAPVISUALFLAGSLOCATION);
-		return showFlags ? (flagsNearText ? QsciScintilla::WrapFlagByText : QsciScintilla::WrapFlagByBorder) : QsciScintilla::WrapFlagNone;
+		return showFlags ? (flagsNearText ? QsciteEditor::WrapFlagByText : QsciteEditor::WrapFlagByBorder) : QsciteEditor::WrapFlagNone;
 	}
 }
 
@@ -51,8 +52,8 @@ void TextDisplayPanel::populate() {
 	}
 	this->setEnabled(true);
 	
-	QsciScintilla * theEditor = parent->getCurDoc();
-	cbWrapMode->setChecked(theEditor->wrapMode() == QsciScintilla::WrapWord);
+	QsciteEditor * theEditor = parent->getCurDoc();
+	cbWrapMode->setChecked(theEditor->wrapMode() == QsciteEditor::WrapWord);
 	cbxWrapMarkers->setCurrentIndex(getWrapVisualFlag(theEditor));
 	cbLineNos->setChecked(theEditor->marginWidth(1) > 0);
 	cbIndentGuides->setChecked(theEditor->indentationGuides());
@@ -87,7 +88,7 @@ void TextDisplayPanel::on_btnReset_clicked() {
 
 void TextDisplayPanel::on_btnSaveSettings_clicked() {
 	QSettings settings;
-	settings.setValue("wrapMode", cbWrapMode->isChecked() ? QsciScintilla::WrapWord : QsciScintilla::WrapNone);
+	settings.setValue("wrapMode", cbWrapMode->isChecked() ? QsciteEditor::WrapWord : QsciteEditor::WrapNone);
 	settings.setValue("wrapIndicatorMode", cbxWrapMarkers->currentIndex());
 	
 	settings.setValue("showLineNumbers", cbLineNos->isChecked());
@@ -100,7 +101,7 @@ void TextDisplayPanel::on_btnSaveSettings_clicked() {
 	
 	settings.beginGroup("font");
 	if (!parent->openFiles.empty()) {
-		QsciScintilla * theEditor = parent->getCurDoc();
+		QsciteEditor * theEditor = parent->getCurDoc();
 		settings.setValue("docFamily", theEditor->font().family());
 		settings.setValue("docSize", theEditor->font().pointSize());
 	}
@@ -116,14 +117,14 @@ void TextDisplayPanel::on_btnSaveSettings_clicked() {
 }
 
 void TextDisplayPanel::on_cbWrapMode_clicked(bool checked) {
-	parent->getCurDoc()->setWrapMode(checked ? QsciScintilla::WrapWord : QsciScintilla::WrapNone);
+	parent->getCurDoc()->setWrapMode(checked ? QsciteEditor::WrapWord : QsciteEditor::WrapNone);
 }
 
 void TextDisplayPanel::on_cbxWrapMarkers_currentIndexChanged(int idx) {
-	QsciScintilla * curDoc = parent->getCurDoc();
+	QsciteEditor * curDoc = parent->getCurDoc();
 	curDoc->setWrapVisualFlags(
-		static_cast<QsciScintilla::WrapVisualFlag>(idx),
-		QsciScintilla::WrapFlagNone,
+		static_cast<QsciteEditor::WrapVisualFlag>(idx),
+		QsciteEditor::WrapFlagNone,
 		curDoc->indentationWidth()
 	);
 }
@@ -155,7 +156,7 @@ void TextDisplayPanel::on_cbxUseTabs_currentIndexChanged(int idx) {
 }
 
 void TextDisplayPanel::on_cbxEOLMode_currentIndexChanged(int idx) {
-	parent->getCurDoc()->setEolMode( static_cast<QsciScintilla::EolMode>(idx) );
+	parent->getCurDoc()->setEolMode( static_cast<QsciteEditor::EolMode>(idx) );
 }
 
 void TextDisplayPanel::on_cbxLexer_currentIndexChanged(int idx) {
