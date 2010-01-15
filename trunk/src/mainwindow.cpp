@@ -176,7 +176,7 @@ void MainWindow::curDocChanged(int idx) {
   }
   
   //have to update the document in the scriptEngine.
-  QScriptValue document = scriptEngine.newQObject(new QSciteEditorScriptWrapper(getCurDoc()));
+  QScriptValue document = scriptEngine.newQObject(getCurDoc());
   scriptEngine.globalObject().setProperty("document", document);
 }
 
