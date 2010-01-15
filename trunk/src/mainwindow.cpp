@@ -33,6 +33,7 @@
 #include "prefs.h"
 #include "textdisplay.h"
 #include "scriptconsole.h"
+#include "qsciteeditorscriptwrapper.h"
 
 #ifdef _WIN32
   #include "qterminal.h"
@@ -175,7 +176,7 @@ void MainWindow::curDocChanged(int idx) {
   }
   
   //have to update the document in the scriptEngine.
-  QScriptValue document = scriptEngine.newQObject(getCurDoc());
+  QScriptValue document = scriptEngine.newQObject(new QSciteEditorScriptWrapper(getCurDoc()));
   scriptEngine.globalObject().setProperty("document", document);
 }
 

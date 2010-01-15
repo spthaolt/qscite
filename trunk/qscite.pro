@@ -24,7 +24,8 @@ HEADERS       = mainwindow.h \
                 findreplace.h \
                 scriptconsole.h \
                 launcher.h \
-                qsciteeditor.h
+                qsciteeditor.h \
+		qsciteeditorscriptwrapper.h
 
 SOURCES       = main.cpp \
                 mainwindow.cpp \
