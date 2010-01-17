@@ -6,6 +6,8 @@
 QsciteEditor::QsciteEditor() : QsciScintilla() { }
 
 void QsciteEditor::unindentHandler() {
+  beginUndoAction();
+
   if (hasSelectedText()) {
     int lineFrom(0), lineTo(0), indexFrom(0), indexTo(0);
     getSelection(&lineFrom, &indexFrom, &lineTo, &indexTo);
@@ -20,6 +22,8 @@ void QsciteEditor::unindentHandler() {
     // attempt to return the cursor to it's original location, correcting for new indentation.
     setCursorPosition(line, index - indentationWidth());
   }
+
+  endUndoAction();
 }
 
 void QsciteEditor::keyPressEvent(QKeyEvent * event) {

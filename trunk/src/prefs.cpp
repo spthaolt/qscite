@@ -305,7 +305,7 @@ void writeDefaultSettings(QSettings & settings) {
 	settings.setValue("terminalInDrawer", false);
 #endif
 
-    settings.setValue("recentFileCount", 0);
+    settings.setValue("recentFileCount", 10);
 	settings.setValue("saveWindowGeometry", true);
 	
 	settings.setValue("trayIcon", true);

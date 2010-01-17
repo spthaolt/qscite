@@ -33,7 +33,6 @@
 #include "prefs.h"
 #include "textdisplay.h"
 #include "scriptconsole.h"
-#include "qsciteeditorscriptwrapper.h"
 
 #ifdef _WIN32
   #include "qterminal.h"
@@ -336,7 +335,7 @@ void MainWindow::noticeFocusChange(QWidget * prev, QWidget * current) {
 }
 
 void MainWindow::addRecentFile(const QString & fileName) {
-	int maxRecentFiles = QSettings().value("recentFileCount",0).toInt();
+  int maxRecentFiles = QSettings().value("recentFileCount",10).toInt();
 	
 	recentFiles.push_back(QFileInfo(fileName));
 	for (int i = 0; i < recentFiles.size() - 1; ++i) {

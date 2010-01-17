@@ -60,7 +60,7 @@ void MainWindow::writeSettings() {
     }
   }
 
-  if (settings.value("recentFileCount", 0).toInt() > 0) {
+  if (settings.value("recentFileCount", 10).toInt() > 0) {
     settings.beginWriteArray("recentFiles");
     for (int i = 0; i < recentFiles.size(); ++i) {
     	if (recentFiles[i].exists() && recentFiles[i].isFile()) {
