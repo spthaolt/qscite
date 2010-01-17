@@ -65,13 +65,13 @@ public:
     inline FileData * getCurFileObj() {
       // this implementation is in the header file to avoid excessive warnings...
       // and to allow QSciTE to compile on Win32.
-      return (openFiles.size() > 0 ? &openFiles[(QsciteEditor *)(tabWidget->widget(tabWidget->currentIndex()))] : NULL);
+      return (openFiles.size() > 0 ? &openFiles[getCurDoc()] : NULL);
     }
 
     inline QsciteEditor * getCurDoc() {
       // this implementation is in the header file to avoid excessive warnings...
       // and to allow QSciTE to compile on Win32.
-      return (openFiles.size() > 0 ? getCurFileObj()->edWidget : NULL);
+      return (openFiles.size() > 0 ? (QsciteEditor *)(tabWidget->currentWidget()) : NULL);
     }
     
     inline int getCurTabIndex() {

@@ -181,8 +181,6 @@ void MainWindow::createMenus() {
   editMenu->addAction(findTextAct);
   editMenu->addAction(replaceTextAct);
   editMenu->addSeparator();
-  editMenu->addAction(scriptConsoleAct);
-  editMenu->addSeparator();
   editMenu->addAction(prefsAct);
 
   viewMenu = menuBar()->addMenu(tr("&View"));
@@ -206,6 +204,7 @@ void MainWindow::createMenus() {
   lineEndMenu->addSeparator();
   lineEndMenu->addAction(convertEndings);
   toolsMenu->addAction(convertIndentAct);
+  toolsMenu->addAction(scriptConsoleAct);
   menuBar()->addSeparator();
 
   windowMenu = menuBar()->addMenu(tr("&Window"));

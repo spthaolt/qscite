@@ -79,7 +79,7 @@ MainWindow::MainWindow(QStringList & _argv, Launcher * _launcher) :
   tabWidget->setCornerWidget(closeTabButton);
 */
 
-  //connect(tabWidget, SIGNAL(currentChanged(int)), this, SLOT(curDocChanged(int)));
+  connect(tabWidget, SIGNAL(currentChanged(int)), this, SLOT(curDocChanged(int)));
   connect(QApplication::instance(), SIGNAL(focusChanged(QWidget *, QWidget *)), this, SLOT(noticeFocusChange(QWidget *, QWidget *)));
   setWindowTitleForFile("");
 
@@ -157,6 +157,8 @@ void MainWindow::setDocumentModified(bool wasModified) {
 }
 
 void MainWindow::curDocChanged(int idx) {
+  if (idx == idx) { } //make compiler shut up
+
   if (openFiles.size() > 0) {
     QsciteEditor * doc = getCurDoc();
     
