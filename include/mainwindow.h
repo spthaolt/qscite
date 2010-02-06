@@ -93,6 +93,7 @@ private slots:
     /* Slots corresponding to UI actions */
     void newFile();
     bool closeFile();
+    void open(QString fileName);
     void open();
     void openRecent(QAction * src);
     bool save();
