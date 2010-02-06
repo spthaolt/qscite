@@ -402,9 +402,16 @@ void QTerminal::changeDir(const QString & dir) {
    *        effective in most cases (i.e., the user hasn't backgrounded a child
    *        process).
    */
-  write(fdMaster, "cd ", 3);
-  write(fdMaster, dir.toAscii().data(), dir.length());
-  write(fdMaster, "\n", 1);
+  QString strCmd;
+  strCmd.setNum(shellPid);
+  strCmd.prepend("ps -j ");
+  strCmd.append(" | tail -1 | awk '{ print $5 }' | grep -q \\+");
+  int retval = system(strCmd.toStdString().c_str());
+  if (!retval) {
+    write(fdMaster, "cd ", 3);
+    write(fdMaster, dir.toAscii().data(), dir.length());
+    write(fdMaster, "\n", 1);
+  }
 }
 
 FileDescriptorMonitor::FileDescriptorMonitor(int fd, QObject * parent) :
