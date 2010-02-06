@@ -94,10 +94,41 @@ bool MainWindow::closeFile() {
 }
 
 void MainWindow::open() {
-  QStringList fileNames = QFileDialog::getOpenFileNames(this, "Select one or more files to open", (openFiles.size() > 0 && !getCurFileObj()->path.isEmpty()) ? getCurFileObj()->path : lastDir);
+  open("");
+}
 
+void MainWindow::open(QString fileName = QString("")) {
+  QStringList fileNames;
+  
+  if (fileName.isEmpty()) {
+    fileNames = QFileDialog::getOpenFileNames(this, "Select one or more files to open", (openFiles.size() > 0 && !getCurFileObj()->path.isEmpty()) ? getCurFileObj()->path : lastDir);
+  } else {
+    fileNames.push_front(fileName);
+  }
+
+  
   while (fileNames.count()) {
     if (!fileNames.back().isEmpty()) {
+      bool alreadyOpen = false;
+      QList<QsciteEditor *> openTabs = openFiles.keys();
+      QList<QsciteEditor *>::iterator tab;
+      for (tab = openTabs.begin(); tab != openTabs.end(); ++tab) {
+        if (fileNames.front() == openFiles[*tab].fullName) {
+          alreadyOpen = true;
+
+          if (fileNames.count() == 1) {
+            changeTabs(*tab);
+          }
+
+          qDebug() << "file is already open";
+        }
+      }
+      
+      if (alreadyOpen) {
+        fileNames.pop_front();
+        continue;
+      }
+      
       if ((!tabWidget->count()) || (!getCurFileObj()->baseName.isEmpty()) || getCurDoc()->isModified()) {
         createDocument();
       }
@@ -119,12 +150,7 @@ void MainWindow::open() {
 
 void MainWindow::openRecent(QAction * src) {
   qDebug() << "openRecent(" << src->statusTip() << ')';
-  if ((!tabWidget->count()) || (!getCurFileObj()->baseName.isEmpty()) || getCurDoc()->isModified()) {
-    createDocument();
-  }
-
-  loadFile(src->statusTip());
-  setCurrentTabTitle();
+  open(src->statusTip());
 }
 
 bool MainWindow::save() {
