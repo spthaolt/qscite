@@ -76,7 +76,6 @@ bool MainWindow::closeFile() {
 
       openFiles.remove(theEditor);
       tabWidget->removeTab(getCurTabIndex());
-
       delete theEditor;
 
       if (tabWidget->count() == 0) { // out of tabs
@@ -84,7 +83,7 @@ bool MainWindow::closeFile() {
         setWindowModified(false);
         if (textSettingsWidget != NULL) {
           textSettingsWidget->setEnabled(false);
-		}
+        }
       }
       return true;
     }

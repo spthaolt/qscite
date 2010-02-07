@@ -174,6 +174,8 @@ void MainWindow::curDocChanged(int idx) {
     if (termWidget != NULL && !getCurFileObj()->fullName.isEmpty()) {
       termWidget->changeDir(getCurFileObj()->path);
     }
+
+    getCurDoc()->setFocus(Qt::MouseFocusReason);
   }
   
   //have to update the document in the scriptEngine.
