@@ -18,7 +18,7 @@ dlgScriptConsole::dlgScriptConsole(MainWindow * _parent) {
   
   engine = &(parent->scriptEngine);
   
-  QsciteEditor * curDoc = new QsciteEditor();
+  QsciteEditor * curDoc = new QsciteEditor(parent);
   
   /*qDebug() << "ready to create scintilla";
   doc = new QsciteEditor(verticalLayout);*/

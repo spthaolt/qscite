@@ -80,6 +80,8 @@ public:
     
     bool closeWindow();
     QScriptEngine scriptEngine;
+    void dropEvent(QDropEvent *event);
+
 /*    
 signals:
     void closed();
@@ -135,7 +137,6 @@ private slots:
     void prefsWereChanged();
     void updateCopyAvailable(bool);
     void noticeFocusChange(QWidget *, QWidget *);
-    void dropEvent(QDropEvent *event);
     void dragEnterEvent(QDragEnterEvent *event);
 
 private:
