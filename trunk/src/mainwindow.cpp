@@ -100,7 +100,7 @@ MainWindow::MainWindow(QStringList & _argv, Launcher * _launcher) :
 }
 
 void MainWindow::createDocument() {
-  QsciteEditor * curDoc = new QsciteEditor();
+  QsciteEditor * curDoc = new QsciteEditor(this);
   curDoc->setUtf8(true);
   applySettingsToDoc(curDoc);
 
@@ -430,7 +430,7 @@ void MainWindow::dropEvent(QDropEvent *event) {
 	fileInfo.setFile(fileName);
 	if (fileInfo.isFile()) {
 		qDebug() << "Got drop event. Filename is: " << fileName << "\n";
-		setupDocument(fileName);
+		open(fileName);
 	}
 
 	event->acceptProposedAction();

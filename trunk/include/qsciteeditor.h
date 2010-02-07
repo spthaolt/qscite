@@ -1,13 +1,13 @@
 #ifndef QSCITEEDITOR_H_
 #define QSCITEEDITOR_H_
 #include <Qsci/qsciscintilla.h>
-
+class MainWindow;
 class QsciteEditor : public QsciScintilla {
 
     Q_OBJECT
   
   public:
-    QsciteEditor();
+    QsciteEditor(MainWindow * _parent);
     void append (const QString & text );
     void autoCompleteFromAll ();
     void autoCompleteFromAPIs ();
@@ -205,6 +205,8 @@ class QsciteEditor : public QsciScintilla {
   protected:
     void keyPressEvent(QKeyEvent * event);
     void unindentHandler();
+    void dropEvent(QDropEvent *event);
+    MainWindow * parent;
 
 };
     

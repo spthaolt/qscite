@@ -1,9 +1,12 @@
 #include <QtGui>
 #include <QtDebug>
 #include "qsciteeditor.h"
+#include "mainwindow.h"
 #include <Qsci/qsciscintilla.h>
 
-QsciteEditor::QsciteEditor() : QsciScintilla() { }
+QsciteEditor::QsciteEditor(MainWindow * _parent) : QsciScintilla() {
+  parent = _parent;
+}
 
 void QsciteEditor::unindentHandler() {
   beginUndoAction();
@@ -33,6 +36,10 @@ void QsciteEditor::keyPressEvent(QKeyEvent * event) {
   }
  
   QsciScintilla::keyPressEvent(event);
+}
+
+void QsciteEditor::dropEvent(QDropEvent *event) {
+  parent->dropEvent(event);
 }
 
 Q_INVOKABLE void QsciteEditor::append (const QString & text ) {
