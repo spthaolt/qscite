@@ -34,11 +34,7 @@
 #include "textdisplay.h"
 #include "scriptconsole.h"
 
-#ifdef _WIN32
-  #include "qterminal.h"
-#else
-  #include "qterminal_pty.h"
-#endif
+#include "qtermwidget.h"
 
 MainWindow::MainWindow(QStringList & _argv, Launcher * _launcher) :
   argv(_argv),
@@ -172,7 +168,8 @@ void MainWindow::curDocChanged(int idx) {
     }
     
     if (termWidget != NULL && !getCurFileObj()->fullName.isEmpty()) {
-      termWidget->changeDir(getCurFileObj()->path);
+      //FIXME: the following line should be re-implemented for qtermwidget
+      //termWidget->changeDir(getCurFileObj()->path);
     }
 
     getCurDoc()->setFocus(Qt::MouseFocusReason);
@@ -224,7 +221,8 @@ void MainWindow::loadFile(const QString &fileName) {
   getCurDoc()->setModified(false);
   
   if (termWidget != NULL) {
-    termWidget->changeDir(getCurFileObj()->path);
+    //FIXME: re-implement for qtermwidget
+    //termWidget->changeDir(getCurFileObj()->path);
   }
   
   redoSetMargin();

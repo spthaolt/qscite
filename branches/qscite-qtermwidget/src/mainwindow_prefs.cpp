@@ -9,11 +9,7 @@
 #include "prefs.h"
 #include "textdisplay.h"
 
-#ifdef _WIN32
-  #include "qterminal.h"
-#else
-  #include "qterminal_pty.h"
-#endif
+#include "qtermwidget.h"
 
 void MainWindow::readSettings() {
 	QSettings settings;
@@ -88,7 +84,8 @@ void MainWindow::globalPrefs() {
 
 void MainWindow::prefsWereChanged() {
 	if (termWidget != NULL) {
-		applyPrefsToTerminal(termWidget);
+	        //FIXME: re-implement
+		//applyPrefsToTerminal(termWidget);
 	}
 	if (openFiles.size() > 0) {
 		applySettingsToDoc(getCurDoc());

@@ -2,9 +2,10 @@ TEMPLATE     = app
 
 DEPENDPATH   += include src ui
 
-INCLUDEPATH  += include
+INCLUDEPATH  += include \
+                qtermwidget
 
-MOC_DIR     = build
+MOC_DIR     = .moc
 OBJECTS_DIR = build
 RCC_DIR     = build
 UI_DIR      = build
@@ -54,7 +55,9 @@ unix {
   SOURCES += qterminal_pty.cpp
   
   !macx {
-    LIBS    += -lqscintilla2 \
+    LIBS    += -L./build \
+               -lqtermwidget \
+               -lqscintilla2 \
                -lutil
     DEFINES += QSCITE_MONO_FAMILY='\\"Monospace\\"'
   } else {

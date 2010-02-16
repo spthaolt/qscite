@@ -34,6 +34,7 @@ class QMenu;
 class QsciLexer;
 class QTabWidget;
 class QTerminal;
+class QTermWidget;
 class TextDisplayPanel;
 class QStringList;
 class QActionGroup;
@@ -169,7 +170,7 @@ private:
     QMap<QsciteEditor *, FileData> openFiles;
     QList<QFileInfo> recentFiles;
     QTabWidget * tabWidget;
-    QTerminal * termWidget;
+    QTermWidget * termWidget;
     TextDisplayPanel * textSettingsWidget;
     QMenu * trayIconMenu;
     QString lastDir;
