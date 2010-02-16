@@ -12,11 +12,13 @@
 #include "findreplace.h"
 #include "scriptconsole.h"
 
-#ifdef _WIN32
-  #include "qterminal.h"
-#else
-  #include "qterminal_pty.h"
-#endif
+//#ifdef _WIN32
+//  #include "qterminal.h"
+//#else
+//  #include "qterminal_pty.h"
+//#endif
+
+#include "qtermwidget.h"
 
 void MainWindow::toggleTerminal(bool alive) {
   if (alive) { // we were called by a dock window reporting itself visible
@@ -41,10 +43,13 @@ void MainWindow::toggleTerminal(bool alive) {
     copyFromTerm = false;
   } else {
     qDebug() << "Opening terminal";
-    termWidget = new QTerminal(this);
-    applyPrefsToTerminal(termWidget);
+    termWidget = new QTermWidget(1, this);
+    //FIXME: re-implement
+    //applyPrefsToTerminal(termWidget);
+
     if (openFiles.size() > 0 && !getCurFileObj()->fullName.isEmpty()) {
-    	termWidget->changeDir(getCurFileObj()->path);
+      //FIXME: re-implment
+      //termWidget->changeDir(getCurFileObj()->path);
     }
 
     if (termInDrawer) {
@@ -230,27 +235,30 @@ void MainWindow::about() {
 }
 
 void MainWindow::editCopy() {
-	if (copyFromTerm) {
+//FIXME: re-implement
+/*	if (copyFromTerm) {
 		Q_ASSERT(termWidget != NULL);
 		termWidget->copy();
 	} else if (!openFiles.empty()) {
 	  getCurDoc()->copy();
-	}
+	}*/
 }
 
 void MainWindow::editCut() {
-	if (!copyFromTerm && !openFiles.empty()) {
+//FIXME: re-implement
+/*	if (!copyFromTerm && !openFiles.empty()) {
 	  getCurDoc()->cut();
-	}
+	}*/
 }
 
 void MainWindow::editPaste() {
-	if (copyFromTerm) {
+//FIXME: re-implement
+/*	if (copyFromTerm) {
 		Q_ASSERT(termWidget != NULL);
 		termWidget->paste();
 	} else if (!openFiles.empty()) {
 	  getCurDoc()->paste();
-	}
+	}*/
 }
 
 void MainWindow::undo() {
