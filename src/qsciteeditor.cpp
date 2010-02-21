@@ -14,7 +14,7 @@ void QsciteEditor::unindentHandler() {
   if (hasSelectedText()) {
     int lineFrom(0), lineTo(0), indexFrom(0), indexTo(0);
     getSelection(&lineFrom, &indexFrom, &lineTo, &indexTo);
-    
+
     for (int i = lineFrom; i <= lineTo; ++i) {
       unindent(i);
     }
@@ -34,11 +34,11 @@ void QsciteEditor::keyPressEvent(QKeyEvent * event) {
   if (event->key() == Qt::Key_Backtab) {
     unindentHandler();
   }
- 
+
   QsciScintilla::keyPressEvent(event);
 }
 
-void QsciteEditor::dropEvent(QDropEvent *event) {
+void QsciteEditor::dropEvent(QDropEvent * event) {
   parent->dropEvent(event);
 }
 

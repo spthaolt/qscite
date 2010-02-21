@@ -9,9 +9,9 @@
 #include <QEvent>
 
 class dlgFindReplace: public QDialog, protected Ui_dlgFindReplace {
-  
+
   Q_OBJECT
-  
+
 public:
   dlgFindReplace(MainWindow * _parent);
   MainWindow * parent;
@@ -23,5 +23,5 @@ private slots:
   void onTextChange(QString text);
   void keyPressEvent(QKeyEvent * event);
 };
-  
+
 #endif /*FINDREPLACE_H_*/

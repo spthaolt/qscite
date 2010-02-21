@@ -44,12 +44,15 @@ void MainWindow::toggleTerminal(bool alive) {
   } else {
     qDebug() << "Opening terminal";
     termWidget = new QTermWidget(1, this);
+    /*termWidget->setMinimumHeight(0);
+    termWidget->setMaximumHeight(this->height());
+    termWidget->resize(this->width(), 100);
+    termWidget->updateGeometry();*/
     //FIXME: re-implement
     //applyPrefsToTerminal(termWidget);
 
     if (openFiles.size() > 0 && !getCurFileObj()->fullName.isEmpty()) {
-      //FIXME: re-implment
-      //termWidget->changeDir(getCurFileObj()->path);
+      termWidget->setWorkingDirectory(getCurFileObj()->path);
     }
 
     if (termInDrawer) {
@@ -62,8 +65,9 @@ void MainWindow::toggleTerminal(bool alive) {
       this->addDockWidget(Qt::BottomDockWidgetArea, termDock);
     }
 
-    connect(termWidget, SIGNAL(shellExited()), this, SLOT(toggleTerminal()));
-    connect(termWidget, SIGNAL(copyAvailable(bool)), this, SLOT(updateCopyAvailable(bool)));
+    connect(termWidget, SIGNAL(finished()), this, SLOT(toggleTerminal()));
+    //FIXME: port qtermwidget
+    //connect(termWidget, SIGNAL(copyAvailable(bool)), this, SLOT(updateCopyAvailable(bool)));
     termWidget->setFocus();
     copyFromTerm = true;
   }
@@ -103,14 +107,14 @@ void MainWindow::open() {
 
 void MainWindow::open(QString fileName = QString("")) {
   QStringList fileNames;
-  
+
   if (fileName.isEmpty()) {
     fileNames = QFileDialog::getOpenFileNames(this, "Select one or more files to open", (openFiles.size() > 0 && !getCurFileObj()->path.isEmpty()) ? getCurFileObj()->path : lastDir);
   } else {
     fileNames.push_front(fileName);
   }
 
-  
+
   while (fileNames.count()) {
     if (!fileNames.back().isEmpty()) {
       bool alreadyOpen = false;
@@ -127,12 +131,12 @@ void MainWindow::open(QString fileName = QString("")) {
           qDebug() << "file is already open";
         }
       }
-      
+
       if (alreadyOpen) {
         fileNames.pop_front();
         continue;
       }
-      
+
       if ((!tabWidget->count()) || (!getCurFileObj()->baseName.isEmpty()) || getCurDoc()->isModified()) {
         createDocument();
       }
@@ -188,13 +192,13 @@ bool MainWindow::saveAs() {
       QsciteEditor * curDoc = getCurDoc();
       QsciLexer * newLexer = getLexerForDocument(fileName, curDoc->text());
       if (newLexer != NULL) {
-/*
-        QFont curFont = curDoc->font();
-        setLexerFont(newLexer, curFont.family(), curFont.pointSize());
-        newLexer->setParent(curDoc);
-        curDoc->setLexer(newLexer);
-        curDoc->recolor();
-*/
+        /*
+                QFont curFont = curDoc->font();
+                setLexerFont(newLexer, curFont.family(), curFont.pointSize());
+                newLexer->setParent(curDoc);
+                curDoc->setLexer(newLexer);
+                curDoc->recolor();
+        */
         setLexer(newLexer);
       }
     }
@@ -206,71 +210,71 @@ bool MainWindow::saveAs() {
 
 void MainWindow::fontDialog() {
   if (tabWidget->count()) {
-  	QsciLexer * lexer = getCurDoc()->lexer();
-  	bool ok;
+    QsciLexer * lexer = getCurDoc()->lexer();
+    bool ok;
 
-  	if (lexer) {
-  	  QFont baseFont = QFontDialog::getFont(&ok, lexer->font(lexer->defaultStyle()));
+    if (lexer) {
+      QFont baseFont = QFontDialog::getFont(&ok, lexer->font(lexer->defaultStyle()));
 
-  	  if (ok) {
-  	    getCurDoc()->setFont(baseFont);
-  	    setLexerFont(lexer, baseFont.family(), baseFont.pointSize());
-  	  }
-  	} else {
+      if (ok) {
+        getCurDoc()->setFont(baseFont);
+        setLexerFont(lexer, baseFont.family(), baseFont.pointSize());
+      }
+    } else {
       QFont font = QFontDialog::getFont(&ok, getCurDoc()->font());
 
       if (ok) {
         getCurDoc()->setFont(font);
       }
-  	}
+    }
   }
 }
 
 void MainWindow::about() {
-   QMessageBox::about(this, tr("About QSciTE"),
-       tr("<b>QSciTE</b> is a clone of SciTE, based on the Scintilla library"
-          " and Qt4. It was originally based on the example code included with"
-          " Qscintilla2, however it has grown significantly beyond that codebase."
-    	  " QSciTE is licensed under the GNU GPL version 2."));
+  QMessageBox::about(this, tr("About QSciTE"),
+                     tr("<b>QSciTE</b> is a clone of SciTE, based on the Scintilla library"
+                        " and Qt4. It was originally based on the example code included with"
+                        " Qscintilla2, however it has grown significantly beyond that codebase."
+                        " QSciTE is licensed under the GNU GPL version 2."));
 }
 
 void MainWindow::editCopy() {
 //FIXME: re-implement
-/*	if (copyFromTerm) {
-		Q_ASSERT(termWidget != NULL);
-		termWidget->copy();
-	} else if (!openFiles.empty()) {
-	  getCurDoc()->copy();
-	}*/
+  /*  if (copyFromTerm) {
+      Q_ASSERT(termWidget != NULL);
+      termWidget->copy();
+    } else if (!openFiles.empty()) {
+      getCurDoc()->copy();
+    }*/
 }
 
 void MainWindow::editCut() {
 //FIXME: re-implement
-/*	if (!copyFromTerm && !openFiles.empty()) {
-	  getCurDoc()->cut();
-	}*/
+  /*  if (!copyFromTerm && !openFiles.empty()) {
+      getCurDoc()->cut();
+    }*/
 }
 
 void MainWindow::editPaste() {
 //FIXME: re-implement
-/*	if (copyFromTerm) {
-		Q_ASSERT(termWidget != NULL);
-		termWidget->paste();
-	} else if (!openFiles.empty()) {
-	  getCurDoc()->paste();
-	}*/
+  /*  if (copyFromTerm) {
+      Q_ASSERT(termWidget != NULL);
+      termWidget->paste();
+    } else if (!openFiles.empty()) {
+      getCurDoc()->paste();
+    }*/
 }
 
 void MainWindow::undo() {
-	if (!openFiles.empty()) {
-	  getCurDoc()->undo();
-	}
+  if (!openFiles.empty()) {
+    getCurDoc()->undo();
+  }
 }
 
 void MainWindow::redo() {
-	if (!openFiles.empty()) {
-	  getCurDoc()->redo();
-	}
+  if (!openFiles.empty()) {
+    getCurDoc()->redo();
+  }
 }
 
 void MainWindow::nextDoc() {
@@ -332,7 +336,7 @@ void MainWindow::toggleFolding() {
 
   if (!state) {
     // unfold all code before turning off folding
-    getCurDoc()->foldAll(false);
+    //getCurDoc()->foldAll();
   }
 
   getCurDoc()->setFolding(state);

@@ -15,22 +15,22 @@ dlgScriptConsole::dlgScriptConsole(MainWindow * _parent) {
   this->show();
   connect(btnExecute, SIGNAL(clicked()), this, SLOT(executeCommand()));
   this->setAttribute(Qt::WA_DeleteOnClose);
-  
+
   engine = &(parent->scriptEngine);
-  
+
   QsciteEditor * curDoc = new QsciteEditor(parent);
-  
+
   /*qDebug() << "ready to create scintilla";
   doc = new QsciteEditor(verticalLayout);*/
   curDoc->setUtf8(true);
-  
+
   qDebug() << "apply settings to scintilla";
   applySettingsToDoc(curDoc);
-  
+
   qDebug() << "set the lexer to javascript";
   QsciLexerJavaScript * lexer = new QsciLexerJavaScript();
   curDoc->setLexer(lexer);
-  
+
   qDebug() << "add scintilla to window";
   verticalLayout->insertWidget(0, curDoc);
   doc = curDoc;
@@ -48,7 +48,7 @@ dlgScriptConsole::~dlgScriptConsole() {
 void dlgScriptConsole::executeCommand() {
   QString cmd = doc->text(); //txtCommand->toPlainText();
   QScriptValue result = engine->evaluate(cmd);
-  
+
   if( !(result.isUndefined()) && !(result.isNull()) ) {
     lblError->setText(result.toString());
   } else {

@@ -15,7 +15,7 @@ dlgFindReplace::dlgFindReplace(MainWindow * _parent) {
   connect(btnReplace, SIGNAL(clicked()), this, SLOT(doReplace()));
   connect(cboFind, SIGNAL(editTextChanged(QString)), this, SLOT(onTextChange(QString)));
   this->setAttribute(Qt::WA_DeleteOnClose);
-  
+
   //if there is text highlighted then assume that is what they want to search for
   if( parent->getCurDoc()->hasSelectedText() ) {
     QString text = parent->getCurDoc()->selectedText();
@@ -34,7 +34,7 @@ void dlgFindReplace::keyPressEvent(QKeyEvent * event) {
   if (event->key() == Qt::Key_Return || event->key() == Qt::Key_Enter) {
     this->doSearch();
   }
-  
+
   QDialog::keyPressEvent(event);
 }
 
@@ -46,13 +46,13 @@ void dlgFindReplace::doSearch() {
     bool wholeWord = chkWhole->isChecked();
     bool forward = !chkBackwards->isChecked();
     bool result = parent->getCurDoc()->findFirst(expr, regex, caseSens, wholeWord, true, forward);
-    
+
     if (result) {
       btnFind->setText("&Find Next");
     }
   } else {
     bool result = parent->getCurDoc()->findNext();
-    
+
     if (!result) {
       btnFind->setText("&Find");
     }
@@ -62,7 +62,7 @@ void dlgFindReplace::doSearch() {
 void dlgFindReplace::doReplace() {
   doSearch();
   QString expr = cboReplace->currentText();
-  
+
   parent->getCurDoc()->replace(expr);
 }
 

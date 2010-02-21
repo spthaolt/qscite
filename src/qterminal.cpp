@@ -1,7 +1,7 @@
 #include <QtGui>
 #include "qterminal.h"
 
-QTerminal::QTerminal(QWidget *parent, Qt::WindowFlags f) : QTextEdit(parent) {
+QTerminal::QTerminal(QWidget * parent, Qt::WindowFlags f) : QTextEdit(parent) {
   setWindowFlags(f);
   cmdStr = "";
   shell = new QProcess();
@@ -35,19 +35,19 @@ void QTerminal::readStandardErr() {
 }
 
 void QTerminal::changeDir(const QString & dir) {
-	/* Hope we are talking to a prompt and not a text editor */
+  /* Hope we are talking to a prompt and not a text editor */
   QString theDir = QString(dir);
   theDir = theDir.replace(QChar('/'), "\\");
-	shell->write("cd ", 3);
-	shell->write(theDir.toAscii().data(), theDir.length());
-	shell->write("\r\n", 2);
+  shell->write("cd ", 3);
+  shell->write(theDir.toAscii().data(), theDir.length());
+  shell->write("\r\n", 2);
 }
 
 void QTerminal::keyPressEvent(QKeyEvent * event) {
   int key = event->key();
-  
+
   this->setTextCursor(curCursorLoc);
-  
+
   // Keep QTextEdit in sync with shell as much as possible...
   if (key != Qt::Key_Backspace) {
     if (key == Qt::Key_Return || key == Qt::Key_Enter) {
@@ -64,16 +64,16 @@ void QTerminal::keyPressEvent(QKeyEvent * event) {
         } else {
           --histLocation;
         }
-        
+
         for (int i = 0; i < inputCharCount; ++i) {
           QTextEdit::keyPressEvent(new QKeyEvent(QEvent::KeyPress, Qt::Key_Backspace, Qt::NoModifier));
         }
-        
+
         inputCharCount = cmdHistory.at(histLocation).length();
         this->insertPlainText(cmdHistory.at(histLocation));
         cmdStr = cmdHistory.at(histLocation);
       }
-      
+
       event->ignore();
       return;
     } else if (key == Qt::Key_Down) {
@@ -89,11 +89,11 @@ void QTerminal::keyPressEvent(QKeyEvent * event) {
         ++histLocation;
         str = cmdHistory.at(histLocation);
       }
-      
+
       for (int i = 0; i < inputCharCount; ++i) {
         QTextEdit::keyPressEvent(new QKeyEvent(QEvent::KeyPress, Qt::Key_Backspace, Qt::NoModifier));
       }
-      
+
       inputCharCount = str.length();
       this->insertPlainText(str);
       cmdStr = str;
@@ -106,7 +106,7 @@ void QTerminal::keyPressEvent(QKeyEvent * event) {
       }
     } else if (key == Qt::Key_Right) {
       QTextCursor cursor = this->textCursor();
-      
+
       if (cursor.movePosition(QTextCursor::Right)) {
         ++inputCharCount;
         this->setTextCursor(cursor);

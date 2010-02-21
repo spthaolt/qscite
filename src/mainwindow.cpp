@@ -16,7 +16,7 @@
  *   Free Software Foundation, Inc.,                                       *
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
- 
+
 #include <QtGui>
 #include <QSystemTrayIcon>
 #include <QtDebug>
@@ -44,14 +44,13 @@ MainWindow::MainWindow(QStringList & _argv, Launcher * _launcher) :
   termInDrawer(QSettings().value("terminalInDrawer", false).toBool()),
   launcher(_launcher),
   replaceDialog(NULL),
-  scriptConsole(NULL)
-{
+  scriptConsole(NULL) {
   this->setUnifiedTitleAndToolBarOnMac(true);
   this->setAttribute(Qt::WA_DeleteOnClose);
   readSettings();
-  
+
   tabWidget = new QTabWidget(this);
-  
+
   // We might need to support a lot of tabs
   tabWidget->setUsesScrollButtons(true);
   tabWidget->setElideMode(Qt::ElideNone);
@@ -59,21 +58,15 @@ MainWindow::MainWindow(QStringList & _argv, Launcher * _launcher) :
   tabWidget->setMovable(true);
   tabWidget->setFocusPolicy(Qt::ClickFocus);
   connect(tabWidget, SIGNAL(tabCloseRequested(int)), this, SLOT(closeTab(int)));
-  
+
   setCentralWidget(tabWidget);
   this->setWindowIcon(QIcon(":images/appIcon.png"));
-  
+
   createActions();
   createMenus();
   createDocument();
   createToolBars();
-  createStatusBar();  
-
-/*
-  QToolButton * closeTabButton = new QToolButton(tabWidget);
-  closeTabButton->setDefaultAction(closeAct);
-  tabWidget->setCornerWidget(closeTabButton);
-*/
+  createStatusBar();
 
   connect(tabWidget, SIGNAL(currentChanged(int)), this, SLOT(curDocChanged(int)));
   connect(QApplication::instance(), SIGNAL(focusChanged(QWidget *, QWidget *)), this, SLOT(noticeFocusChange(QWidget *, QWidget *)));
@@ -81,15 +74,15 @@ MainWindow::MainWindow(QStringList & _argv, Launcher * _launcher) :
 
   //accept drag and drop events, handled in dropEvent()
   setAcceptDrops(true);
-  
+
   while (!argv.isEmpty()) {
     if (!argv.front().isEmpty()) {
       setupDocument(argv.front());
     }
-    
+
     argv.pop_front();
   }
-  
+
   //add the window into the script engine.
   QScriptValue window = scriptEngine.newQObject(this);
   scriptEngine.globalObject().setProperty("window", window);
@@ -101,15 +94,15 @@ void MainWindow::createDocument() {
   applySettingsToDoc(curDoc);
 
   openFiles.insert(curDoc, FileData(curDoc));
-  
+
   tabWidget->addTab(curDoc, "Untitled");
-  
+
   if (tabWidget->count() > 1) {
     changeTabs(curDoc);
   } else {
     curDocChanged(0);
   }
-  
+
   connect(curDoc, SIGNAL(copyAvailable(bool)), this, SLOT(updateCopyAvailable(bool)));
   connect(curDoc, SIGNAL(modificationChanged(bool)), this, SLOT(setDocumentModified(bool)));
   connect(curDoc, SIGNAL(linesChanged()), this, SLOT(redoSetMargin()));
@@ -123,24 +116,24 @@ void MainWindow::changeTabs(int tabIndex) {
   tabWidget->setCurrentIndex(tabIndex);
 }
 
-void MainWindow::closeEvent(QCloseEvent *event) {
+void MainWindow::closeEvent(QCloseEvent * event) {
   closeWindow() ? event->accept() : event->ignore();
 }
 
 bool MainWindow::closeWindow () {
   this->setVisible(true);
-  
+
   if (termWidget != NULL) {
     toggleTerminal();
   }
-  
+
   while(tabWidget->count()) {
     changeTabs(0);
     if (!closeFile()) {
       return false;
     }
   }
-  
+
   writeSettings();
   //emit closed();
   return true;
@@ -157,24 +150,23 @@ void MainWindow::curDocChanged(int idx) {
 
   if (openFiles.size() > 0) {
     QsciteEditor * doc = getCurDoc();
-    
+
     setWindowTitleForFile(getCurFileObj()->baseName);
     setWindowModified(doc->isModified());
-    
+
     setUIForDocumentEolMode();
-    
+
     if (openFiles.size()) {
       codeFoldingAct->setChecked(getCurDoc()->folding());
     }
-    
+
     if (termWidget != NULL && !getCurFileObj()->fullName.isEmpty()) {
-      //FIXME: the following line should be re-implemented for qtermwidget
-      //termWidget->changeDir(getCurFileObj()->path);
+      termWidget->setWorkingDirectory(getCurFileObj()->path);
     }
 
     getCurDoc()->setFocus(Qt::MouseFocusReason);
   }
-  
+
   //have to update the document in the scriptEngine.
   QScriptValue document = scriptEngine.newQObject(getCurDoc());
   scriptEngine.globalObject().setProperty("document", document);
@@ -183,24 +175,24 @@ void MainWindow::curDocChanged(int idx) {
 bool MainWindow::maybeSave() {
   if (getCurDoc()->isModified()) {
     int ret = QMessageBox::warning(this, tr("QSciTE"),
-                 tr("%1 has been modified.\nDo you want to save your changes?").arg(getCurFileObj()->baseName.isEmpty() ? tr("<Untitled document>") : getCurFileObj()->baseName),
-                 QMessageBox::Yes | QMessageBox::Default,
-                 QMessageBox::No,
-                 QMessageBox::Cancel | QMessageBox::Escape);
-    
+                                   tr("%1 has been modified.\nDo you want to save your changes?").arg(getCurFileObj()->baseName.isEmpty() ? tr("<Untitled document>") : getCurFileObj()->baseName),
+                                   QMessageBox::Yes | QMessageBox::Default,
+                                   QMessageBox::No,
+                                   QMessageBox::Cancel | QMessageBox::Escape);
+
     if (ret == QMessageBox::Yes) {
       return save();
     } else if (ret == QMessageBox::Cancel) {
       return false;
     }
   }
-  
+
   return true;
 }
 
-void MainWindow::loadFile(const QString &fileName) {
+void MainWindow::loadFile(const QString & fileName) {
   QFile file(fileName);
-  
+
   if (!file.open(QFile::ReadOnly)) {
     QMessageBox::warning(this, tr("QSciTE"),
                          tr("Cannot read file %1:\n%2.")
@@ -214,41 +206,33 @@ void MainWindow::loadFile(const QString &fileName) {
   QApplication::setOverrideCursor(Qt::WaitCursor);
   getCurDoc()->setText(in.readAll());
   QApplication::restoreOverrideCursor();
-  
+
   getCurFileObj()->setPathName(fileName);
 
   setWindowTitleForFile(getCurFileObj()->baseName);
   getCurDoc()->setModified(false);
-  
+
   if (termWidget != NULL) {
-    //FIXME: re-implement for qtermwidget
-    //termWidget->changeDir(getCurFileObj()->path);
+    termWidget->setWorkingDirectory(getCurFileObj()->path);
   }
-  
+
   redoSetMargin();
-  
+
   QsciteEditor * curDoc = getCurDoc();
-  
+
   QFont currentFont = curDoc->font();
   QsciLexer * newLexer = getLexerForDocument(fileName, curDoc->text());
-  
+
   if (newLexer != NULL) {
-/*    
-    qDebug() << "Using lexer " << newLexer->lexer();
-  	newLexer->setParent(curDoc);
-    curDoc->setLexer(newLexer);
-    setLexerFont(newLexer, currentFont.family(), currentFont.pointSize());
-    curDoc->setCaretForegroundColor(QColor(0,0,0));
-*/
     setLexer(newLexer);
   }
-  
+
   curDoc->setEolMode(detectEolMode(curDoc));
-  
+
   if (textSettingsWidget != NULL) {
     textSettingsWidget->populate();
   }
-    
+
   statusBar()->showMessage(tr("File loaded"), 2000);
 }
 
@@ -257,9 +241,9 @@ void MainWindow::redoSetMargin() {
   getCurDoc()->setMarginWidth(1, QString::number(getCurDoc()->lines()) + "9");
 }
 
-bool MainWindow::saveFile(const QString &fileName) {
+bool MainWindow::saveFile(const QString & fileName) {
   QFile file(fileName);
-  
+
   if (!file.open(QFile::WriteOnly)) {
     QMessageBox::warning(this, tr("QSciTE"),
                          tr("Cannot write file %1:\n%2.")
@@ -282,33 +266,33 @@ bool MainWindow::saveFile(const QString &fileName) {
 void MainWindow::setWindowTitleForFile(const QString & fileName) {
   qDebug() << "Setting window title to " << fileName;
   QString shownName;
-  
+
   if (fileName.isEmpty()) {
     shownName = "Untitled";
   } else {
     // strippedName() is gone since we should always be passed a basename
     shownName = fileName;
   }
-  
+
   setWindowTitle(tr("%1[*] - %2").arg(shownName).arg(tr("QSciTE")));
 }
 
 void MainWindow::setCurrentTabTitle() {
   qDebug() << getCurFileObj()->fullName;
-	QString displayName = getCurFileObj()->baseName.isEmpty() ? "Untitled" : getCurFileObj()->baseName;
-	
-	if (getCurDoc()->isModified()) {
-		displayName += "*";
-	}
-	
-	tabWidget->setTabText(getCurTabIndex(), displayName);
+  QString displayName = getCurFileObj()->baseName.isEmpty() ? "Untitled" : getCurFileObj()->baseName;
+
+  if (getCurDoc()->isModified()) {
+    displayName += "*";
+  }
+
+  tabWidget->setTabText(getCurTabIndex(), displayName);
 }
 
 void MainWindow::updateCopyAvailable(bool yes) {
-	if (sender() == QApplication::focusWidget()) {
-		cutAct->setEnabled(yes);
-		copyAct->setEnabled(yes);
-	}
+  if (sender() == QApplication::focusWidget()) {
+    cutAct->setEnabled(yes);
+    copyAct->setEnabled(yes);
+  }
 }
 
 void MainWindow::setLexer(const QString & lexerName) {
@@ -328,120 +312,115 @@ void MainWindow::setLexer(QsciLexer * lexer) {
 
 void MainWindow::noticeFocusChange(QWidget * prev, QWidget * current) {
   if (prev == current) { }; // make the compiler shut up.
-  
-	if (termWidget != NULL && current == termWidget) {
-		copyFromTerm = true;
-	} else if (openFiles.size() > 0 && current == getCurDoc()) {
-		copyFromTerm = false;
-	}
+
+  if (termWidget != NULL && current == termWidget) {
+    copyFromTerm = true;
+  } else if (openFiles.size() > 0 && current == getCurDoc()) {
+    copyFromTerm = false;
+  }
 }
 
 void MainWindow::addRecentFile(const QString & fileName) {
   int maxRecentFiles = QSettings().value("recentFileCount",10).toInt();
-	
-	recentFiles.push_back(QFileInfo(fileName));
-	for (int i = 0; i < recentFiles.size() - 1; ++i) {
-		if (recentFiles[i].canonicalFilePath() == recentFiles.back().canonicalFilePath() || !(recentFiles[i].exists() && recentFiles[i].isFile())) {
-			recentFiles.removeAt(i--);
-		}
-		
-		while (recentFiles.size() > maxRecentFiles) {
-			recentFiles.pop_front();
-		}
-	}
-	
-	recentMenu->clear();
-	
-  for (int i = 0; i < recentFiles.size(); ++i) {
-  	recentMenu->addAction( recentFiles[i].fileName() )->setStatusTip( recentFiles[i].filePath() );
+
+  recentFiles.push_back(QFileInfo(fileName));
+  for (int i = 0; i < recentFiles.size() - 1; ++i) {
+    if (recentFiles[i].canonicalFilePath() == recentFiles.back().canonicalFilePath() || !(recentFiles[i].exists() && recentFiles[i].isFile())) {
+      recentFiles.removeAt(i--);
+    }
+
+    while (recentFiles.size() > maxRecentFiles) {
+      recentFiles.pop_front();
+    }
   }
-  
+
+  recentMenu->clear();
+
+  for (int i = 0; i < recentFiles.size(); ++i) {
+    recentMenu->addAction( recentFiles[i].fileName() )->setStatusTip( recentFiles[i].filePath() );
+  }
+
   recentMenu->menuAction()->setEnabled(!recentFiles.empty());
 }
 
 bool MainWindow::eventFilter(QObject * target, QEvent * event) {
-/*  if (event->type() == QEvent::KeyPress) {
-    qDebug() << "it's a key press event";
-    QKeyEvent *kevent = (QKeyEvent *)event;
-  if (kevent->key() == Qt::Key_Tab && kevent->modifiers() & Qt::ShiftModifier) {
-    qDebug() << "Shift-tab pressed";
+  if (target == qApp && event->type() == QEvent::FileOpen) {
+    QString fileName = dynamic_cast<QFileOpenEvent *>(event)->file();
+    setupDocument(fileName);
+    event->accept();
+    return true;
+  } else {
+    return QMainWindow::eventFilter(target, event);
   }
-  }	*/  
-
-
-	if (target == qApp && event->type() == QEvent::FileOpen) {
-		QString fileName = dynamic_cast<QFileOpenEvent *>(event)->file();
-		setupDocument(fileName);
-		event->accept();
-		return true;
-	} else {
-		return QMainWindow::eventFilter(target, event);
-	}
 }
 
 //load a new document and set up its tab and the associated application metadata
-void MainWindow::setupDocument(QString &fileName) {
-	//create a new tab, if necessary
-	if ((!tabWidget->count()) || (!getCurFileObj()->baseName.isEmpty()) || getCurDoc()->isModified()) {
-		createDocument();
-	}
+void MainWindow::setupDocument(QString & fileName) {
+  //create a new tab, if necessary
+  if ((!tabWidget->count()) || (!getCurFileObj()->baseName.isEmpty()) || getCurDoc()->isModified()) {
+    createDocument();
+  }
 
-	//load the file and set up other metadata
-	loadFile(fileName);
-	addRecentFile(fileName);
-	setCurrentTabTitle();
+  //load the file and set up other metadata
+  loadFile(fileName);
+  addRecentFile(fileName);
+  setCurrentTabTitle();
 }
 
 void MainWindow::setUIForDocumentEolMode() {
-	switch (getCurDoc()->eolMode()) {
-		case QsciteEditor::EolWindows:
-			lineEndCrLf->setChecked(true);
-		break;
-		
-		case QsciteEditor::EolUnix:
-			lineEndLf->setChecked(true);
-		break;
-		
-		case QsciteEditor::EolMac:
-			lineEndCr->setChecked(true);
-		break;
-	}
-	
+  switch (getCurDoc()->eolMode()) {
+    case QsciteEditor::EolWindows:
+      lineEndCrLf->setChecked(true);
+      break;
+
+    case QsciteEditor::EolUnix:
+      lineEndLf->setChecked(true);
+      break;
+
+    case QsciteEditor::EolMac:
+      lineEndCr->setChecked(true);
+      break;
+  }
+
   showLineEndsAct->setChecked(getCurDoc()->eolVisibility());
 }
 
 //triggered when a dragged object enters the window
-void MainWindow::dragEnterEvent(QDragEnterEvent *event) {
-	qDebug() << "Drag enter event triggered.\n";
-	//only accept the drop if the dropped item has a URL
-	if (event->mimeData()->hasFormat("text/uri-list")) {
-		qDebug() << event->proposedAction() << "\n";
-		event->acceptProposedAction();
-	}
+void MainWindow::dragEnterEvent(QDragEnterEvent * event) {
+  qDebug() << "Drag enter event triggered.\n";
+  //only accept the drop if the dropped item has a URL
+  if (event->mimeData()->hasFormat("text/uri-list")) {
+    qDebug() << event->proposedAction() << "\n";
+    event->acceptProposedAction();
+  }
 }
 
 //triggers when a dragged object is dropped into the window
-void MainWindow::dropEvent(QDropEvent *event) {
-	QFileInfo fileInfo;
-	//get the first URL in the list and open it if it refers to a file
-	QString fileName = event->mimeData()->urls().first().toLocalFile();
-	fileInfo.setFile(fileName);
-	if (fileInfo.isFile()) {
-		qDebug() << "Got drop event. Filename is: " << fileName << "\n";
-		open(fileName);
-	}
+void MainWindow::dropEvent(QDropEvent * event) {
+  QFileInfo fileInfo;
+  //get the first URL in the list and open it if it refers to a file
+  QString fileName = event->mimeData()->urls().first().toLocalFile();
+  fileInfo.setFile(fileName);
+  if (fileInfo.isFile()) {
+    qDebug() << "Got drop event. Filename is: " << fileName << "\n";
+    open(fileName);
+  }
 
-	event->acceptProposedAction();
+  event->acceptProposedAction();
 }
 
-FileData::FileData(QsciteEditor * doc) : path(QDir::homePath()), edWidget(doc) { ; }
-FileData::FileData(const FileData & src) : fullName(src.fullName), baseName(src.baseName), path(src.path), edWidget(src.edWidget) { ; }
+FileData::FileData(QsciteEditor * doc) : path(QDir::homePath()), edWidget(doc) {
+  ;
+}
+FileData::FileData(const FileData & src) : fullName(src.fullName), baseName(src.baseName), path(src.path), edWidget(src.edWidget) {
+  ;
+}
 
 void FileData::setPathName(const QString & newPathName) {
-	fullName = newPathName;
+  fullName = newPathName;
   qDebug() << "Full file name is " << newPathName;
-	QFileInfo info(newPathName);
-	baseName = info.fileName();
-	path = newPathName.isEmpty() ? "": info.absolutePath();
+  QFileInfo info(newPathName);
+  baseName = info.fileName();
+  path = newPathName.isEmpty() ? "": info.absolutePath();
 }
 

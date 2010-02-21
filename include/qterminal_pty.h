@@ -9,62 +9,62 @@ class FileDescriptorMonitor;
 
 class QTerminal : public QTextEdit {
 
-    Q_OBJECT
-  
-  public:
-    QTerminal(QWidget * parent = 0, Qt::WindowFlags f = 0);
-    ~QTerminal();
+  Q_OBJECT
 
-  public slots:
-    void changeDir(const QString & dir);
+public:
+  QTerminal(QWidget * parent = 0, Qt::WindowFlags f = 0);
+  ~QTerminal();
 
-  signals:
-    void shellExited();
+public slots:
+  void changeDir(const QString & dir);
 
-  protected:
-    void insertFromMimeData(const QMimeData * data);
-    void keyPressEvent(QKeyEvent * event);
+signals:
+  void shellExited();
 
-  private slots:
-    void readOutput();
+protected:
+  void insertFromMimeData(const QMimeData * data);
+  void keyPressEvent(QKeyEvent * event);
 
-  private:
-    bool insertMode;
-    enum { NoSequence, GotEsc, InCS, InOSC, OSCHalfClosed } sequenceState;
-    QByteArray savedSequence;
-    int shellPid;
-    int fdMaster;
-    FileDescriptorMonitor * watcher;
-    // We need to keep track of the "official" cursor
-    // if the user moves the QTextEdit cursor.
-    QTextCursor savedCursor;
-    void doControlSeq(const QByteArray & seq);
-    void doOSCommand(const QByteArray & cmd);
-    void eraseDisplay(int arg);
-    void eraseInLine(int arg = 0);
-    void deleteChars(int arg = 1);
+private slots:
+  void readOutput();
+
+private:
+  bool insertMode;
+  enum { NoSequence, GotEsc, InCS, InOSC, OSCHalfClosed } sequenceState;
+  QByteArray savedSequence;
+  int shellPid;
+  int fdMaster;
+  FileDescriptorMonitor * watcher;
+  // We need to keep track of the "official" cursor
+  // if the user moves the QTextEdit cursor.
+  QTextCursor savedCursor;
+  void doControlSeq(const QByteArray & seq);
+  void doOSCommand(const QByteArray & cmd);
+  void eraseDisplay(int arg);
+  void eraseInLine(int arg = 0);
+  void deleteChars(int arg = 1);
 };
 
 class FileDescriptorMonitor: public QThread {
 
   Q_OBJECT
 
-  public:
-    FileDescriptorMonitor(int fd, QObject * parent = 0);
+public:
+  FileDescriptorMonitor(int fd, QObject * parent = 0);
 
-  public slots:
-    void stop();
+public slots:
+  void stop();
 
-  signals:
-    void readyForRead(int fd);
+signals:
+  void readyForRead(int fd);
 
-  protected:
-    void run();
+protected:
+  void run();
 
-  private:
-    int watchedFd;
-    fd_set watchedFdSet;
-    bool shouldStop;
+private:
+  int watchedFd;
+  fd_set watchedFdSet;
+  bool shouldStop;
 };
 
 #endif /*QTERMINAL_H_*/

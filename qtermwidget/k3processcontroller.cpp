@@ -35,70 +35,62 @@
 
 #include <QtCore/QSocketNotifier>
 
-class K3ProcessController::Private
-{
+class K3ProcessController::Private {
 public:
-    Private()
-        : needcheck( false ),
-          notifier( 0 )
-    {
-    }
+  Private()
+    : needcheck( false ),
+      notifier( 0 ) {
+  }
 
-    ~Private()
-    {
-        delete notifier;
-    }
+  ~Private() {
+    delete notifier;
+  }
 
-    int fd[2];
-    bool needcheck;
-    QSocketNotifier *notifier;
-    QList<K3Process*> kProcessList;
-    QList<int> unixProcessList;
-    static struct sigaction oldChildHandlerData;
-    static bool handlerSet;
-    static int refCount;
-    static K3ProcessController* instance;
+  int fd[2];
+  bool needcheck;
+  QSocketNotifier * notifier;
+  QList<K3Process *> kProcessList;
+  QList<int> unixProcessList;
+  static struct sigaction oldChildHandlerData;
+  static bool handlerSet;
+  static int refCount;
+  static K3ProcessController * instance;
 };
 
-K3ProcessController *K3ProcessController::Private::instance = 0;
+K3ProcessController * K3ProcessController::Private::instance = 0;
 int K3ProcessController::Private::refCount = 0;
 
-void K3ProcessController::ref()
-{
-    if ( !Private::refCount ) {
-        Private::instance = new K3ProcessController;
-        setupHandlers();
-    }
-    Private::refCount++;
+void K3ProcessController::ref() {
+  if ( !Private::refCount ) {
+    Private::instance = new K3ProcessController;
+    setupHandlers();
+  }
+  Private::refCount++;
 }
 
-void K3ProcessController::deref()
-{
-    Private::refCount--;
-    if( !Private::refCount ) {
-        resetHandlers();
-        delete Private::instance;
-        Private::instance = 0;
-    }
+void K3ProcessController::deref() {
+  Private::refCount--;
+  if( !Private::refCount ) {
+    resetHandlers();
+    delete Private::instance;
+    Private::instance = 0;
+  }
 }
 
-K3ProcessController* K3ProcessController::instance()
-{
-    /*
-     * there were no safety guards in previous revisions, is that ok?
-    if ( !Private::instance ) {
-        ref();
-    }
-     */
+K3ProcessController * K3ProcessController::instance() {
+  /*
+   * there were no safety guards in previous revisions, is that ok?
+  if ( !Private::instance ) {
+      ref();
+  }
+   */
 
-    return Private::instance;
+  return Private::instance;
 }
 
 K3ProcessController::K3ProcessController()
-  : d( new Private )
-{
-  if( pipe( d->fd ) )
-  {
+  : d( new Private ) {
+  if( pipe( d->fd ) ) {
     perror( "pipe" );
     abort();
   }
@@ -114,10 +106,9 @@ K3ProcessController::K3ProcessController()
                     SLOT(slotDoHousekeeping()));
 }
 
-K3ProcessController::~K3ProcessController()
-{
+K3ProcessController::~K3ProcessController() {
 #ifndef Q_OS_MAC
-/* not sure why, but this is causing lockups */
+  /* not sure why, but this is causing lockups */
   close( d->fd[0] );
   close( d->fd[1] );
 #else
@@ -129,10 +120,9 @@ K3ProcessController::~K3ProcessController()
 
 
 extern "C" {
-static void theReaper( int num )
-{
-  K3ProcessController::theSigCHLDHandler( num );
-}
+  static void theReaper( int num ) {
+    K3ProcessController::theSigCHLDHandler( num );
+  }
 }
 
 #ifdef Q_OS_UNIX
@@ -140,10 +130,10 @@ struct sigaction K3ProcessController::Private::oldChildHandlerData;
 #endif
 bool K3ProcessController::Private::handlerSet = false;
 
-void K3ProcessController::setupHandlers()
-{
-  if( Private::handlerSet )
-      return;
+void K3ProcessController::setupHandlers() {
+  if( Private::handlerSet ) {
+    return;
+  }
   Private::handlerSet = true;
 
 #ifdef Q_OS_UNIX
@@ -171,10 +161,10 @@ void K3ProcessController::setupHandlers()
 #endif
 }
 
-void K3ProcessController::resetHandlers()
-{
-  if( !Private::handlerSet )
-      return;
+void K3ProcessController::resetHandlers() {
+  if( !Private::handlerSet ) {
+    return;
+  }
   Private::handlerSet = false;
 
 #ifdef Q_OS_UNIX
@@ -186,8 +176,8 @@ void K3ProcessController::resetHandlers()
   struct sigaction act;
   sigaction( SIGCHLD, &Private::oldChildHandlerData, &act );
   if (act.sa_handler != theReaper) {
-     sigaction( SIGCHLD, &act, 0 );
-     Private::handlerSet = true;
+    sigaction( SIGCHLD, &act, 0 );
+    Private::handlerSet = true;
   }
 
   sigprocmask( SIG_SETMASK, &omask, 0 );
@@ -200,18 +190,17 @@ void K3ProcessController::resetHandlers()
 // the pipe is needed to sync the child reaping with our event processing,
 // as otherwise there are race conditions, locking requirements, and things
 // generally get harder
-void K3ProcessController::theSigCHLDHandler( int arg )
-{
+void K3ProcessController::theSigCHLDHandler( int arg ) {
   int saved_errno = errno;
 
   char dummy = 0;
   ::write( instance()->d->fd[1], &dummy, 1 );
 
 #ifdef Q_OS_UNIX
-    if ( Private::oldChildHandlerData.sa_handler != SIG_IGN &&
-         Private::oldChildHandlerData.sa_handler != SIG_DFL ) {
-        Private::oldChildHandlerData.sa_handler( arg ); // call the old handler
-    }
+  if ( Private::oldChildHandlerData.sa_handler != SIG_IGN &&
+       Private::oldChildHandlerData.sa_handler != SIG_DFL ) {
+    Private::oldChildHandlerData.sa_handler( arg ); // call the old handler
+  }
 #else
   //TODO: win32
 #endif
@@ -219,74 +208,65 @@ void K3ProcessController::theSigCHLDHandler( int arg )
   errno = saved_errno;
 }
 
-int K3ProcessController::notifierFd() const
-{
+int K3ProcessController::notifierFd() const {
   return d->fd[0];
 }
 
-void K3ProcessController::unscheduleCheck()
-{
+void K3ProcessController::unscheduleCheck() {
   char dummy[16]; // somewhat bigger - just in case several have queued up
-  if( ::read( d->fd[0], dummy, sizeof(dummy) ) > 0 )
+  if( ::read( d->fd[0], dummy, sizeof(dummy) ) > 0 ) {
     d->needcheck = true;
+  }
 }
 
 void
-K3ProcessController::rescheduleCheck()
-{
-  if( d->needcheck )
-  {
+K3ProcessController::rescheduleCheck() {
+  if( d->needcheck ) {
     d->needcheck = false;
     char dummy = 0;
     ::write( d->fd[1], &dummy, 1 );
   }
 }
 
-void K3ProcessController::slotDoHousekeeping()
-{
+void K3ProcessController::slotDoHousekeeping() {
   char dummy[16]; // somewhat bigger - just in case several have queued up
   ::read( d->fd[0], dummy, sizeof(dummy) );
 
   int status;
- again:
-  QList<K3Process*>::iterator it( d->kProcessList.begin() );
-  QList<K3Process*>::iterator eit( d->kProcessList.end() );
-  while( it != eit )
-  {
-    K3Process *prc = *it;
-    if( prc->runs && waitpid( prc->pid_, &status, WNOHANG ) > 0 )
-    {
+again:
+  QList<K3Process *>::iterator it( d->kProcessList.begin() );
+  QList<K3Process *>::iterator eit( d->kProcessList.end() );
+  while( it != eit ) {
+    K3Process * prc = *it;
+    if( prc->runs && waitpid( prc->pid_, &status, WNOHANG ) > 0 ) {
       prc->processHasExited( status );
       // the callback can nuke the whole process list and even 'this'
-      if (!instance())
+      if (!instance()) {
         return;
+      }
       goto again;
     }
     ++it;
   }
   QList<int>::iterator uit( d->unixProcessList.begin() );
   QList<int>::iterator ueit( d->unixProcessList.end() );
-  while( uit != ueit )
-  {
-    if( waitpid( *uit, 0, WNOHANG ) > 0 )
-    {
+  while( uit != ueit ) {
+    if( waitpid( *uit, 0, WNOHANG ) > 0 ) {
       uit = d->unixProcessList.erase( uit );
       deref(); // counterpart to addProcess, can invalidate 'this'
-    } else
+    } else {
       ++uit;
+    }
   }
 }
 
-bool K3ProcessController::waitForProcessExit( int timeout )
-{
+bool K3ProcessController::waitForProcessExit( int timeout ) {
 #ifdef Q_OS_UNIX
-  for(;;)
-  {
+  for(;;) {
     struct timeval tv, *tvp;
-    if (timeout < 0)
+    if (timeout < 0) {
       tvp = 0;
-    else
-    {
+    } else {
       tv.tv_sec = timeout;
       tv.tv_usec = 0;
       tvp = &tv;
@@ -296,17 +276,17 @@ bool K3ProcessController::waitForProcessExit( int timeout )
     FD_ZERO( &fds );
     FD_SET( d->fd[0], &fds );
 
-    switch( select( d->fd[0]+1, &fds, 0, 0, tvp ) )
-    {
-    case -1:
-      if( errno == EINTR )
-        continue;
-      // fall through; should never happen
-    case 0:
-      return false;
-    default:
-      slotDoHousekeeping();
-      return true;
+    switch( select( d->fd[0]+1, &fds, 0, 0, tvp ) ) {
+      case -1:
+        if( errno == EINTR ) {
+          continue;
+        }
+        // fall through; should never happen
+      case 0:
+        return false;
+      default:
+        slotDoHousekeeping();
+        return true;
     }
   }
 #else
@@ -315,18 +295,15 @@ bool K3ProcessController::waitForProcessExit( int timeout )
 #endif
 }
 
-void K3ProcessController::addKProcess( K3Process* p )
-{
+void K3ProcessController::addKProcess( K3Process * p ) {
   d->kProcessList.append( p );
 }
 
-void K3ProcessController::removeKProcess( K3Process* p )
-{
+void K3ProcessController::removeKProcess( K3Process * p ) {
   d->kProcessList.removeAll( p );
 }
 
-void K3ProcessController::addProcess( int pid )
-{
+void K3ProcessController::addProcess( int pid ) {
   d->unixProcessList.append( pid );
   ref(); // make sure we stay around when the K3Process goes away
 }

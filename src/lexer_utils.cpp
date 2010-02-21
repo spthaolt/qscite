@@ -19,12 +19,12 @@
 
 #include <cassert>
 
-/* String keys for each lexer we support. Note empty string marking end of 
+/* String keys for each lexer we support. Note empty string marking end of
  * array. Please keep these in alphabetical order.
  */
 const QString supportedLexers[] = {
   "bash", "cpp", "csharp", "css", "html", "java", "perl", "pov", "python",
-  "ruby", "javascript", "" 
+  "ruby", "javascript", ""
 };
 
 QsciLexer * getLexerByName(const QString & lexerName) {
@@ -65,57 +65,57 @@ int indexOfLexer(const QString & lexerName) {
   return -1;
 }
 
-namespace {	
-  /* Default extensions for each lexer (in order listed in supportedLexers[]).
-   * End of extensions for each lexer marked with "".
-   */
-  const QString defaultExtensions[] = {
-    /* bash        */ "sh", "",
-    /* cpp         */ "c", "h", "cc", "cpp", "cxx", "",
-    /* csharp      */ "cs", "",
-    /* css         */ "css","",
-    /* html        */ "html", "xhtml", "xml", "plist", "",
-    /* java        */ "java", "",
-    /* perl        */ "pl", "pm", "",
-    /* pov         */ "pov", "inc", "",
-    /* python      */ "py", "pyw", "",
-    /* ruby        */ "rb", "",
-    /* javascript  */ "js", ""
-  };
-  
-  /* Default magic values for identifying files we can't identify by
-   * extension. Magic values must appear somewhere in the first line of the
-   * file. Must be in order and "" terminated, as above.
-   */
-  /* TODO: these will probably be regexes someday. */
-  const QString defaultMagic[] = {
-    /* bash   */ "/sh", "bash", "",
-    /* cpp    */ "",
-    /* csharp */ "",
-    /* css    */ "",
-    /* html   */ "<?xml", "<!DOCTYPE", "",
-    /* java   */ "",
-    /* perl   */ "perl", "",
-    /* pov    */ "",
-    /* python */ "python", "",
-    /* ruby   */ "ruby", "",
-    /* javascript  */ ""
-  };	
-} // namespace	
-  
+namespace {
+/* Default extensions for each lexer (in order listed in supportedLexers[]).
+ * End of extensions for each lexer marked with "".
+ */
+const QString defaultExtensions[] = {
+  /* bash        */ "sh", "",
+  /* cpp         */ "c", "h", "cc", "cpp", "cxx", "",
+  /* csharp      */ "cs", "",
+  /* css         */ "css","",
+  /* html        */ "html", "xhtml", "xml", "plist", "",
+  /* java        */ "java", "",
+  /* perl        */ "pl", "pm", "",
+  /* pov         */ "pov", "inc", "",
+  /* python      */ "py", "pyw", "",
+  /* ruby        */ "rb", "",
+  /* javascript  */ "js", ""
+};
+
+/* Default magic values for identifying files we can't identify by
+ * extension. Magic values must appear somewhere in the first line of the
+ * file. Must be in order and "" terminated, as above.
+ */
+/* TODO: these will probably be regexes someday. */
+const QString defaultMagic[] = {
+  /* bash   */ "/sh", "bash", "",
+  /* cpp    */ "",
+  /* csharp */ "",
+  /* css    */ "",
+  /* html   */ "<?xml", "<!DOCTYPE", "",
+  /* java   */ "",
+  /* perl   */ "perl", "",
+  /* pov    */ "",
+  /* python */ "python", "",
+  /* ruby   */ "ruby", "",
+  /* javascript  */ ""
+};
+} // namespace
+
 void writeDefaultExtensions(QSettings & settings) {
   assert(settings.group() == "extensions");
 
   for (int i = 0, j = 0; !supportedLexers[i].isEmpty(); ++i, ++j) {
     qDebug() << qPrintable(supportedLexers[i]);
     settings.beginWriteArray(supportedLexers[i]);
-    
+
     for (int k = 0; !defaultExtensions[j].isEmpty(); ++j, ++k) {
       settings.setArrayIndex(k);
       qDebug() << k << ": " << qPrintable(defaultExtensions[j]) << ' ';
       settings.setValue("ext", defaultExtensions[j]);
     }
-    
+
     settings.endArray();
   }
   settings.setValue("version", 1);
@@ -127,31 +127,31 @@ void writeDefaultMagic(QSettings & settings) {
   for (int i = 0, j = 0; !supportedLexers[i].isEmpty(); ++i, ++j) {
     qDebug() << qPrintable(supportedLexers[i]);
     settings.beginWriteArray(supportedLexers[i]);
-    
+
     for (int k = 0; !defaultMagic[j].isEmpty(); ++j, ++k) {
       settings.setArrayIndex(k);
       qDebug() << k << ": " << qPrintable(defaultMagic[j]) << ' ';
       settings.setValue("str", defaultMagic[j]);
     }
-    
+
     settings.endArray();
   }
   settings.setValue("version", 1);
 } // writeDefaultMagic
 
-QsciLexer* getLexerForDocument(const QString& fileName, const QString& text) {
+QsciLexer * getLexerForDocument(const QString & fileName, const QString & text) {
   // get the file extension
-    int lastDot = fileName.lastIndexOf('.');
-    QString ext = (lastDot > 0) ? fileName.right(fileName.size() - lastDot - 1) : "";
-    /* TODO: do we need to notice newline mode here? */
+  int lastDot = fileName.lastIndexOf('.');
+  QString ext = (lastDot > 0) ? fileName.right(fileName.size() - lastDot - 1) : "";
+  /* TODO: do we need to notice newline mode here? */
   QString firstLine = text.left(text.indexOf('\n'));
-  
+
   QSettings settings;
   int arrSize;
-  
+
   if (!ext.isEmpty()) { // We have an extension. See if it matches anything.
     settings.beginGroup("extensions");
-    
+
     if (settings.value("version", 0).toInt() < 1) {
       qDebug() << "Using default extension mappings";
       writeDefaultExtensions(settings);
@@ -172,7 +172,7 @@ QsciLexer* getLexerForDocument(const QString& fileName, const QString& text) {
     }
     settings.endGroup();
   }
-  
+
   /*
    * No extension or unmatched extension. Use magic.
    */
@@ -195,9 +195,9 @@ QsciLexer* getLexerForDocument(const QString& fileName, const QString& text) {
     }
     settings.endArray();
   }
-  
+
   settings.endGroup();
-    
+
   /*
    * Couldn't identify extension or magic.
    * Return no lexer, indicating plain text.

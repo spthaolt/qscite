@@ -134,7 +134,7 @@ void MainWindow::createActions() {
   findTextAct = new QAction(tr("&Find..."), this);
   findTextAct->setShortcut(tr("Ctrl+F"));
   connect(findTextAct, SIGNAL(triggered()), this, SLOT(showFindDialog()));
-  
+
   replaceTextAct = new QAction(tr("Replace..."), this);
   replaceTextAct->setShortcut(tr("Ctrl+H"));
   connect(replaceTextAct, SIGNAL(triggered()), this, SLOT(showReplaceDialog()));
@@ -153,7 +153,7 @@ void MainWindow::createActions() {
     connect(tmp, SIGNAL(triggered()), this, SLOT(lexerMenuChanged()));
     lexers->addAction(tmp);
   }
-  
+
 }
 
 void MainWindow::createMenus() {
@@ -195,7 +195,7 @@ void MainWindow::createMenus() {
   for (int i = 0; i < lexerList->size(); ++i) {
     lexerMenu->addAction(lexerList->at(i));
   }
-  
+
   toolsMenu = menuBar()->addMenu(tr("&Tools"));
   lineEndMenu = toolsMenu->addMenu(tr("&Line Endings"));
   lineEndMenu->addAction(lineEndLf);
@@ -215,11 +215,11 @@ void MainWindow::createMenus() {
   helpMenu->addAction(aboutQtAct);
 
   for (int i = 0; i < recentFiles.size(); ++i) {
-  	if (recentFiles[i].exists() && recentFiles[i].isFile()) {
-  		recentMenu->addAction( recentFiles[i].fileName() )->setStatusTip( recentFiles[i].filePath() );
-  	} else {
-  		recentFiles.removeAt(i--);
-  	}
+    if (recentFiles[i].exists() && recentFiles[i].isFile()) {
+      recentMenu->addAction( recentFiles[i].fileName() )->setStatusTip( recentFiles[i].filePath() );
+    } else {
+      recentFiles.removeAt(i--);
+    }
   }
 
   recentMenu->menuAction()->setEnabled(!recentFiles.empty());
@@ -227,27 +227,27 @@ void MainWindow::createMenus() {
 }
 
 void MainWindow::createToolBars() {
-    QSize buttonSize = QSize(22, 22);
-    mainToolBar = addToolBar(tr("Main"));
-    mainToolBar->addAction(newAct);
-    mainToolBar->addAction(openAct);
-    mainToolBar->addAction(saveAct);
-    mainToolBar->addAction(saveAsAct);
-    mainToolBar->addSeparator();
-    mainToolBar->addAction(undoAct);
-    mainToolBar->addAction(redoAct);
-    mainToolBar->addSeparator();
-    mainToolBar->addAction(cutAct);
-    mainToolBar->addAction(copyAct);
-    mainToolBar->addAction(pasteAct);
-    mainToolBar->addSeparator();
-    mainToolBar->addAction(prevAct);
-    mainToolBar->addAction(nextAct);
-    mainToolBar->addSeparator();
-    mainToolBar->addAction(terminalAct);
-    mainToolBar->setIconSize(buttonSize);
+  QSize buttonSize = QSize(22, 22);
+  mainToolBar = addToolBar(tr("Main"));
+  mainToolBar->addAction(newAct);
+  mainToolBar->addAction(openAct);
+  mainToolBar->addAction(saveAct);
+  mainToolBar->addAction(saveAsAct);
+  mainToolBar->addSeparator();
+  mainToolBar->addAction(undoAct);
+  mainToolBar->addAction(redoAct);
+  mainToolBar->addSeparator();
+  mainToolBar->addAction(cutAct);
+  mainToolBar->addAction(copyAct);
+  mainToolBar->addAction(pasteAct);
+  mainToolBar->addSeparator();
+  mainToolBar->addAction(prevAct);
+  mainToolBar->addAction(nextAct);
+  mainToolBar->addSeparator();
+  mainToolBar->addAction(terminalAct);
+  mainToolBar->setIconSize(buttonSize);
 }
 
 void MainWindow::createStatusBar() {
-    statusBar()->showMessage(tr("Ready"));
+  statusBar()->showMessage(tr("Ready"));
 }
