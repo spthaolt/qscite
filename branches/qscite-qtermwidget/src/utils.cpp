@@ -35,24 +35,24 @@ void printHex (QString & thestr) {
     }
     char c = str[j];
     for (int i = 2 * sizeof(char) - 1; i >= 0; --i) {
-        std::cerr << "0123456789ABCDEF"[((c >> i*4) & 0xF)];
+      std::cerr << "0123456789ABCDEF"[((c >> i*4) & 0xF)];
     }
     std::cerr << " ";
   }
-  
+
   std::cerr << "-- " << readableStr;
 }
 
 QsciteEditor::EolMode detectEolMode(QsciteEditor * doc) {
-	QString firstLine = doc->text(0);
-	if (firstLine.endsWith("\r\n")) {
-		return QsciteEditor::EolWindows;
-	}
-	if (firstLine.endsWith('\n')) {
-		return QsciteEditor::EolUnix;
-	}
-	if (firstLine.endsWith('\r')) {
-		return QsciteEditor::EolMac;
-	}
-	return doc->eolMode();
+  QString firstLine = doc->text(0);
+  if (firstLine.endsWith("\r\n")) {
+    return QsciteEditor::EolWindows;
+  }
+  if (firstLine.endsWith('\n')) {
+    return QsciteEditor::EolUnix;
+  }
+  if (firstLine.endsWith('\r')) {
+    return QsciteEditor::EolMac;
+  }
+  return doc->eolMode();
 }

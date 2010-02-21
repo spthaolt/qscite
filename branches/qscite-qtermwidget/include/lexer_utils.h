@@ -5,7 +5,7 @@
 class QsciLexer;
 class QSettings;
 
-QsciLexer* getLexerForDocument(const QString & fileName, const QString & text);
+QsciLexer * getLexerForDocument(const QString & fileName, const QString & text);
 
 QsciLexer * getLexerByName(const QString & lexerName);
 int indexOfLexer(const QString & lexerName);

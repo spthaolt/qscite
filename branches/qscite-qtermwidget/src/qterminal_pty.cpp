@@ -18,7 +18,7 @@
 #include "qterminal_pty.h"
 // #include "utils.h"
 
-QTerminal::QTerminal(QWidget *parent, Qt::WindowFlags f) : QTextEdit(parent) {
+QTerminal::QTerminal(QWidget * parent, Qt::WindowFlags f) : QTextEdit(parent) {
   setWindowFlags(f);
   qDebug() << "Constructing QTerminal";
   savedCursor = this->textCursor();
@@ -47,11 +47,11 @@ QTerminal::QTerminal(QWidget *parent, Qt::WindowFlags f) : QTextEdit(parent) {
      * Window systems do ugly things if two processes try
      * to use the same resources. */
     if (errno == ENOENT) {
-      execl("/bin/sh", "/bin/sh", (char*)0);
+      execl("/bin/sh", "/bin/sh", (char *)0);
     }
     perror("QTerminal: exec");
-     // exit hard in case exit handlers mess with the window system
-     _exit(127);
+    // exit hard in case exit handlers mess with the window system
+    _exit(127);
   } else if (-1 == shellPid) { // didn't fork
     this->setText(QString("QTerminal: fork: %1\n").arg(strerror(errno)));
   } else {
@@ -88,10 +88,10 @@ QTerminal::~QTerminal() {
 
 void QTerminal::readOutput() {
   this->setTextCursor(savedCursor);
-  
+
   char rdBuf[256];
   ssize_t count = read(fdMaster, rdBuf, sizeof(rdBuf)/sizeof(char));
-  
+
   if (0 == count || (-1 == count && errno == EIO)) { // EOF, child closed
     watcher->stop();
     watcher->disconnect();
@@ -265,11 +265,10 @@ void QTerminal::doControlSeq(const QByteArray & seq) {
         }
       }
       break;
-    case 'D':
-      {
+    case 'D': {
         QTextCursor cursor = this->textCursor();
         cursor.movePosition(QTextCursor::Left, QTextCursor::MoveAnchor,
-            seq.left(seq.length() - 1).toInt());
+                            seq.left(seq.length() - 1).toInt());
       }
       break;
     case 'J':
@@ -317,7 +316,7 @@ void QTerminal::doOSCommand(const QByteArray & cmd) {
        * probably has a dark background and wants the traditional X11 #00FF00.
        */
       activePalette.setColor(QPalette::Text,
-          (textParam.toLower() == "green") ? QColor(0x00FF00) : QColor(textParam.constData()));
+                             (textParam.toLower() == "green") ? QColor(0x00FF00) : QColor(textParam.constData()));
       this->setPalette(activePalette);
       break;
     case 11:
@@ -354,14 +353,14 @@ void QTerminal::keyPressEvent(QKeyEvent * event) {
 void QTerminal::eraseDisplay(int arg) {
   switch (arg) {
     case 0:
-    break;
+      break;
     case 1:
-    break;
+      break;
     case 2:
       this->clear();
-    break;
+      break;
     case 3:
-    break;
+      break;
   }
 }
 
@@ -370,13 +369,13 @@ void QTerminal::eraseInLine(int arg) {
     case 0:
       this->moveCursor(QTextCursor::End, QTextCursor::KeepAnchor);
       this->textCursor().deleteChar();
-    break;
+      break;
     case 1:
-    break;
+      break;
     case 2:
-    break;
+      break;
     case 3:
-    break;
+      break;
   }
 }
 
@@ -386,7 +385,7 @@ void QTerminal::deleteChars(int arg) {
   }
 }
 
-void QTerminal::insertFromMimeData(const QMimeData* data) {
+void QTerminal::insertFromMimeData(const QMimeData * data) {
   QString s = data->text();
   write(fdMaster, s.toAscii().data(), s.length());
 }
@@ -415,8 +414,7 @@ void QTerminal::changeDir(const QString & dir) {
 }
 
 FileDescriptorMonitor::FileDescriptorMonitor(int fd, QObject * parent) :
-  QThread(parent), watchedFd(fd)
-{
+  QThread(parent), watchedFd(fd) {
   FD_ZERO(&watchedFdSet);
   FD_SET(watchedFd, &watchedFdSet);
 }
@@ -431,7 +429,7 @@ void FileDescriptorMonitor::run() {
     int rval = select(watchedFd + 1, &workingFdSet, NULL, NULL, &workingPollInterval);
     workingPollInterval = pollInterval;
     if (rval != -1 && FD_ISSET(watchedFd, &workingFdSet)) {
-       //qDebug() << "readyForRead()";
+      //qDebug() << "readyForRead()";
       emit readyForRead(watchedFd);
     } else {
       //qDebug() << "select() timeout";

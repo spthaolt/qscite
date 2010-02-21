@@ -23,20 +23,20 @@
 #include "mainwindow.h"
 #include "launcher.h"
 
-int main(int argc, char *argv[]) {
-    Q_INIT_RESOURCE(qscite);
+int main(int argc, char * argv[]) {
+  Q_INIT_RESOURCE(qscite);
 
-    QApplication app(argc, argv);
-    app.setApplicationName("QSciTE");
-    app.setOrganizationName("QSciteTeam");
-    QStringList _argv;
-    
-    for (int i = 1; i < argc; ++i) {
-      _argv.push_back(QString(argv[i]));
-    }
-    
-    Launcher launcher(_argv, &app);
-    return app.exec();
+  QApplication app(argc, argv);
+  app.setApplicationName("QSciTE");
+  app.setOrganizationName("QSciteTeam");
+  QStringList _argv;
+
+  for (int i = 1; i < argc; ++i) {
+    _argv.push_back(QString(argv[i]));
+  }
+
+  Launcher launcher(_argv, &app);
+  return app.exec();
 }
 
 

@@ -12,7 +12,7 @@
 Launcher::Launcher (QStringList argv, QApplication * _app) : trayIcon(NULL) {
   app = _app;
   createNewWindow(argv);
-  
+
   if(QSystemTrayIcon::isSystemTrayAvailable() && QSettings().value("trayIcon", true).toBool()) {
     qDebug() << "Creating the system tray icon";
     createTrayIcon();
@@ -74,13 +74,13 @@ void Launcher::trayClicked(QSystemTrayIcon::ActivationReason reason) {
 
 void Launcher::quitApplication() {
   qDebug() << "Launcher::quitApplication() called";
-  
+
   for (int i = 0; i < windows.size(); ++i) {
     if (!(windows[i]->close())) {
       return;
     }
   }
-  
+
   //app->quit();
 }
 

@@ -10,9 +10,9 @@
 #include <Qsci/qsciscintilla.h>
 
 class dlgScriptConsole: public QDialog, protected Ui_dlgScript {
-  
+
   Q_OBJECT
-  
+
 public:
   dlgScriptConsole(MainWindow * _parent);
   ~dlgScriptConsole();
@@ -26,5 +26,5 @@ private:
   QScriptEngine * engine;
   QsciteEditor * doc;
 };
-  
+
 #endif /*SCRIPTCONSOLE_H_*/
