@@ -1,44 +1,45 @@
-<ui version="4.0" >
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
  <class>QSciTEPrefs</class>
- <widget class="QDialog" name="QSciTEPrefs" >
-  <property name="windowModality" >
+ <widget class="QDialog" name="QSciTEPrefs">
+  <property name="windowModality">
    <enum>Qt::WindowModal</enum>
   </property>
-  <property name="geometry" >
+  <property name="geometry">
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>421</width>
-    <height>340</height>
+    <width>531</width>
+    <height>381</height>
    </rect>
   </property>
-  <property name="windowTitle" >
+  <property name="windowTitle">
    <string>Preferences - QSciTE</string>
   </property>
-  <widget class="QWidget" name="layoutWidget" >
-   <property name="geometry" >
+  <widget class="QWidget" name="layoutWidget">
+   <property name="geometry">
     <rect>
      <x>10</x>
      <y>10</y>
-     <width>401</width>
-     <height>321</height>
+     <width>511</width>
+     <height>361</height>
     </rect>
    </property>
-   <layout class="QVBoxLayout" >
+   <layout class="QVBoxLayout">
     <item>
-     <widget class="QTabWidget" name="tabs" >
-      <property name="tabShape" >
+     <widget class="QTabWidget" name="tabs">
+      <property name="tabShape">
        <enum>QTabWidget::Rounded</enum>
       </property>
-      <property name="currentIndex" >
-       <number>0</number>
+      <property name="currentIndex">
+       <number>3</number>
       </property>
-      <widget class="QWidget" name="tabGeneral" >
-       <attribute name="title" >
+      <widget class="QWidget" name="tabGeneral">
+       <attribute name="title">
         <string>General</string>
        </attribute>
-       <widget class="QWidget" name="layoutWidget" >
-        <property name="geometry" >
+       <widget class="QWidget" name="layoutWidget">
+        <property name="geometry">
          <rect>
           <x>10</x>
           <y>10</y>
@@ -46,46 +47,46 @@
           <height>221</height>
          </rect>
         </property>
-        <layout class="QVBoxLayout" >
+        <layout class="QVBoxLayout">
          <item>
-          <widget class="QCheckBox" name="cbSaveSize" >
-           <property name="text" >
+          <widget class="QCheckBox" name="cbSaveSize">
+           <property name="text">
             <string>Save window size/position on exit</string>
            </property>
           </widget>
          </item>
          <item>
-          <widget class="QCheckBox" name="cbTermDrawer" >
-           <property name="text" >
+          <widget class="QCheckBox" name="cbTermDrawer">
+           <property name="text">
             <string>Terminal in drawer (requires restart)</string>
            </property>
           </widget>
          </item>
          <item>
-          <layout class="QHBoxLayout" >
+          <layout class="QHBoxLayout">
            <item>
-            <widget class="QLabel" name="lblRemember" >
-             <property name="text" >
+            <widget class="QLabel" name="lblRemember">
+             <property name="text">
               <string>Remember</string>
              </property>
             </widget>
            </item>
            <item>
-            <widget class="QSpinBox" name="sbRecentCount" >
-             <property name="maximum" >
+            <widget class="QSpinBox" name="sbRecentCount">
+             <property name="maximum">
               <number>25</number>
              </property>
             </widget>
            </item>
            <item>
-            <widget class="QLabel" name="lblRecentFiles" >
-             <property name="sizePolicy" >
-              <sizepolicy vsizetype="Preferred" hsizetype="MinimumExpanding" >
+            <widget class="QLabel" name="lblRecentFiles">
+             <property name="sizePolicy">
+              <sizepolicy hsizetype="MinimumExpanding" vsizetype="Preferred">
                <horstretch>0</horstretch>
                <verstretch>0</verstretch>
               </sizepolicy>
              </property>
-             <property name="text" >
+             <property name="text">
               <string>recently opened file(s)</string>
              </property>
             </widget>
@@ -93,40 +94,40 @@
           </layout>
          </item>
          <item>
-          <widget class="QCheckBox" name="cbTrayIcon" >
-           <property name="text" >
+          <widget class="QCheckBox" name="cbTrayIcon">
+           <property name="text">
             <string>Tray icon (requires restart)</string>
            </property>
           </widget>
          </item>
          <item>
-          <layout class="QHBoxLayout" >
+          <layout class="QHBoxLayout">
            <item>
-            <widget class="QLabel" name="lblOpacity" >
-             <property name="text" >
+            <widget class="QLabel" name="lblOpacity">
+             <property name="text">
               <string>Window opacity</string>
              </property>
             </widget>
            </item>
            <item>
-            <widget class="QDoubleSpinBox" name="sbOpacity" >
-             <property name="maximum" >
+            <widget class="QDoubleSpinBox" name="sbOpacity">
+             <property name="maximum">
               <double>1.000000000000000</double>
              </property>
-             <property name="singleStep" >
+             <property name="singleStep">
               <double>0.010000000000000</double>
              </property>
-             <property name="value" >
+             <property name="value">
               <double>1.000000000000000</double>
              </property>
             </widget>
            </item>
            <item>
             <spacer>
-             <property name="orientation" >
+             <property name="orientation">
               <enum>Qt::Horizontal</enum>
              </property>
-             <property name="sizeHint" >
+             <property name="sizeHint" stdset="0">
               <size>
                <width>40</width>
                <height>20</height>
@@ -138,10 +139,10 @@
          </item>
          <item>
           <spacer>
-           <property name="orientation" >
+           <property name="orientation">
             <enum>Qt::Vertical</enum>
            </property>
-           <property name="sizeHint" >
+           <property name="sizeHint" stdset="0">
             <size>
              <width>20</width>
              <height>40</height>
@@ -152,12 +153,12 @@
         </layout>
        </widget>
       </widget>
-      <widget class="QWidget" name="tabText" >
-       <attribute name="title" >
+      <widget class="QWidget" name="tabText">
+       <attribute name="title">
         <string>Text</string>
        </attribute>
-       <widget class="QWidget" name="layoutWidget" >
-        <property name="geometry" >
+       <widget class="QWidget" name="layoutWidget">
+        <property name="geometry">
          <rect>
           <x>10</x>
           <y>10</y>
@@ -165,53 +166,53 @@
           <height>226</height>
          </rect>
         </property>
-        <layout class="QVBoxLayout" >
+        <layout class="QVBoxLayout">
          <item>
-          <widget class="QLabel" name="lblForNew" >
-           <property name="text" >
+          <widget class="QLabel" name="lblForNew">
+           <property name="text">
             <string>For newly opened documents:</string>
            </property>
           </widget>
          </item>
          <item>
-          <widget class="QCheckBox" name="cbWrapMode" >
-           <property name="text" >
+          <widget class="QCheckBox" name="cbWrapMode">
+           <property name="text">
             <string>Wrap long lines</string>
            </property>
           </widget>
          </item>
          <item>
-          <layout class="QHBoxLayout" >
+          <layout class="QHBoxLayout">
            <item>
-            <widget class="QLabel" name="lblWrapMarkers" >
-             <property name="text" >
+            <widget class="QLabel" name="lblWrapMarkers">
+             <property name="text">
               <string>Wrap indicators:</string>
              </property>
-             <property name="buddy" >
+             <property name="buddy">
               <cstring>cbxWrapMarkers</cstring>
              </property>
             </widget>
            </item>
            <item>
-            <widget class="QComboBox" name="cbxWrapMarkers" >
-             <property name="sizePolicy" >
-              <sizepolicy vsizetype="Fixed" hsizetype="MinimumExpanding" >
+            <widget class="QComboBox" name="cbxWrapMarkers">
+             <property name="sizePolicy">
+              <sizepolicy hsizetype="MinimumExpanding" vsizetype="Fixed">
                <horstretch>0</horstretch>
                <verstretch>0</verstretch>
               </sizepolicy>
              </property>
              <item>
-              <property name="text" >
+              <property name="text">
                <string>None</string>
               </property>
              </item>
              <item>
-              <property name="text" >
+              <property name="text">
                <string>Near text</string>
               </property>
              </item>
              <item>
-              <property name="text" >
+              <property name="text">
                <string>Near border</string>
               </property>
              </item>
@@ -220,17 +221,17 @@
           </layout>
          </item>
          <item>
-          <layout class="QHBoxLayout" >
+          <layout class="QHBoxLayout">
            <item>
-            <widget class="QCheckBox" name="cbLineNos" >
-             <property name="text" >
+            <widget class="QCheckBox" name="cbLineNos">
+             <property name="text">
               <string>Line numbers</string>
              </property>
             </widget>
            </item>
            <item>
-            <widget class="QCheckBox" name="cbIndentGuides" >
-             <property name="text" >
+            <widget class="QCheckBox" name="cbIndentGuides">
+             <property name="text">
               <string>Indentation guides</string>
              </property>
             </widget>
@@ -238,32 +239,32 @@
           </layout>
          </item>
          <item>
-          <layout class="QHBoxLayout" >
+          <layout class="QHBoxLayout">
            <item>
-            <widget class="QLabel" name="lblUseTabs" >
-             <property name="text" >
+            <widget class="QLabel" name="lblUseTabs">
+             <property name="text">
               <string>Indent using:</string>
              </property>
-             <property name="buddy" >
+             <property name="buddy">
               <cstring>cbxUseTabs</cstring>
              </property>
             </widget>
            </item>
            <item>
-            <widget class="QComboBox" name="cbxUseTabs" >
-             <property name="sizePolicy" >
-              <sizepolicy vsizetype="Fixed" hsizetype="MinimumExpanding" >
+            <widget class="QComboBox" name="cbxUseTabs">
+             <property name="sizePolicy">
+              <sizepolicy hsizetype="MinimumExpanding" vsizetype="Fixed">
                <horstretch>0</horstretch>
                <verstretch>0</verstretch>
               </sizepolicy>
              </property>
              <item>
-              <property name="text" >
+              <property name="text">
                <string>Spaces</string>
               </property>
              </item>
              <item>
-              <property name="text" >
+              <property name="text">
                <string>Tabs</string>
               </property>
              </item>
@@ -272,33 +273,33 @@
           </layout>
          </item>
          <item>
-          <layout class="QHBoxLayout" >
+          <layout class="QHBoxLayout">
            <item>
-            <widget class="QLabel" name="lblIndentSize" >
-             <property name="text" >
+            <widget class="QLabel" name="lblIndentSize">
+             <property name="text">
               <string>Indent size:</string>
              </property>
-             <property name="buddy" >
+             <property name="buddy">
               <cstring>sbIndentSize</cstring>
              </property>
             </widget>
            </item>
            <item>
-            <widget class="QSpinBox" name="sbIndentSize" >
-             <property name="sizePolicy" >
-              <sizepolicy vsizetype="Fixed" hsizetype="MinimumExpanding" >
+            <widget class="QSpinBox" name="sbIndentSize">
+             <property name="sizePolicy">
+              <sizepolicy hsizetype="MinimumExpanding" vsizetype="Fixed">
                <horstretch>0</horstretch>
                <verstretch>0</verstretch>
               </sizepolicy>
              </property>
-             <property name="minimum" >
+             <property name="minimum">
               <number>1</number>
              </property>
             </widget>
            </item>
            <item>
-            <widget class="QCheckBox" name="cbAutoIndent" >
-             <property name="text" >
+            <widget class="QCheckBox" name="cbAutoIndent">
+             <property name="text">
               <string>Auto indent</string>
              </property>
             </widget>
@@ -306,34 +307,34 @@
           </layout>
          </item>
          <item>
-          <layout class="QHBoxLayout" >
+          <layout class="QHBoxLayout">
            <item>
-            <widget class="QLabel" name="label" >
-             <property name="text" >
+            <widget class="QLabel" name="label">
+             <property name="text">
               <string>Line endings:</string>
              </property>
             </widget>
            </item>
            <item>
-            <widget class="QComboBox" name="cbxEOLMode" >
-             <property name="sizePolicy" >
-              <sizepolicy vsizetype="Fixed" hsizetype="MinimumExpanding" >
+            <widget class="QComboBox" name="cbxEOLMode">
+             <property name="sizePolicy">
+              <sizepolicy hsizetype="MinimumExpanding" vsizetype="Fixed">
                <horstretch>0</horstretch>
                <verstretch>0</verstretch>
               </sizepolicy>
              </property>
              <item>
-              <property name="text" >
+              <property name="text">
                <string>CRLF (Windows)</string>
               </property>
              </item>
              <item>
-              <property name="text" >
+              <property name="text">
                <string>CR (Mac OS Classic)</string>
               </property>
              </item>
              <item>
-              <property name="text" >
+              <property name="text">
                <string>LF (Unix)</string>
               </property>
              </item>
@@ -344,12 +345,12 @@
         </layout>
        </widget>
       </widget>
-      <widget class="QWidget" name="tabFonts" >
-       <attribute name="title" >
+      <widget class="QWidget" name="tabFonts">
+       <attribute name="title">
         <string>Font</string>
        </attribute>
-       <widget class="QWidget" name="layoutWidget" >
-        <property name="geometry" >
+       <widget class="QWidget" name="layoutWidget">
+        <property name="geometry">
          <rect>
           <x>10</x>
           <y>10</y>
@@ -357,23 +358,23 @@
           <height>231</height>
          </rect>
         </property>
-        <layout class="QVBoxLayout" >
-         <property name="spacing" >
+        <layout class="QVBoxLayout">
+         <property name="spacing">
           <number>4</number>
          </property>
          <item>
-          <layout class="QHBoxLayout" >
+          <layout class="QHBoxLayout">
            <item>
-            <widget class="QLabel" name="lblFont" >
-             <property name="text" >
+            <widget class="QLabel" name="lblFont">
+             <property name="text">
               <string>Family:</string>
              </property>
             </widget>
            </item>
            <item>
-            <widget class="QFontComboBox" name="cbxTextFont" >
-             <property name="sizePolicy" >
-              <sizepolicy vsizetype="Fixed" hsizetype="MinimumExpanding" >
+            <widget class="QFontComboBox" name="cbxTextFont">
+             <property name="sizePolicy">
+              <sizepolicy hsizetype="MinimumExpanding" vsizetype="Fixed">
                <horstretch>0</horstretch>
                <verstretch>0</verstretch>
               </sizepolicy>
@@ -383,51 +384,51 @@
           </layout>
          </item>
          <item>
-          <layout class="QHBoxLayout" >
+          <layout class="QHBoxLayout">
            <item>
-            <widget class="QLabel" name="lblPtSize" >
-             <property name="text" >
+            <widget class="QLabel" name="lblPtSize">
+             <property name="text">
               <string>Size:</string>
              </property>
             </widget>
            </item>
            <item>
-            <widget class="QSpinBox" name="sbPtSize" >
-             <property name="suffix" >
+            <widget class="QSpinBox" name="sbPtSize">
+             <property name="suffix">
               <string> pt</string>
              </property>
-             <property name="minimum" >
+             <property name="minimum">
               <number>6</number>
              </property>
-             <property name="maximum" >
+             <property name="maximum">
               <number>128</number>
              </property>
-             <property name="value" >
+             <property name="value">
               <number>10</number>
              </property>
             </widget>
            </item>
            <item>
-            <widget class="QSlider" name="slPtSize" >
-             <property name="minimum" >
+            <widget class="QSlider" name="slPtSize">
+             <property name="minimum">
               <number>6</number>
              </property>
-             <property name="maximum" >
+             <property name="maximum">
               <number>128</number>
              </property>
-             <property name="value" >
+             <property name="value">
               <number>10</number>
              </property>
-             <property name="orientation" >
+             <property name="orientation">
               <enum>Qt::Horizontal</enum>
              </property>
-             <property name="invertedAppearance" >
+             <property name="invertedAppearance">
               <bool>false</bool>
              </property>
-             <property name="invertedControls" >
+             <property name="invertedControls">
               <bool>false</bool>
              </property>
-             <property name="tickPosition" >
+             <property name="tickPosition">
               <enum>QSlider::NoTicks</enum>
              </property>
             </widget>
@@ -435,24 +436,24 @@
           </layout>
          </item>
          <item>
-          <widget class="QGroupBox" name="gbColor" >
-           <property name="sizePolicy" >
-            <sizepolicy vsizetype="MinimumExpanding" hsizetype="Preferred" >
+          <widget class="QGroupBox" name="gbColor">
+           <property name="sizePolicy">
+            <sizepolicy hsizetype="Preferred" vsizetype="MinimumExpanding">
              <horstretch>0</horstretch>
              <verstretch>0</verstretch>
             </sizepolicy>
            </property>
-           <property name="minimumSize" >
+           <property name="minimumSize">
             <size>
              <width>0</width>
              <height>96</height>
             </size>
            </property>
-           <property name="title" >
+           <property name="title">
             <string>Plain text color:</string>
            </property>
-           <widget class="QWidget" name="layoutWidget" >
-            <property name="geometry" >
+           <widget class="QWidget" name="layoutWidget">
+            <property name="geometry">
              <rect>
               <x>10</x>
               <y>25</y>
@@ -460,107 +461,107 @@
               <height>66</height>
              </rect>
             </property>
-            <layout class="QGridLayout" >
-             <property name="rightMargin" >
+            <layout class="QGridLayout">
+             <property name="rightMargin">
               <number>10</number>
              </property>
-             <item row="0" column="0" >
-              <widget class="QLabel" name="lblFore" >
-               <property name="text" >
+             <item row="0" column="0">
+              <widget class="QLabel" name="lblFore">
+               <property name="text">
                 <string>Foreground:</string>
                </property>
               </widget>
              </item>
-             <item row="0" column="1" >
-              <widget class="QSpinBox" name="sbFgR" >
-               <property name="buttonSymbols" >
+             <item row="0" column="1">
+              <widget class="QSpinBox" name="sbFgR">
+               <property name="buttonSymbols">
                 <enum>QAbstractSpinBox::UpDownArrows</enum>
                </property>
-               <property name="prefix" >
+               <property name="prefix">
                 <string>R: </string>
                </property>
-               <property name="maximum" >
+               <property name="maximum">
                 <number>255</number>
                </property>
               </widget>
              </item>
-             <item row="0" column="2" >
-              <widget class="QSpinBox" name="sbFgG" >
-               <property name="buttonSymbols" >
+             <item row="0" column="2">
+              <widget class="QSpinBox" name="sbFgG">
+               <property name="buttonSymbols">
                 <enum>QAbstractSpinBox::UpDownArrows</enum>
                </property>
-               <property name="prefix" >
+               <property name="prefix">
                 <string>G: </string>
                </property>
-               <property name="maximum" >
+               <property name="maximum">
                 <number>255</number>
                </property>
               </widget>
              </item>
-             <item row="0" column="3" >
-              <widget class="QSpinBox" name="sbFgB" >
-               <property name="buttonSymbols" >
+             <item row="0" column="3">
+              <widget class="QSpinBox" name="sbFgB">
+               <property name="buttonSymbols">
                 <enum>QAbstractSpinBox::UpDownArrows</enum>
                </property>
-               <property name="prefix" >
+               <property name="prefix">
                 <string>B: </string>
                </property>
-               <property name="maximum" >
+               <property name="maximum">
                 <number>255</number>
                </property>
               </widget>
              </item>
-             <item row="1" column="0" >
-              <widget class="QLabel" name="lblBack" >
-               <property name="text" >
+             <item row="1" column="0">
+              <widget class="QLabel" name="lblBack">
+               <property name="text">
                 <string>Background:</string>
                </property>
               </widget>
              </item>
-             <item row="1" column="1" >
-              <widget class="QSpinBox" name="sbBgR" >
-               <property name="buttonSymbols" >
+             <item row="1" column="1">
+              <widget class="QSpinBox" name="sbBgR">
+               <property name="buttonSymbols">
                 <enum>QAbstractSpinBox::UpDownArrows</enum>
                </property>
-               <property name="prefix" >
+               <property name="prefix">
                 <string>R: </string>
                </property>
-               <property name="maximum" >
+               <property name="maximum">
                 <number>255</number>
                </property>
-               <property name="value" >
+               <property name="value">
                 <number>255</number>
                </property>
               </widget>
              </item>
-             <item row="1" column="2" >
-              <widget class="QSpinBox" name="sbBgG" >
-               <property name="buttonSymbols" >
+             <item row="1" column="2">
+              <widget class="QSpinBox" name="sbBgG">
+               <property name="buttonSymbols">
                 <enum>QAbstractSpinBox::UpDownArrows</enum>
                </property>
-               <property name="prefix" >
+               <property name="prefix">
                 <string>G: </string>
                </property>
-               <property name="maximum" >
+               <property name="maximum">
                 <number>255</number>
                </property>
-               <property name="value" >
+               <property name="value">
                 <number>255</number>
                </property>
               </widget>
              </item>
-             <item row="1" column="3" >
-              <widget class="QSpinBox" name="sbBgB" >
-               <property name="buttonSymbols" >
+             <item row="1" column="3">
+              <widget class="QSpinBox" name="sbBgB">
+               <property name="buttonSymbols">
                 <enum>QAbstractSpinBox::UpDownArrows</enum>
                </property>
-               <property name="prefix" >
+               <property name="prefix">
                 <string>B: </string>
                </property>
-               <property name="maximum" >
+               <property name="maximum">
                 <number>255</number>
                </property>
-               <property name="value" >
+               <property name="value">
                 <number>255</number>
                </property>
               </widget>
@@ -570,14 +571,14 @@
           </widget>
          </item>
          <item>
-          <widget class="QLineEdit" name="txtPreview" >
-           <property name="sizePolicy" >
-            <sizepolicy vsizetype="MinimumExpanding" hsizetype="Expanding" >
+          <widget class="QLineEdit" name="txtPreview">
+           <property name="sizePolicy">
+            <sizepolicy hsizetype="Expanding" vsizetype="MinimumExpanding">
              <horstretch>0</horstretch>
              <verstretch>0</verstretch>
             </sizepolicy>
            </property>
-           <property name="text" >
+           <property name="text">
             <string>Sample text</string>
            </property>
           </widget>
@@ -585,90 +586,95 @@
         </layout>
        </widget>
       </widget>
-      <widget class="QWidget" name="tabTerminal" >
-       <attribute name="title" >
-        <string>Terminal font</string>
+      <widget class="QWidget" name="tabTerminal">
+       <attribute name="title">
+        <string>Terminal</string>
        </attribute>
-       <widget class="QWidget" name="layoutWidget" >
-        <property name="geometry" >
+       <widget class="QWidget" name="layoutWidget">
+        <property name="geometry">
          <rect>
           <x>10</x>
           <y>10</y>
-          <width>371</width>
-          <height>231</height>
+          <width>481</width>
+          <height>281</height>
          </rect>
         </property>
-        <layout class="QVBoxLayout" >
-         <property name="spacing" >
+        <layout class="QVBoxLayout">
+         <property name="spacing">
           <number>4</number>
          </property>
          <item>
-          <layout class="QHBoxLayout" >
+          <layout class="QHBoxLayout">
            <item>
-            <widget class="QLabel" name="lblTermFont" >
-             <property name="text" >
+            <widget class="QLabel" name="lblTermFont">
+             <property name="text">
               <string>Family:</string>
              </property>
             </widget>
            </item>
            <item>
-            <widget class="QFontComboBox" name="cbxTermFont" >
-             <property name="sizePolicy" >
-              <sizepolicy vsizetype="Fixed" hsizetype="MinimumExpanding" >
+            <widget class="QFontComboBox" name="cbxTermFont">
+             <property name="sizePolicy">
+              <sizepolicy hsizetype="MinimumExpanding" vsizetype="Fixed">
                <horstretch>0</horstretch>
                <verstretch>0</verstretch>
               </sizepolicy>
+             </property>
+             <property name="currentFont">
+              <font>
+               <family>DejaVu Sans Mono</family>
+              </font>
              </property>
             </widget>
            </item>
           </layout>
          </item>
          <item>
-          <layout class="QHBoxLayout" >
+          <layout class="QHBoxLayout">
            <item>
-            <widget class="QLabel" name="lblTermSize" >
-             <property name="text" >
+            <widget class="QLabel" name="lblTermSize">
+             <property name="text">
               <string>Size:</string>
              </property>
             </widget>
            </item>
            <item>
-            <widget class="QSpinBox" name="sbTermSize" >
-             <property name="suffix" >
+            <widget class="QSpinBox" name="sbTermSize">
+             <property name="suffix">
               <string> pt</string>
              </property>
-             <property name="minimum" >
+             <property name="minimum">
               <number>6</number>
              </property>
-             <property name="maximum" >
+             <property name="maximum">
               <number>128</number>
              </property>
-             <property name="value" >
+             <property name="value">
               <number>10</number>
              </property>
             </widget>
            </item>
            <item>
-            <widget class="QSlider" name="slTermSize" >
-             <property name="minimum" >
+            <widget class="QSlider" name="slTermSize">
+             <property name="minimum">
               <number>6</number>
              </property>
-             <property name="maximum" >
+             <property name="maximum">
               <number>128</number>
              </property>
-             <property name="value" >
+             <property name="value">
               <number>10</number>
              </property>
-             <property name="orientation" >
+             <property name="orientation">
               <enum>Qt::Horizontal</enum>
              </property>
-             <property name="invertedAppearance" >
+             <property name="invertedAppearance">
               <bool>false</bool>
              </property>
-             <property name="invertedControls" >
+             <property name="invertedControls">
               <bool>false</bool>
              </property>
-             <property name="tickPosition" >
+             <property name="tickPosition">
               <enum>QSlider::NoTicks</enum>
              </property>
             </widget>
@@ -676,162 +682,91 @@
           </layout>
          </item>
          <item>
-          <widget class="QGroupBox" name="gbTermColor" >
-           <property name="sizePolicy" >
-            <sizepolicy vsizetype="MinimumExpanding" hsizetype="Preferred" >
-             <horstretch>0</horstretch>
-             <verstretch>0</verstretch>
-            </sizepolicy>
-           </property>
-           <property name="minimumSize" >
-            <size>
-             <width>0</width>
-             <height>96</height>
-            </size>
-           </property>
-           <property name="title" >
-            <string>Plain text color:</string>
-           </property>
-           <widget class="QWidget" name="layoutWidget" >
-            <property name="geometry" >
-             <rect>
-              <x>10</x>
-              <y>25</y>
-              <width>351</width>
-              <height>66</height>
-             </rect>
-            </property>
-            <layout class="QGridLayout" >
-             <property name="rightMargin" >
-              <number>10</number>
+          <layout class="QHBoxLayout" name="horizontalLayout_2">
+           <item>
+            <widget class="QLabel" name="lblColorScheme">
+             <property name="text">
+              <string>Color Scheme:</string>
              </property>
-             <item row="0" column="0" >
-              <widget class="QLabel" name="lblTermFore" >
-               <property name="text" >
-                <string>Foreground:</string>
-               </property>
-              </widget>
+            </widget>
+           </item>
+           <item>
+            <widget class="QComboBox" name="cbxColorScheme">
+             <property name="sizePolicy">
+              <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
+               <horstretch>0</horstretch>
+               <verstretch>0</verstretch>
+              </sizepolicy>
+             </property>
+             <item>
+              <property name="text">
+               <string>White on Black</string>
+              </property>
              </item>
-             <item row="0" column="1" >
-              <widget class="QSpinBox" name="sbTermFgR" >
-               <property name="buttonSymbols" >
-                <enum>QAbstractSpinBox::UpDownArrows</enum>
-               </property>
-               <property name="prefix" >
-                <string>R: </string>
-               </property>
-               <property name="maximum" >
-                <number>255</number>
-               </property>
-              </widget>
+             <item>
+              <property name="text">
+               <string>Green on Black</string>
+              </property>
              </item>
-             <item row="0" column="2" >
-              <widget class="QSpinBox" name="sbTermFgG" >
-               <property name="buttonSymbols" >
-                <enum>QAbstractSpinBox::UpDownArrows</enum>
-               </property>
-               <property name="prefix" >
-                <string>G: </string>
-               </property>
-               <property name="maximum" >
-                <number>255</number>
-               </property>
-              </widget>
+             <item>
+              <property name="text">
+               <string>Black on Light Yellow</string>
+              </property>
              </item>
-             <item row="0" column="3" >
-              <widget class="QSpinBox" name="sbTermFgB" >
-               <property name="buttonSymbols" >
-                <enum>QAbstractSpinBox::UpDownArrows</enum>
-               </property>
-               <property name="prefix" >
-                <string>B: </string>
-               </property>
-               <property name="maximum" >
-                <number>255</number>
-               </property>
-              </widget>
-             </item>
-             <item row="1" column="0" >
-              <widget class="QLabel" name="lblTermBack" >
-               <property name="text" >
-                <string>Background:</string>
-               </property>
-              </widget>
-             </item>
-             <item row="1" column="1" >
-              <widget class="QSpinBox" name="sbTermBgR" >
-               <property name="buttonSymbols" >
-                <enum>QAbstractSpinBox::UpDownArrows</enum>
-               </property>
-               <property name="prefix" >
-                <string>R: </string>
-               </property>
-               <property name="maximum" >
-                <number>255</number>
-               </property>
-               <property name="value" >
-                <number>255</number>
-               </property>
-              </widget>
-             </item>
-             <item row="1" column="2" >
-              <widget class="QSpinBox" name="sbTermBgG" >
-               <property name="buttonSymbols" >
-                <enum>QAbstractSpinBox::UpDownArrows</enum>
-               </property>
-               <property name="prefix" >
-                <string>G: </string>
-               </property>
-               <property name="maximum" >
-                <number>255</number>
-               </property>
-               <property name="value" >
-                <number>255</number>
-               </property>
-              </widget>
-             </item>
-             <item row="1" column="3" >
-              <widget class="QSpinBox" name="sbTermBgB" >
-               <property name="buttonSymbols" >
-                <enum>QAbstractSpinBox::UpDownArrows</enum>
-               </property>
-               <property name="prefix" >
-                <string>B: </string>
-               </property>
-               <property name="maximum" >
-                <number>255</number>
-               </property>
-               <property name="value" >
-                <number>255</number>
-               </property>
-              </widget>
-             </item>
-            </layout>
-           </widget>
+            </widget>
+           </item>
+          </layout>
+         </item>
+         <item>
+          <widget class="QLabel" name="lblTermPreview">
+           <property name="font">
+            <font>
+             <weight>75</weight>
+             <bold>true</bold>
+            </font>
+           </property>
+           <property name="text">
+            <string>Terminal Preview:</string>
+           </property>
           </widget>
          </item>
          <item>
-          <widget class="QLineEdit" name="txtTermPreview" >
-           <property name="sizePolicy" >
-            <sizepolicy vsizetype="MinimumExpanding" hsizetype="Expanding" >
-             <horstretch>0</horstretch>
-             <verstretch>0</verstretch>
-            </sizepolicy>
+          <widget class="QTextEdit" name="txtTermPreview">
+           <property name="font">
+            <font>
+             <family>DejaVu Sans Mono</family>
+             <pointsize>10</pointsize>
+            </font>
            </property>
-           <property name="text" >
-            <string>Sample text</string>
+           <property name="readOnly">
+            <bool>false</bool>
+           </property>
+           <property name="html">
+            <string>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
+&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
+p, li { white-space: pre-wrap; }
+&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:'DejaVu Sans Mono'; font-size:10pt; font-weight:400; font-style:normal;&quot;&gt;
+&lt;table border=&quot;0&quot; style=&quot;-qt-table-type: root; margin-top:4px; margin-bottom:4px; margin-left:4px; margin-right:4px;&quot;&gt;
+&lt;tr&gt;
+&lt;td style=&quot;border: none;&quot;&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-family:'DejaVu Sans'; font-size:8pt;&quot;&gt;user@computer:~$ echo 'hello world!'&lt;/span&gt;&lt;/p&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-family:'DejaVu Sans'; font-size:8pt;&quot;&gt;hello world!&lt;/span&gt;&lt;/p&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-family:'DejaVu Sans'; font-size:8pt;&quot;&gt;user@computer:~$ cat /etc/shadow&lt;/span&gt;&lt;/p&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-family:'DejaVu Sans'; font-size:8pt;&quot;&gt;cat: /etc/shadow: Permission denied&lt;/span&gt;&lt;/p&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-family:'DejaVu Sans'; font-size:8pt;&quot;&gt;user@computer:~$ echo 'just kidding :)'&lt;/span&gt;&lt;/p&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-family:'DejaVu Sans'; font-size:8pt;&quot;&gt;just kidding :)&lt;/span&gt;&lt;/p&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/body&gt;&lt;/html&gt;</string>
            </property>
           </widget>
          </item>
         </layout>
        </widget>
       </widget>
-      <widget class="QWidget" name="tabFileTypes" >
-       <attribute name="title" >
+      <widget class="QWidget" name="tabFileTypes">
+       <attribute name="title">
         <string>File types</string>
        </attribute>
-       <widget class="QWidget" name="layoutWidget" >
-        <property name="geometry" >
+       <widget class="QWidget" name="layoutWidget">
+        <property name="geometry">
          <rect>
           <x>10</x>
           <y>10</y>
@@ -839,67 +774,67 @@
           <height>231</height>
          </rect>
         </property>
-        <layout class="QGridLayout" >
-         <item row="0" column="0" >
-          <widget class="QLabel" name="lblTypes" >
-           <property name="text" >
+        <layout class="QGridLayout">
+         <item row="0" column="0">
+          <widget class="QLabel" name="lblTypes">
+           <property name="text">
             <string>File types:</string>
            </property>
           </widget>
          </item>
-         <item row="0" column="1" >
-          <widget class="QLabel" name="lblExtns" >
-           <property name="text" >
+         <item row="0" column="1">
+          <widget class="QLabel" name="lblExtns">
+           <property name="text">
             <string>Extensions:</string>
            </property>
           </widget>
          </item>
-         <item row="0" column="2" >
-          <widget class="QLabel" name="lblMagic" >
-           <property name="text" >
+         <item row="0" column="2">
+          <widget class="QLabel" name="lblMagic">
+           <property name="text">
             <string>First line matches:</string>
            </property>
           </widget>
          </item>
-         <item rowspan="2" row="1" column="0" >
-          <widget class="QListWidget" name="lwTypes" />
+         <item row="1" column="0" rowspan="2">
+          <widget class="QListWidget" name="lwTypes"/>
          </item>
-         <item row="1" column="1" >
-          <widget class="QListWidget" name="lwExtns" />
+         <item row="1" column="1">
+          <widget class="QListWidget" name="lwExtns"/>
          </item>
-         <item row="1" column="2" >
-          <widget class="QListWidget" name="lwMagic" />
+         <item row="1" column="2">
+          <widget class="QListWidget" name="lwMagic"/>
          </item>
-         <item row="2" column="1" >
-          <layout class="QHBoxLayout" >
+         <item row="2" column="1">
+          <layout class="QHBoxLayout">
            <item>
-            <widget class="QToolButton" name="btnAddExt" >
-             <property name="text" >
+            <widget class="QToolButton" name="btnAddExt">
+             <property name="text">
               <string>+</string>
              </property>
             </widget>
            </item>
            <item>
-            <widget class="QToolButton" name="btnDelExt" >
-             <property name="text" >
+            <widget class="QToolButton" name="btnDelExt">
+             <property name="text">
               <string>-</string>
              </property>
             </widget>
            </item>
           </layout>
          </item>
-         <item row="2" column="2" >
-          <layout class="QHBoxLayout" >
+         <item row="2" column="2">
+          <layout class="QHBoxLayout">
            <item>
-            <widget class="QToolButton" name="btnAddMagic" >
-             <property name="text" >
+            <widget class="QToolButton" name="btnAddMagic">
+             <property name="text">
               <string>+</string>
              </property>
             </widget>
            </item>
            <item>
-            <widget class="QToolButton" name="btnDelMagic" >
-             <property name="text" >
+            <widget class="QToolButton" name="btnDelMagic">
+             <property name="text">
               <string>-</string>
              </property>
             </widget>
@@ -912,20 +847,20 @@
      </widget>
     </item>
     <item>
-     <layout class="QHBoxLayout" >
+     <layout class="QHBoxLayout">
       <item>
-       <widget class="QPushButton" name="btnDefaults" >
-        <property name="text" >
+       <widget class="QPushButton" name="btnDefaults">
+        <property name="text">
          <string>Reset all to defaults</string>
         </property>
        </widget>
       </item>
       <item>
        <spacer>
-        <property name="orientation" >
+        <property name="orientation">
          <enum>Qt::Horizontal</enum>
         </property>
-        <property name="sizeHint" >
+        <property name="sizeHint" stdset="0">
          <size>
           <width>40</width>
           <height>16</height>
@@ -934,12 +869,12 @@
        </spacer>
       </item>
       <item>
-       <widget class="QDialogButtonBox" name="buttonBox" >
-        <property name="orientation" >
+       <widget class="QDialogButtonBox" name="buttonBox">
+        <property name="orientation">
          <enum>Qt::Horizontal</enum>
         </property>
-        <property name="standardButtons" >
-         <set>QDialogButtonBox::Cancel|QDialogButtonBox::NoButton|QDialogButtonBox::Ok</set>
+        <property name="standardButtons">
+         <set>QDialogButtonBox::Cancel|QDialogButtonBox::Ok</set>
         </property>
        </widget>
       </item>
@@ -956,11 +891,11 @@
    <receiver>QSciTEPrefs</receiver>
    <slot>accept()</slot>
    <hints>
-    <hint type="sourcelabel" >
+    <hint type="sourcelabel">
      <x>389</x>
      <y>309</y>
     </hint>
-    <hint type="destinationlabel" >
+    <hint type="destinationlabel">
      <x>157</x>
      <y>274</y>
     </hint>
@@ -972,11 +907,11 @@
    <receiver>QSciTEPrefs</receiver>
    <slot>reject()</slot>
    <hints>
-    <hint type="sourcelabel" >
+    <hint type="sourcelabel">
      <x>389</x>
      <y>309</y>
     </hint>
-    <hint type="destinationlabel" >
+    <hint type="destinationlabel">
      <x>286</x>
      <y>274</y>
     </hint>
@@ -988,11 +923,11 @@
    <receiver>slPtSize</receiver>
    <slot>setValue(int)</slot>
    <hints>
-    <hint type="sourcelabel" >
+    <hint type="sourcelabel">
      <x>270</x>
      <y>266</y>
     </hint>
-    <hint type="destinationlabel" >
+    <hint type="destinationlabel">
      <x>270</x>
      <y>266</y>
     </hint>
@@ -1004,11 +939,11 @@
    <receiver>sbPtSize</receiver>
    <slot>setValue(int)</slot>
    <hints>
-    <hint type="sourcelabel" >
+    <hint type="sourcelabel">
      <x>270</x>
      <y>266</y>
     </hint>
-    <hint type="destinationlabel" >
+    <hint type="destinationlabel">
      <x>270</x>
      <y>266</y>
     </hint>
@@ -1020,11 +955,11 @@
    <receiver>slTermSize</receiver>
    <slot>setValue(int)</slot>
    <hints>
-    <hint type="sourcelabel" >
+    <hint type="sourcelabel">
      <x>319</x>
      <y>280</y>
     </hint>
-    <hint type="destinationlabel" >
+    <hint type="destinationlabel">
      <x>319</x>
      <y>280</y>
     </hint>
@@ -1036,11 +971,11 @@
    <receiver>sbTermSize</receiver>
    <slot>setValue(int)</slot>
    <hints>
-    <hint type="sourcelabel" >
+    <hint type="sourcelabel">
      <x>319</x>
      <y>280</y>
     </hint>
-    <hint type="destinationlabel" >
+    <hint type="destinationlabel">
      <x>319</x>
      <y>280</y>
     </hint>

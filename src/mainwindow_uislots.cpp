@@ -11,13 +11,6 @@
 #include "textdisplay.h"
 #include "findreplace.h"
 #include "scriptconsole.h"
-
-//#ifdef _WIN32
-//  #include "qterminal.h"
-//#else
-//  #include "qterminal_pty.h"
-//#endif
-
 #include "qtermwidget.h"
 
 void MainWindow::toggleTerminal(bool alive) {
@@ -49,7 +42,7 @@ void MainWindow::toggleTerminal(bool alive) {
     termWidget->resize(this->width(), 100);
     termWidget->updateGeometry();*/
     //FIXME: re-implement
-    //applyPrefsToTerminal(termWidget);
+    applyPrefsToTerminal(termWidget);
 
     if (openFiles.size() > 0 && !getCurFileObj()->fullName.isEmpty()) {
       termWidget->setWorkingDirectory(getCurFileObj()->path);
