@@ -161,7 +161,7 @@ void MainWindow::curDocChanged(int idx) {
     }
 
     if (termWidget != NULL && !getCurFileObj()->fullName.isEmpty()) {
-      termWidget->setWorkingDirectory(getCurFileObj()->path);
+      termWidget->changeDir(getCurFileObj()->path);
     }
 
     getCurDoc()->setFocus(Qt::MouseFocusReason);
@@ -423,4 +423,3 @@ void FileData::setPathName(const QString & newPathName) {
   baseName = info.fileName();
   path = newPathName.isEmpty() ? "": info.absolutePath();
 }
-

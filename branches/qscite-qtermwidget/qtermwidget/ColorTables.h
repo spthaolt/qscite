@@ -1,4 +1,4 @@
-#ifndef _COLOR_TABLE_H
+clear#ifndef _COLOR_TABLE_H
 #define _COLOR_TABLE_H
 
 #include "CharacterColor.h"

@@ -102,6 +102,23 @@ void QTermWidget::selectionChanged(bool textSelected) {
   emit copyAvailable(textSelected);
 }
 
+int QTermWidget::getShellPID() {
+  return m_impl->m_session->processId();
+}
+
+void QTermWidget::changeDir(const QString & dir) {
+  QString strCmd;
+  strCmd.setNum(getShellPID());
+  strCmd.prepend("ps -j ");
+  strCmd.append(" | tail -1 | awk '{ print $5 }' | grep -q \\+");
+  int retval = system(strCmd.toStdString().c_str());
+
+  if (!retval) {
+    QString cmd = "cd " + dir + "\n";
+    sendText(cmd);
+  }
+}
+
 QSize QTermWidget::sizeHint() const {
   QSize size = m_impl->m_terminalDisplay->sizeHint();
   size.rheight() = 150;
