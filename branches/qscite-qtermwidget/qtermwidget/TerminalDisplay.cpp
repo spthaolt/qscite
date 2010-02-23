@@ -96,6 +96,7 @@ void TerminalDisplay::setScreenWindow(ScreenWindow * window) {
 //#warning "The order here is not specified - does it matter whether updateImage or updateLineProperties comes first?"
     connect( _screenWindow , SIGNAL(outputChanged()) , this , SLOT(updateLineProperties()) );
     connect( _screenWindow , SIGNAL(outputChanged()) , this , SLOT(updateImage()) );
+    connect(_screenWindow, SIGNAL(selectionChanged()), this, SLOT(selectionChanged()));
     window->setWindowLines(_lines);
   }
 }
@@ -2414,6 +2415,10 @@ void TerminalDisplay::bell(const QString &) {
       QTimer::singleShot(200,this,SLOT(swapColorTable()));
     }
   }
+}
+
+void TerminalDisplay::selectionChanged() {
+  emit copyAvailable(_screenWindow->selectedText(false).isEmpty() == false);
 }
 
 void TerminalDisplay::swapColorTable() {

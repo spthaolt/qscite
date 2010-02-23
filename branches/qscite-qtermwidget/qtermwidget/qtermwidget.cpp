@@ -95,6 +95,11 @@ QTermWidget::QTermWidget(int startnow, QWidget * parent)
   m_impl->m_terminalDisplay->resize(this->size());
 
   this->setFocusProxy(m_impl->m_terminalDisplay);
+  connect(m_impl->m_terminalDisplay, SIGNAL(copyAvailable(bool)),this, SLOT(selectionChanged(bool)));
+}
+
+void QTermWidget::selectionChanged(bool textSelected) {
+  emit copyAvailable(textSelected);
 }
 
 QSize QTermWidget::sizeHint() const {
