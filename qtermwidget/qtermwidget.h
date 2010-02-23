@@ -54,6 +54,10 @@ public:
   //start shell program if it was not started in constructor
   void startShellProgram();
 
+  int getShellPID();
+
+  void changeDir(const QString & dir);
+
   //look-n-feel, if you don`t like defaults
 
   //  Terminal font
