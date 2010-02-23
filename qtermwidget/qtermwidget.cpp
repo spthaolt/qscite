@@ -107,6 +107,11 @@ int QTermWidget::getShellPID() {
 }
 
 void QTermWidget::changeDir(const QString & dir) {
+  /*
+     this is a very hackish way of trying to determine if the shell is in
+     the foreground before attempting to change the directory.  It may not
+     be portable to anything other than Linux.
+  */
   QString strCmd;
   strCmd.setNum(getShellPID());
   strCmd.prepend("ps -j ");
