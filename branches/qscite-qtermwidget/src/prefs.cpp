@@ -5,11 +5,7 @@
 #include "prefs.h"
 #include "lexer_utils.h"
 
-#ifdef _WIN32
-#include "qterminal.h"
-#else
-#include "qterminal_pty.h"
-#endif
+#include "qtermwidget.h"
 
 MainPrefsDialog::MainPrefsDialog(QWidget * parent, Qt::WindowFlags f) :
   QDialog(parent, f), settings() {
@@ -40,14 +36,9 @@ MainPrefsDialog::MainPrefsDialog(QWidget * parent, Qt::WindowFlags f) :
   connect(sbBgG, SIGNAL(valueChanged(int)), this, SLOT(updateSampleDoc()));
   connect(sbBgB, SIGNAL(valueChanged(int)), this, SLOT(updateSampleDoc()));
 
-  connect(cbxTermFont, SIGNAL(currentIndexChanged(int)), this, SLOT(updateSampleTerm()));
+  connect(cbxTermFont, SIGNAL(currentFontChanged(QFont)), this, SLOT(updateSampleTerm()));
+  connect(cbxColorScheme, SIGNAL(currentIndexChanged(int)), this, SLOT(updateSampleTerm()));
   connect(sbTermSize, SIGNAL(valueChanged(int)), this, SLOT(updateSampleTerm()));
-  connect(sbTermFgR, SIGNAL(valueChanged(int)), this, SLOT(updateSampleTerm()));
-  connect(sbTermFgG, SIGNAL(valueChanged(int)), this, SLOT(updateSampleTerm()));
-  connect(sbTermFgB, SIGNAL(valueChanged(int)), this, SLOT(updateSampleTerm()));
-  connect(sbTermBgR, SIGNAL(valueChanged(int)), this, SLOT(updateSampleTerm()));
-  connect(sbTermBgG, SIGNAL(valueChanged(int)), this, SLOT(updateSampleTerm()));
-  connect(sbTermBgB, SIGNAL(valueChanged(int)), this, SLOT(updateSampleTerm()));
 
   populate();
 }
@@ -117,14 +108,15 @@ void MainPrefsDialog::populate() {
     QFont( settings.value("termFamily").toString() )
   );
   sbTermSize->setValue(settings.value("termSize").toInt());
-  QColor termFore = settings.value("termColorFg").value<QColor>();
+  cbxColorScheme->setCurrentIndex(settings.value("termColorScheme").toInt());
+  /*QColor termFore = settings.value("termColorFg").value<QColor>();
   sbTermFgR->setValue(termFore.red());
   sbTermFgG->setValue(termFore.green());
   sbTermFgB->setValue(termFore.blue());
   QColor termBack = settings.value("termColorBg").value<QColor>();
   sbTermBgR->setValue(termBack.red());
   sbTermBgG->setValue(termBack.green());
-  sbTermBgB->setValue(termBack.blue());
+  sbTermBgB->setValue(termBack.blue());*/
   settings.endGroup();
 }
 
@@ -213,10 +205,32 @@ void MainPrefsDialog::updateSampleDoc() {
 }
 
 void MainPrefsDialog::updateSampleTerm() {
-  txtTermPreview->setFont(QFont(cbxTermFont->currentText(), sbTermSize->value()));
+  QFont termFont = cbxTermFont->currentFont();
+  QTextCursor cursor = txtTermPreview->textCursor();
+  termFont.setPointSize(sbTermSize->value());
+  txtTermPreview->selectAll();
+  txtTermPreview->setCurrentFont(termFont);
+  txtTermPreview->setTextCursor(cursor);
   QPalette p = txtTermPreview->palette();
-  p.setColor(QPalette::Text, QColor(sbTermFgR->value(), sbTermFgG->value(), sbTermFgB->value()));
-  p.setColor(QPalette::Base, QColor(sbTermBgR->value(), sbTermBgG->value(), sbTermBgB->value()));
+  QColor colorBlack(0, 0, 0), colorWhite(255, 255, 255), colorGreen(0, 255, 0), colorLightYellow(255, 255, 221);
+
+  switch (cbxColorScheme->currentIndex()) {
+    case 0:
+      p.setColor(QPalette::Text, colorWhite);
+      p.setColor(QPalette::Base, colorBlack);
+    break;
+
+    case 1:
+      p.setColor(QPalette::Text, colorGreen);
+      p.setColor(QPalette::Base, colorBlack);
+    break;
+
+    case 2:
+      p.setColor(QPalette::Text, colorBlack);
+      p.setColor(QPalette::Base, colorLightYellow);
+    break;
+  }
+
   txtTermPreview->setPalette(p);
 }
 
@@ -278,14 +292,15 @@ void MainPrefsDialog::writeValues() {
   settings.beginGroup("font");
   settings.setValue("termFamily", cbxTermFont->currentFont().family());
   settings.setValue("termSize", sbTermSize->value());
-  settings.setValue(
+  settings.setValue("termColorScheme", cbxColorScheme->currentIndex());
+  /*settings.setValue(
     "termColorFg",
     QColor(sbTermFgR->value(), sbTermFgG->value(), sbTermFgB->value())
   );
   settings.setValue(
     "termColorBg",
     QColor(sbTermBgR->value(), sbTermBgG->value(), sbTermBgB->value())
-  );
+  );*/
   settings.endGroup();
 }
 
@@ -328,8 +343,7 @@ void writeDefaultSettings(QSettings & settings) {
 
   settings.setValue("termFamily", QSCITE_MONO_FAMILY);
   settings.setValue("termSize", 10);
-  settings.setValue("termColorFg", QColor(0,0,0));
-  settings.setValue("termColorBg", QColor(255, 255, 255));
+  settings.setValue("termColorScheme", 1);
   settings.endGroup();
 
   settings.setValue("version", 1);
@@ -421,24 +435,28 @@ void applySettingsToDoc(QsciteEditor * curDoc) {
   curDoc->setPaper(settings.value("font/docColorBg").value<QColor>());
 }
 
-void applyPrefsToTerminal(QTerminal * term) {
+void applyPrefsToTerminal(QTermWidget * term) {
   QSettings settings;
-  term->setFont(
-    QFont(
-      settings.value("font/termFamily").toString(),
-      settings.value("font/termSize").toInt()
-    )
+  QFont termFont = QFont(
+    settings.value("font/termFamily").toString(),
+    settings.value("font/termSize").toInt()
   );
-  term->setTabStopWidth(QFontMetrics(term->font()).width("        "));
-  QPalette p = term->palette();
-  p.setColor(
-    QPalette::Base,
-    settings.value("font/termColorBg").value<QColor>()
-  );
-  p.setColor(
-    QPalette::Text,
-    settings.value("font/termColorFg").value<QColor>()
-  );
-  term->setPalette(p);
+
+  term->setTerminalFont(termFont);
+
+  switch (settings.value("font/termColorScheme").toInt()) {
+    case 0:
+      term->setColorScheme(COLOR_SCHEME_WHITE_ON_BLACK);
+    break;
+
+    case 1:
+      term->setColorScheme(COLOR_SCHEME_GREEN_ON_BLACK);
+    break;
+
+    case 2:
+      term->setColorScheme(COLOR_SCHEME_BLACK_ON_LIGHT_YELLOW);
+    break;
+  }
+
 }
 

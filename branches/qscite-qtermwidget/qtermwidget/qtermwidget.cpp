@@ -46,7 +46,9 @@ TermWidgetImpl::TermWidgetImpl(QWidget * parent) {
 
 Session * TermWidgetImpl::createSession() {
   Session * session = new Session();
-
+  QStringList env("");
+  env.push_front("TERM=xterm");
+  session->setEnvironment(env);
   session->setTitle(Session::NameRole, "QTermWidget");
   session->setProgram("/bin/bash");
   QStringList args("");

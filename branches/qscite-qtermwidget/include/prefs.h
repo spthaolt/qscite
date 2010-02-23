@@ -6,7 +6,7 @@
 #include <QDialog>
 #include <QSettings>
 #include "qsciteeditor.h"
-class QTerminal;
+class QTermWidget;
 
 class MainPrefsDialog: public QDialog, protected Ui_QSciTEPrefs {
 
@@ -44,6 +44,6 @@ private:
 void writeDefaultSettings(QSettings & settings);
 
 void applySettingsToDoc(QsciteEditor * curDoc);
-void applyPrefsToTerminal(QTerminal * term);
+void applyPrefsToTerminal(QTermWidget * term);
 
 #endif

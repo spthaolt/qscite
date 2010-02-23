@@ -4,5 +4,5 @@ cd qtermwidget
 qmake
 make
 cd ..
-qmake
+qmake qscite-debug.pro
 make
