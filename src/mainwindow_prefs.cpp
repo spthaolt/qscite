@@ -84,8 +84,7 @@ void MainWindow::globalPrefs() {
 
 void MainWindow::prefsWereChanged() {
   if (termWidget != NULL) {
-    //FIXME: re-implement
-    //applyPrefsToTerminal(termWidget);
+    applyPrefsToTerminal(termWidget);
   }
   if (openFiles.size() > 0) {
     applySettingsToDoc(getCurDoc());

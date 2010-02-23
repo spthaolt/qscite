@@ -106,6 +106,7 @@ public:
 
 signals:
   void finished();
+  void copyAvailable(bool);
 
 public slots:
   // Paste clipboard content to terminal
@@ -119,6 +120,7 @@ protected:
 
 protected slots:
   void sessionFinished();
+  void selectionChanged(bool textSelected);
 
 private:
   void init();

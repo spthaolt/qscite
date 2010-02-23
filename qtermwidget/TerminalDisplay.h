@@ -490,7 +490,11 @@ public slots:
    */
   void bell(const QString & message);
 
+  void selectionChanged();
+
 signals:
+
+  void copyAvailable(bool);
 
   /**
    * Emitted when the user presses a key whilst the terminal widget has focus.

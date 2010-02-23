@@ -37,11 +37,6 @@ void MainWindow::toggleTerminal(bool alive) {
   } else {
     qDebug() << "Opening terminal";
     termWidget = new QTermWidget(1, this);
-    /*termWidget->setMinimumHeight(0);
-    termWidget->setMaximumHeight(this->height());
-    termWidget->resize(this->width(), 100);
-    termWidget->updateGeometry();*/
-    //FIXME: re-implement
     applyPrefsToTerminal(termWidget);
 
     if (openFiles.size() > 0 && !getCurFileObj()->fullName.isEmpty()) {
@@ -59,8 +54,7 @@ void MainWindow::toggleTerminal(bool alive) {
     }
 
     connect(termWidget, SIGNAL(finished()), this, SLOT(toggleTerminal()));
-    //FIXME: port qtermwidget
-    //connect(termWidget, SIGNAL(copyAvailable(bool)), this, SLOT(updateCopyAvailable(bool)));
+    connect(termWidget, SIGNAL(copyAvailable(bool)), this, SLOT(updateCopyAvailable(bool)));
     termWidget->setFocus();
     copyFromTerm = true;
   }
@@ -232,30 +226,27 @@ void MainWindow::about() {
 }
 
 void MainWindow::editCopy() {
-//FIXME: re-implement
-  /*  if (copyFromTerm) {
-      Q_ASSERT(termWidget != NULL);
-      termWidget->copy();
-    } else if (!openFiles.empty()) {
-      getCurDoc()->copy();
-    }*/
+  if (copyFromTerm) {
+    Q_ASSERT(termWidget != NULL);
+    termWidget->copyClipboard();
+  } else if (!openFiles.empty()) {
+    getCurDoc()->copy();
+  }
 }
 
 void MainWindow::editCut() {
-//FIXME: re-implement
-  /*  if (!copyFromTerm && !openFiles.empty()) {
-      getCurDoc()->cut();
-    }*/
+  if (!copyFromTerm && !openFiles.empty()) {
+    getCurDoc()->cut();
+  }
 }
 
 void MainWindow::editPaste() {
-//FIXME: re-implement
-  /*  if (copyFromTerm) {
-      Q_ASSERT(termWidget != NULL);
-      termWidget->paste();
-    } else if (!openFiles.empty()) {
-      getCurDoc()->paste();
-    }*/
+  if (termWidget->hasFocus()) {
+    Q_ASSERT(termWidget != NULL);
+    termWidget->pasteClipboard();
+  } else if (getCurDoc() != NULL && getCurDoc()->hasFocus()) {
+    getCurDoc()->paste();
+  }
 }
 
 void MainWindow::undo() {
