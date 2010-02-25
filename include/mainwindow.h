@@ -107,26 +107,23 @@ private slots:
   void editCut();
   void editPaste();
   void about();
-  void fontDialog();
   void globalPrefs();
-  void toggleTerminal(bool alive = false);
   void textDisplay();
   void prevDoc();
   void nextDoc();
   void setEolCr();
   void setEolLf();
   void setEolCrLf();
-  void convertEols();
   void setEolVisibility(bool vis);
+  void convertEols();
   void convertIndentation();
+  void toggleTerminal(bool alive = false);
   void toggleFolding();
+  void showFontDialog();
   void showFindDialog();
   void showReplaceDialog();
-  void replaceDialogClosed();
   void showScriptConsole();
-  void scriptConsoleClosed();
   void newWindow();
-  void lexerMenuChanged();
   void closeTab(int tabIndex);
 
   /* Internal slots */
@@ -139,6 +136,9 @@ private slots:
   void updateCopyAvailable(bool);
   void noticeFocusChange(QWidget *, QWidget *);
   void dragEnterEvent(QDragEnterEvent * event);
+  void replaceDialogClosed();
+  void scriptConsoleClosed();
+  void lexerMenuChanged();
 
 private:
   void createActions();

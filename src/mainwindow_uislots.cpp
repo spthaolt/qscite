@@ -195,7 +195,7 @@ bool MainWindow::saveAs() {
   return false;
 }
 
-void MainWindow::fontDialog() {
+void MainWindow::showFontDialog() {
   if (tabWidget->count()) {
     QsciLexer * lexer = getCurDoc()->lexer();
     bool ok;
@@ -226,8 +226,7 @@ void MainWindow::about() {
 }
 
 void MainWindow::editCopy() {
-  if (copyFromTerm) {
-    Q_ASSERT(termWidget != NULL);
+  if (termWidget && copyFromTerm) {
     termWidget->copyClipboard();
   } else if (!openFiles.empty()) {
     getCurDoc()->copy();
@@ -241,10 +240,9 @@ void MainWindow::editCut() {
 }
 
 void MainWindow::editPaste() {
-  if (termWidget->hasFocus()) {
-    Q_ASSERT(termWidget != NULL);
+  if (termWidget && termWidget->hasFocus()) {
     termWidget->pasteClipboard();
-  } else if (getCurDoc() != NULL && getCurDoc()->hasFocus()) {
+  } else if (!openFiles.empty() && getCurDoc()->hasFocus()) {
     getCurDoc()->paste();
   }
 }
@@ -319,8 +317,8 @@ void MainWindow::toggleFolding() {
   QsciteEditor::FoldStyle state = static_cast<QsciteEditor::FoldStyle>((!getCurDoc()->folding()) * 5);
 
   if (!state) {
-    // unfold all code before turning off folding
-    //getCurDoc()->foldAll();
+    // unfold all code before turning off folding -- This requires QScintilla 2.4.3+
+    getCurDoc()->clearFolds();
   }
 
   getCurDoc()->setFolding(state);
