@@ -73,7 +73,7 @@ void MainWindow::createActions() {
   //fontAct->setShortcut(tr(""))
   fontAct->setStatusTip(tr("Set the display font."));
 
-  connect(fontAct, SIGNAL(triggered()), this, SLOT(fontDialog()));
+  connect(fontAct, SIGNAL(triggered()), this, SLOT(showFontDialog()));
 
   terminalAct = new QAction(QIcon(":/images/terminal.png"), tr("Terminal"), this);
   connect(terminalAct, SIGNAL(triggered()), this, SLOT(toggleTerminal()));
