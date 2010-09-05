@@ -1,0 +1,11 @@
+[Desktop Entry]
+Version=0.5-svn190
+Type=Application
+Name=QSciTE Code Editor
+Comment=A code editor written in C++ and Qt4; A clone of SciTE.
+TryExec=qscite
+Exec=qscite %F
+Icon=kate
+MimeType=text/plain;
+X-KDE-ServiceType=FooService
+Categories=Qt;Utility;TextEditor;
