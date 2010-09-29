@@ -14,7 +14,7 @@ UI_DIR      = build
 
 QT += script
 
-CONFIG       += thread
+CONFIG       += thread framework
 
 HEADERS       = mainwindow.h \
                 utils.h \
@@ -59,7 +59,7 @@ unix {
     DEFINES += QSCITE_MONO_FAMILY='\\"Monospace\\"'
   } else {
     TARGET   = QSciTE
-    LIBS    += -framework qscintilla2
+    LIBS    += libqscintilla2.a
     DEFINES += QSCITE_MONO_FAMILY='\\"Monaco\\"'
   }
 }
