@@ -9,16 +9,25 @@
 #include "launcher.h"
 #include "mainwindow.h"
 
-Launcher::Launcher (QStringList argv, QApplication * _app) : trayIcon(NULL) {
-  app = _app;
+extern void qt_mac_set_dock_menu(QMenu *menu);
+
+Launcher::Launcher (QStringList argv, QApplication * _app) : app(_app), argv_store(argv), trayIcon(NULL) {
   createNewWindow(argv);
-  
+
   if(QSystemTrayIcon::isSystemTrayAvailable() && QSettings().value("trayIcon", true).toBool()) {
     qDebug() << "Creating the system tray icon";
     createTrayIcon();
     trayIcon->setIcon(QIcon(":images/appIcon.png"));
     trayIcon->show();
   }
+
+  #ifdef Q_WS_MAC
+    mac_menu = new QMenu();
+    newWindow = new QAction(tr("New Window"), this);
+    connect(newWindow, SIGNAL(triggered()), this, SLOT(makeNewWindow()));
+    mac_menu->addAction(newWindow);
+    qt_mac_set_dock_menu(mac_menu);
+  #endif
 }
 
 Launcher::~Launcher() {
@@ -28,6 +37,7 @@ Launcher::~Launcher() {
 }
 
 void Launcher::createNewWindow(QStringList _argv) {
+  qDebug() << "Launcher::createNewWindow() called";
   MainWindow * window = new MainWindow(_argv, this);
   app->installEventFilter(window);
   window->show();
@@ -66,6 +76,14 @@ void Launcher::createActions() {
   connect(quitAction, SIGNAL(triggered()), this, SLOT(quitApplication()));
 }
 
+/**
+ * Allows for us to create a second QSciTE window on mac.
+ */
+void Launcher::makeNewWindow() {
+  qDebug() << "Launcher::makeNewWindow() called";
+  createNewWindow(argv_store);
+}
+
 void Launcher::trayClicked(QSystemTrayIcon::ActivationReason reason) {
   if (reason == QSystemTrayIcon::Trigger) { // the icon was clicked
     //this->setVisible(!this->isVisible());
@@ -74,13 +92,13 @@ void Launcher::trayClicked(QSystemTrayIcon::ActivationReason reason) {
 
 void Launcher::quitApplication() {
   qDebug() << "Launcher::quitApplication() called";
-  
+
   for (int i = 0; i < windows.size(); ++i) {
     if (!(windows[i]->close())) {
       return;
     }
   }
-  
+
   //app->quit();
 }
 

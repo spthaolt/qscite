@@ -30,11 +30,11 @@ int main(int argc, char *argv[]) {
     app.setApplicationName("QSciTE");
     app.setOrganizationName("QSciteTeam");
     QStringList _argv;
-    
+
     for (int i = 1; i < argc; ++i) {
       _argv.push_back(QString(argv[i]));
     }
-    
+
     Launcher launcher(_argv, &app);
     return app.exec();
 }
