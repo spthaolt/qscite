@@ -18,20 +18,20 @@ MainPrefsDialog::MainPrefsDialog(QWidget * parent, Qt::WindowFlags f) :
 #ifndef Q_WS_MAC
 	cbTermDrawer->hide();
 #endif
-	
+
 	connect(btnDefaults, SIGNAL(clicked()), this, SLOT(resetToDefaults()));
-	
+
 	connect(this, SIGNAL(accepted()), this, SLOT(writeValues()));
-	
+
 	connect(lwTypes, SIGNAL(currentTextChanged(const QString &)),
 	        this,    SLOT(lexerSelected(const QString&)));
-	        
+
 	connect(btnAddExt, SIGNAL(clicked()), this, SLOT(addExt()));
 	connect(btnDelExt, SIGNAL(clicked()), this, SLOT(delExt()));
-	
+
 	connect(btnAddMagic, SIGNAL(clicked()), this, SLOT(addMagic()));
 	connect(btnDelMagic, SIGNAL(clicked()), this, SLOT(delMagic()));
-	
+
 	connect(cbxTextFont, SIGNAL(currentIndexChanged(int)), this, SLOT(updateSampleDoc()));
 	connect(sbPtSize, SIGNAL(valueChanged(int)), this, SLOT(updateSampleDoc()));
 	connect(sbFgR, SIGNAL(valueChanged(int)), this, SLOT(updateSampleDoc()));
@@ -49,7 +49,7 @@ MainPrefsDialog::MainPrefsDialog(QWidget * parent, Qt::WindowFlags f) :
 	connect(sbTermBgR, SIGNAL(valueChanged(int)), this, SLOT(updateSampleTerm()));
 	connect(sbTermBgG, SIGNAL(valueChanged(int)), this, SLOT(updateSampleTerm()));
 	connect(sbTermBgB, SIGNAL(valueChanged(int)), this, SLOT(updateSampleTerm()));
-	
+
 	populate();
 }
 
@@ -76,10 +76,11 @@ void MainPrefsDialog::populate() {
 	sbIndentSize->setValue(settings.value("indentWidth").toInt());
 	cbAutoIndent->setChecked(settings.value("autoIndent").toBool());
 	cbxEOLMode->setCurrentIndex(settings.value("EOLMode").toInt());
-	
+
 	cbTrayIcon->setChecked(settings.value("trayIcon", true).toBool());
 	sbOpacity->setValue(settings.value("wndOpacity", 1.0).toDouble());
-	
+  cbAutoComplete->setChecked(settings.value("autoComplete").toBool());
+
 	/*
 	 * "File types" tab
 	 */
@@ -88,7 +89,7 @@ void MainPrefsDialog::populate() {
 		lwTypes->addItem(supportedLexers[i]);
 	}
 	// We will handle the extensions and magic when a type is selected
-	
+
 	/*
 	 * "Fonts" tab
 	 */
@@ -106,7 +107,7 @@ void MainPrefsDialog::populate() {
 	sbBgG->setValue(docBack.green());
 	sbBgB->setValue(docBack.blue());
 	settings.endGroup();
-	
+
 	/*
 	 * "Terminal" tab
 	 */
@@ -133,7 +134,7 @@ void MainPrefsDialog::lexerSelected(const QString & lexer) {
 	/* Don't signal in response to our own changes */
 	lwExtns->disconnect(SIGNAL(itemChanged(QListWidgetItem *)));
 	lwMagic->disconnect(SIGNAL(itemChanged(QListWidgetItem *)));
-	
+
 	lwExtns->clear();
 	settings.beginGroup("extensions");
 	for (int i = 0, j = settings.beginReadArray(lexer); i < j; ++i) {
@@ -142,7 +143,7 @@ void MainPrefsDialog::lexerSelected(const QString & lexer) {
 	}
 	settings.endArray();
 	settings.endGroup();
-	
+
 	lwMagic->clear();
 	settings.beginGroup("magic");
 	for (int i = 0, j = settings.beginReadArray(lexer); i < j; ++i) {
@@ -151,7 +152,7 @@ void MainPrefsDialog::lexerSelected(const QString & lexer) {
 	}
 	settings.endArray();
 	settings.endGroup();
-	
+
 	// Now we can signal.
 	connect(lwExtns, SIGNAL(itemChanged(QListWidgetItem *)), this, SLOT(saveExts()));
 	connect(lwMagic, SIGNAL(itemChanged(QListWidgetItem *)), this, SLOT(saveMagic()));
@@ -236,18 +237,20 @@ void MainPrefsDialog::writeValues() {
 
 	settings.setValue("wrapMode", cbWrapMode->isChecked() ? QsciteEditor::WrapWord : QsciteEditor::WrapNone);
 	settings.setValue("wrapIndicatorMode", cbxWrapMarkers->currentIndex());
-	
+
 	settings.setValue("showLineNumbers", cbLineNos->isChecked());
-	
+
 	settings.setValue("indentGuides", cbIndentGuides->isChecked());
 	settings.setValue("indentUseTabs", (bool)(cbxUseTabs->currentIndex()));
 	settings.setValue("indentWidth", sbIndentSize->value());
 	settings.setValue("autoIndent", cbAutoIndent->isChecked());
 	settings.setValue("EOLMode", cbxEOLMode->currentIndex());
-	
+
 	settings.setValue("trayIcon", cbTrayIcon->isChecked());
 	settings.setValue("wndOpacity", sbOpacity->value());
-	
+
+  settings.setValue("autoComplete", cbAutoComplete->isChecked());
+
 	/*
 	 * "File types" tab
 	 */
@@ -269,7 +272,7 @@ void MainPrefsDialog::writeValues() {
 		QColor(sbBgR->value(), sbBgG->value(), sbBgB->value())
 	);
 	settings.endGroup();
-	
+
 	/*
 	 * "Terminal" tab
 	 */
@@ -307,7 +310,7 @@ void writeDefaultSettings(QSettings & settings) {
 
     settings.setValue("recentFileCount", 10);
 	settings.setValue("saveWindowGeometry", true);
-	
+
 	settings.setValue("trayIcon", true);
 	settings.setValue("wndOpacity", 1.0);
 
@@ -315,24 +318,25 @@ void writeDefaultSettings(QSettings & settings) {
 	settings.setValue("wrapMode", QsciteEditor::WrapWord);
 	settings.setValue("wrapIndicatorMode", QsciteEditor::WrapFlagNone);
 	settings.setValue("showLineNumbers", true);
-	
+
 	settings.setValue("indentUseTabs", false);
 	settings.setValue("indentWidth", 2);
 	settings.setValue("indentGuides", true);
 	settings.setValue("autoIndent", true);
-	
+  settings.setValue("autoComplete", false);
+
 	settings.beginGroup("font");
 	settings.setValue("docFamily", QSCITE_MONO_FAMILY);
 	settings.setValue("docSize", 10);
 	settings.setValue("docColorFg", QColor(0,0,0));
 	settings.setValue("docColorBg", QColor(255, 255, 255));
-	
+
 	settings.setValue("termFamily", QSCITE_MONO_FAMILY);
 	settings.setValue("termSize", 10);
 	settings.setValue("termColorFg", QColor(0,0,0));
 	settings.setValue("termColorBg", QColor(255, 255, 255));
 	settings.endGroup();
-	
+
 	settings.setValue("version", 1);
 }
 
@@ -345,14 +349,14 @@ void applySettingsToDoc(QsciteEditor * curDoc) {
 			settings.value("EOLMode", QsciteEditor::EolUnix).toInt()
 		)
 	);
-	
+
 	// Default wrap mode to WrapWord
 	curDoc->setWrapMode(
 		static_cast<QsciteEditor::WrapMode>(
 			settings.value("wrapMode").toInt()
 		)
 	);
-	
+
 	// Turn on line numbers by default
 	if (settings.value("showLineNumbers").toBool()) {
 		curDoc->setMarginLineNumbers(1, true);
@@ -360,7 +364,7 @@ void applySettingsToDoc(QsciteEditor * curDoc) {
     int numLines = curDoc->lines();
     QString exLength = "9999";
     numLines /= 1000;
-  
+
     while (numLines >= 1) {
       exLength += "9";
       numLines /= 10;
@@ -369,20 +373,20 @@ void applySettingsToDoc(QsciteEditor * curDoc) {
 	} else {
 		curDoc->setMarginWidth(1, 0);
 	}
-	
+
 	// Don't use tab characters for indents
 	curDoc->setIndentationsUseTabs(settings.value("indentUseTabs").toBool());
-	
+
 	// Default to using two spaces for each indent
 	curDoc->setIndentationWidth(settings.value("indentWidth").toInt());
 	curDoc->setTabWidth(settings.value("indentWidth").toInt());
-	
+
 	// Indent guides on by default
 	curDoc->setIndentationGuides(settings.value("indentGuides").toBool());
-	
+
 	// Auto indent by default
 	curDoc->setAutoIndent(settings.value("autoIndent").toBool());
-	
+
 	// Set wrap visual indication
 	curDoc->setWrapVisualFlags(
 		static_cast<QsciteEditor::WrapVisualFlag>(
@@ -391,11 +395,11 @@ void applySettingsToDoc(QsciteEditor * curDoc) {
 		QsciteEditor::WrapFlagNone,
 		curDoc->indentationWidth()
 	);
-			
+
 	// Make tabs indent and backspaces unindent
 	curDoc->setTabIndents(true);
 	curDoc->setBackspaceUnindents(true);
-	
+
 	// Turn on strict brace matching by default
 	curDoc->setBraceMatching(
 		static_cast<QsciteEditor::BraceMatch>(
@@ -412,14 +416,24 @@ void applySettingsToDoc(QsciteEditor * curDoc) {
 	if (curDoc->lexer() != NULL) {
 		setLexerFont(curDoc->lexer(), baseFont.family(), baseFont.pointSize());
 	}
-	
+
 	QFontInfo test(baseFont);
 	qDebug() << "Current font family: " << test.family();
 	qDebug() << "Exact font match: " << (test.exactMatch() ? "true" : "false");
-	
+
 	curDoc->setColor(settings.value("font/docColorFg").value<QColor>());
 	curDoc->setCaretForegroundColor(curDoc->color());
 	curDoc->setPaper(settings.value("font/docColorBg").value<QColor>());
+
+  // TODO: make this a preference in the prefs dialog.
+  if(settings.value("autoComplete").toBool()) {
+    QsciScintilla::AutoCompletionSource acs = QsciScintilla::AcsAll;
+    curDoc->setAutoCompletionSource(acs);
+    curDoc->setAutoCompletionThreshold (1);
+  } else {
+    QsciScintilla::AutoCompletionSource acs = QsciScintilla::AcsNone;
+    curDoc->setAutoCompletionSource(acs);
+  }
 }
 
 void applyPrefsToTerminal(QTerminal * term) {
