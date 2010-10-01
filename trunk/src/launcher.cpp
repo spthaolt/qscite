@@ -37,7 +37,7 @@ Launcher::~Launcher() {
 }
 
 void Launcher::createNewWindow(QStringList _argv) {
-  qDebug() << "Launcher::createNewWindow() called";
+
   MainWindow * window = new MainWindow(_argv, this);
   app->installEventFilter(window);
   window->show();
