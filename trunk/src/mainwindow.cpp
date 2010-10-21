@@ -256,7 +256,11 @@ void MainWindow::loadFile(const QString &fileName) {
 
 
 void MainWindow::redoSetMargin() {
-  getCurDoc()->setMarginWidth(1, QString::number(getCurDoc()->lines()) + "9");
+  if (getCurDoc()->lines() > 9999) {
+    getCurDoc()->setMarginWidth(1, QString::number(getCurDoc()->lines()) + "9");
+  } else {
+    getCurDoc()->setMarginWidth(1, "99999");
+  }
 }
 
 bool MainWindow::saveFile(const QString &fileName) {

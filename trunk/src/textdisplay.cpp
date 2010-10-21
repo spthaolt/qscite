@@ -131,7 +131,7 @@ void TextDisplayPanel::on_cbxWrapMarkers_currentIndexChanged(int idx) {
 
 void TextDisplayPanel::on_cbLineNos_clicked(bool checked) {
 	if (checked) {
-		parent->getCurDoc()->setMarginWidth(1, "9999");
+		//parent->getCurDoc()->setMarginWidth(1, "9999");
 		parent->redoSetMargin();
 	} else {
 		parent->getCurDoc()->setMarginWidth(1, 0);

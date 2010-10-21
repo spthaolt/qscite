@@ -360,16 +360,11 @@ void applySettingsToDoc(QsciteEditor * curDoc) {
 	// Turn on line numbers by default
 	if (settings.value("showLineNumbers").toBool()) {
 		curDoc->setMarginLineNumbers(1, true);
-		// set default margin width to 4 characters (will adjust with different files)
-    int numLines = curDoc->lines();
-    QString exLength = "9999";
-    numLines /= 1000;
-
-    while (numLines >= 1) {
-      exLength += "9";
-      numLines /= 10;
-    }
-		curDoc->setMarginWidth(1, exLength);
+		if (curDoc->lines() > 9999) {
+			curDoc->setMarginWidth(1, QString::number(curDoc->lines()) + "9");
+		} else {
+			curDoc->setMarginWidth(1, "99999");
+		}
 	} else {
 		curDoc->setMarginWidth(1, 0);
 	}
