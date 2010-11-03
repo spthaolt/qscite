@@ -52,8 +52,7 @@ RESOURCES     = qscite.qrc
 unix {
   HEADERS += qterminal_pty.h
   SOURCES += qterminal_pty.cpp
-  LIBS    += -lqscintilla2 \
-             -L./build  
+  LIBS    += build/libqscintilla2.a
   !macx {
     LIBS    += -lutil
     DEFINES += QSCITE_MONO_FAMILY='\\"Monospace\\"'
