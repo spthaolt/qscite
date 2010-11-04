@@ -191,9 +191,9 @@ void MainWindow::createMenus() {
   viewMenu->addAction(showLineEndsAct);
   viewMenu->addAction(codeFoldingAct);
   lexerMenu = viewMenu->addMenu(tr("Lexer"));
-  QList<QAction *> * lexerList = &lexers->actions();
-  for (int i = 0; i < lexerList->size(); ++i) {
-    lexerMenu->addAction(lexerList->at(i));
+  
+  for (int i = 0; i < lexers->actions().size(); ++i) {
+    lexerMenu->addAction(lexers->actions().at(i));
   }
   
   toolsMenu = menuBar()->addMenu(tr("&Tools"));
