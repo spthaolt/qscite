@@ -76,6 +76,7 @@ void MainWindow::createActions() {
   connect(fontAct, SIGNAL(triggered()), this, SLOT(fontDialog()));
 
   terminalAct = new QAction(QIcon(":/images/terminal.png"), tr("Terminal"), this);
+  terminalAct->setStatusTip(tr("Show/hide terminal"));
   connect(terminalAct, SIGNAL(triggered()), this, SLOT(toggleTerminal()));
 
   textDisplayAct = new QAction(QIcon(":/images/font.png"), tr("Text &Display..."), this);
