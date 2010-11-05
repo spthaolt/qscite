@@ -24,7 +24,7 @@ qsci_lib.depends = qsci_project
 
 QMAKE_EXTRA_TARGETS += qsci_project qsci_lib
 PRE_TARGETDEPS += $$qsci_lib.target
-CLEAN += $$qsci_lib.target
+QMAKE_CLEAN += $$qsci_lib.target QScintilla2
 
 QT += script
 
