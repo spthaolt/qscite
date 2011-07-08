@@ -5,7 +5,7 @@
 
 Ubuntu users can use the following packages to install all build dependencies for QSciTE.  Please note that the QScintilla2 packages are currently only available for Ubuntu Hardy (8.04) and above.  If you're using an older version, you'll have to download and compile QScintilla2 from the source package linked to below.  All other packages are available for at least Ubuntu 7.10 and above.
 
-`libqt4-core libqt4-dev libqt4-gui qt4-dev-tools libqscintilla2-dev`
+`libqt4-core libqt4-dev libqt4-gui qt4-dev-tools
 
 The above set of packages has also been tested on Debian Lenny (current Testing branch).
 
