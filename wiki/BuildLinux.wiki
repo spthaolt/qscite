@@ -19,12 +19,6 @@ If you cannot obtain binary packages, you'll have to download and install Qt 4 f
 
 http://www.trolltech.com/download?target=ftp://ftp.trolltech.com/qt/source/qt-x11-opensource-src-4.3.4.tar.gz
 
-== QScintilla ==
-
-We've been developing QSciTE on various snapshot releases of QScintilla2.  We've verified that you can build successfully using the latest stable version, available here:
-
-http://www.riverbankcomputing.com/static/Downloads/QScintilla2/QScintilla-gpl-2.2.tar.gz
-
 = Compile Procedure =
 
 The following instructions assume that you have a working copy of GCC 4.x installed along with the libraries and development packages listed above.
