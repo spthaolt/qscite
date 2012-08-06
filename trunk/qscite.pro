@@ -13,14 +13,14 @@ UI_DIR      = build
 }
 
 unix {
-  qsci_project.target = QScintilla2/Qt4/qscintilla.pro
+  qsci_project.target = QScintilla2/Qt4Qt5/qscintilla.pro
   qsci_project.commands = ./get_qsci.sh
 
   qsci_lib.target = $$OBJECTS_DIR/libqscintilla2.a
-  qsci_lib.commands  = cd QScintilla2/Qt4 &&
+  qsci_lib.commands  = cd QScintilla2/Qt4Qt5 &&
   qsci_lib.commands += $(QMAKE) -after \"CONFIG += static\" qscintilla.pro &&
   qsci_lib.commands += $(MAKE) &&
-  qsci_lib.commands += cd ../.. && cp QScintilla2/Qt4/libqscintilla2.a $(OBJECTS_DIR)
+  qsci_lib.commands += cd ../.. && cp QScintilla2/Qt4Qt5/libqscintilla2.a $(OBJECTS_DIR)
   qsci_lib.depends = qsci_project
 
   QMAKE_EXTRA_TARGETS += qsci_project qsci_lib
