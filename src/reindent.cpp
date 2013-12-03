@@ -1,4 +1,4 @@
-#include <QtGui>
+#include <QtWidgets>
 #include <Qsci/qsciscintilla.h>
 
 #include "mainwindow.h"

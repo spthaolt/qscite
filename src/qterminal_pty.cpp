@@ -13,7 +13,7 @@
 #include <sys/types.h>
 #include <sys/wait.h>
 #endif
-#include <QtGui>
+#include <QtWidgets>
 #include <QtDebug>
 #include "qterminal_pty.h"
 // #include "utils.h"
@@ -345,7 +345,7 @@ void QTerminal::keyPressEvent(QKeyEvent * event) {
     write(fdMaster, "\x1b\x5b\x44", 3);
     //this->moveCursor(QTextCursor::Left, QTextCursor::KeepAnchor);
   } else {
-    write(fdMaster, event->text().toAscii().data(), event->text().length());
+    write(fdMaster, event->text().toLatin1().data(), event->text().length());
   }
 
   event->accept();
@@ -388,7 +388,7 @@ void QTerminal::deleteChars(int arg) {
 
 void QTerminal::insertFromMimeData(const QMimeData* data) {
   QString s = data->text();
-  write(fdMaster, s.toAscii().data(), s.length());
+  write(fdMaster, s.toLatin1().data(), s.length());
 }
 
 void QTerminal::changeDir(const QString & dir) {
@@ -409,7 +409,7 @@ void QTerminal::changeDir(const QString & dir) {
   int retval = system(strCmd.toStdString().c_str());
   if (!retval) {
     write(fdMaster, "cd ", 3);
-    write(fdMaster, dir.toAscii().data(), dir.length());
+    write(fdMaster, dir.toLatin1().data(), dir.length());
     write(fdMaster, "\n", 1);
   }
 }

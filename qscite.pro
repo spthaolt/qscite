@@ -28,51 +28,57 @@ unix {
   QMAKE_CLEAN += $$qsci_lib.target QScintilla2
 }
 
-QT += script
+QT += script\
+      widgets
 
 CONFIG       += thread
 
-HEADERS       = mainwindow.h \
-                utils.h \
-                lexer_utils.h \
-                prefs.h \
-                textdisplay.h \
-                findreplace.h \
-                scriptconsole.h \
-                launcher.h \
-                qsciteeditor.h \
+HEADERS       = include/mainwindow.h \
+                include/utils.h \
+                include/lexer_utils.h \
+                include/prefs.h \
+                include/textdisplay.h \
+                include/findreplace.h \
+                include/scriptconsole.h \
+                include/launcher.h \
+                include/qsciteeditor.h \
 
-SOURCES       = main.cpp \
-                mainwindow.cpp \
-                mainwindow_startup.cpp \
-                mainwindow_uislots.cpp \
-                mainwindow_prefs.cpp \
-                utils.cpp \
-                lexer_utils.cpp \
-                prefs.cpp \
-                textdisplay.cpp \
-                reindent.cpp \
-                findreplace.cpp \
-                scriptconsole.cpp \
-                launcher.cpp \
-                qsciteeditor.cpp
+SOURCES       = src/main.cpp \
+                src/mainwindow.cpp \
+                src/mainwindow_startup.cpp \
+                src/mainwindow_uislots.cpp \
+                src/mainwindow_prefs.cpp \
+                src/utils.cpp \
+                src/lexer_utils.cpp \
+                src/prefs.cpp \
+                src/textdisplay.cpp \
+                src/reindent.cpp \
+                src/findreplace.cpp \
+                src/scriptconsole.cpp \
+                src/launcher.cpp \
+                src/qsciteeditor.cpp
 
-FORMS         = dlgPrefsUI.ui \
-                frmTextDisplay.ui \
-                dlgConvertIndent.ui \
-                dlgFindReplace.ui \
-                dlgScriptConsole.ui
+FORMS         = ui/dlgPrefsUI.ui \
+                ui/frmTextDisplay.ui \
+                ui/dlgConvertIndent.ui \
+                ui/dlgFindReplace.ui \
+                ui/dlgScriptConsole.ui
 
 RESOURCES     = qscite.qrc
 
 unix {
-  HEADERS += qterminal_pty.h
-  SOURCES += qterminal_pty.cpp
-  INCLUDEPATH += QScintilla2/Qt4
+  HEADERS += include/qterminal_pty.h
+  SOURCES += src/qterminal_pty.cpp
+  INCLUDEPATH += QScintilla2/Qt4Qt5
   LIBS    += build/libqscintilla2.a
   !macx {
     LIBS    += -lutil
     DEFINES += QSCITE_MONO_FAMILY='\\"Monospace\\"'
+    TARGET = qscite
+    target.path = $$PREFIX/bin/
+    desktopfile.files = qscite.desktop
+    desktopfile.path = $$PREFIX/share/applications/
+    INSTALLS += target desktopfile
   } else {
     TARGET   = QSciTE
     DEFINES += QSCITE_MONO_FAMILY='\\"Monaco\\"'

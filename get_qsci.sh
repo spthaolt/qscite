@@ -6,7 +6,7 @@ _download_path=$(
     /snapshot/ {next}
     /tar\.gz/ { print $2 }
   ' )
-_download_link="http://www.riverbankcomputing.co.uk$_download_path"
+_download_link=`echo $_download_path | sed "s#http://#http://optimate.dl.#" | sed "s#projects/pyqt/files#project/pyqt#"`
 _archive_filename=$( basename "$_download_path" )
 _archive_dir=$( echo "$_archive_filename" | sed 's/.tar.gz//' )
 _archive_size=$(
