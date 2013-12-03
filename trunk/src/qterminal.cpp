@@ -1,4 +1,4 @@
-#include <QtGui>
+#include <QtWidgets>
 #include "qterminal.h"
 
 QTerminal::QTerminal(QWidget *parent, Qt::WindowFlags f) : QTextEdit(parent) {

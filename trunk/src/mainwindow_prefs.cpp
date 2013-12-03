@@ -1,4 +1,4 @@
-#include <QtGui>
+#include <QtWidgets>
 #include <QtDebug>
 #include <Qsci/qsciscintilla.h>
 #include <Qsci/qscilexer.h>

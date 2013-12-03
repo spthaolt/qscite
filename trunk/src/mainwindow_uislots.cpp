@@ -1,4 +1,4 @@
-#include <QtGui>
+#include <QtWidgets>
 #include <QSystemTrayIcon>
 #include <QtDebug>
 #include <Qsci/qsciscintilla.h>
@@ -224,7 +224,7 @@ void MainWindow::fontDialog() {
 void MainWindow::about() {
    QMessageBox::about(this, tr("About QSciTE"),
        tr("<b>QSciTE</b> is a clone of SciTE, based on the Scintilla library"
-          " and Qt4. It was originally based on the example code included with"
+          " and Qt. It was originally based on the example code included with"
           " Qscintilla2, however it has grown significantly beyond that codebase."
     	  " QSciTE is licensed under the GNU GPL version 2."));
 }
