@@ -18,7 +18,8 @@ unix {
 
   qsci_lib.target = $$OBJECTS_DIR/libqscintilla2.a
   qsci_lib.commands  = cd QScintilla2/Qt4Qt5 &&
-  qsci_lib.commands += sed -i \"s/dll/static/\" qscintilla.pro &&
+  qsci_lib.commands += sed -i \"s/QSCINTILLA_MAKE_DLL//\" qscintilla.pro &&
+  qsci_lib.commands += sed -i \"s/CONFIG +=/CONFIG += staticlib/\" qscintilla.pro &&
   qsci_lib.commands += $(QMAKE) qscintilla.pro &&
   qsci_lib.commands += $(MAKE) -j `cat /proc/cpuinfo | grep '^processor' | wc -l` &&
   qsci_lib.commands += cd ../.. && cp QScintilla2/Qt4Qt5/libqscintilla2.a $(OBJECTS_DIR)
